@@ -18,6 +18,8 @@ model User {
   crocsiansCharacterIcon CrocsiansCharacterIcon?
   crocsiansSkillUsage    CrocsiansSkillUsage?
   crocsiansChatMessages  CrocsiansChatMessage[]
+  crocsiansBaseOwnedInteractions   CrocsiansBaseInteraction[] @relation("CrocsiansBaseOwner")
+  crocsiansBaseVisitorInteractions CrocsiansBaseInteraction[] @relation("CrocsiansBaseVisitor")
 }
 
 model Session {
@@ -117,6 +119,24 @@ model CrocsiansCharacterIcon {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CrocsiansBaseInteraction {
+  id            String    @id @default(cuid())
+  ownerId       String
+  visitorId     String
+  liked         Boolean   @default(false)
+  favorited     Boolean   @default(false)
+  lastVisitedAt DateTime?
+  lastHelpDate  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  owner         User      @relation("CrocsiansBaseOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  visitor       User      @relation("CrocsiansBaseVisitor", fields: [visitorId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, visitorId])
+  @@index([ownerId, lastVisitedAt])
+  @@index([visitorId, favorited])
 }
 
 model CrocsiansSkillUsage {

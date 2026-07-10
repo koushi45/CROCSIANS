@@ -18,11 +18,12 @@ type ItemSort = "number" | "owned" | "rarity";
 type ItemRarity = "N" | "R" | "SR" | "SSR";
 type TempleTab = "exploration" | "dungeon" | "party";
 type BasePanelTab = "building" | "tile";
-type TileKind = "stone" | "water" | "grassland" | "stoneTile" | "carpet" | "soil" | "mosaic";
+type ConstructionCategory = "production" | "workshop" | "decoration" | "tile";
+type TileKind = "stone" | "water" | "grassland" | "stoneTile" | "carpet" | "soil" | "mosaic" | "brick" | "woodPlank" | "marble" | "slate" | "sand" | "gravel" | "checker" | "terracotta" | "flowerGrass" | "cobblestone" | "goldTrim" | "blueCarpet" | "redCarpet" | "blackTile" | "shallowWater" | "hedge";
 type StartScreenMode = "menu" | "create" | "delete";
 type JobName = "戦士" | "商人" | "職人" | "盗賊" | "僧侶";
 type HolySeeTab = "cardinals" | "papalBadge";
-type BuildingKind = "farm" | "mine" | "forestry" | "weapon" | "armor" | "apothecary" | "inn" | "furnace";
+type BuildingKind = "farm" | "mine" | "forestry" | "weapon" | "armor" | "apothecary" | "inn" | "furnace" | "fountain" | "garden" | "gazebo" | "clockTower" | "monument" | "pond" | "marketStall" | "campfire" | "flowerArch" | "streetLamp" | "storageShed" | "courtyard";
 type MaterialProductionKind = "farm" | "mine" | "forestry";
 type SmeltingJob = { oreName: string; ingotName: string; quantity: number; startedAt: number; completedAt: number };
 type Building = { id: number; kind: BuildingKind; level: number; stockCount: number; lastProductionAt: number; ready: boolean; investedMaterials: MaterialCost[]; smeltingJob?: SmeltingJob | null };
@@ -40,9 +41,19 @@ type CardinalId = "bread" | "batrump" | "interstellar" | "elizabeth" | "mushroom
 type CardinalLevels = Partial<Record<CardinalId, number>>;
 type ConnectedPlayer = { id: string; name: string; job: string; level: number; hp: number; maxHp?: number; statusEffect?: string | null; icon: string | null; atk?: number; def?: number; luck?: number; skillLevels?: Record<string, number>; cardinalLevels?: CardinalLevels; equippedCardinal?: CardinalId | null; equippedWeapon?: string | null; equippedArmor?: string | null; equippedWeaponHighQuality?: boolean; equippedArmorHighQuality?: boolean; treasureHunt?: number; autoHealLevel?: number; autoHealRecovery?: number; autoResurrectLevel?: number; autoResurrectUses?: number; divineDevotionLevel?: number; divineDevotionAtkBonus?: number; strongDutyLevel?: number; strongDutyThreatMultiplier?: number; strongDutyDamageReduction?: number; counterAttackRate?: number; evasionRate?: number; safeFleeLevel?: number; falsePraiseLevel?: number; falsePraiseUses?: number; rareDropBonus?: number; joinedAt?: number; waiting?: boolean };
 type ChatMessage = { id: string; name: string; job: string; text: string; imageUrl: string | null; imageExpired: boolean; createdAt: string; icon: string | null };
+type SocialPerson = { ownerId: string; name: string; job: string; level: number; icon: string | null };
+type SocialBaseSummary = SocialPerson & { likes: number; liked: boolean; favorited: boolean; updatedAt: string };
+type SocialVisitor = SocialPerson & { visitedAt: string | null };
+type SocialBaseApi = SocialPerson & { buildings: Record<string, SavedBuilding>; baseTiles: TileKind[]; likes: number; liked: boolean; favorited: boolean; helpedToday: boolean; visitors: SocialVisitor[]; updatedAt: string };
+type SocialBase = Omit<SocialBaseApi, "buildings"> & { buildings: Record<number, Building> };
+type BaseSocialResponse = { viewerId: string; directory: SocialBaseSummary[]; base: SocialBaseApi; error?: string };
 
 function InventoryIcon() {
   return <svg viewBox="0 0 1000 1000" aria-hidden="true"><path d="M758 107q-12-4-148-10-129-5-227-5-43 0-83 16t-71 47q-45 45-82 107-9 13-2 26 4 8 12 15l144 113-154 80q-12 6-18 15-8 14-5 38 9 56 39 275 2 19 15 32 18 20 53 23l388 28q20 3 40-2 16-4 31-12 11-6 20-14l115-109q20-21 28-40 5-14 7-40 2-47 6-156l3-101q24-174-29-261-28-45-78-63zM529 638l-58 46-6 2q-6 3-11 0l-33 22 76 46q10 6 10 17t-9.5 16.5-19.5.5l-79-42-2 41h12q7 0 11 4t4 10-4 10.5-11 4.5h-12v18q0 8-6 14t-14 6-13.5-6-5.5-14v-18h-14q-6 0-10.5-4.5T329 801t4.5-10 10.5-4h14l-2-41-79 42q-7 4-14.5 2t-11.5-9-2-15 9-12l76-47-42-26-8 22-73-49 45-37q9-7 18.5-9.5t17.5 3 10 12.5-1 18l55 29 2-90q0-8 5.5-13.5t14-5.5 14 5.5T397 580l2 90 35-18q1-5 6-10l5-3 69-27q15-6 24-1 3 2 3 6 1 11-12 21zm133-110l-490-18 163-83 470 13z" /></svg>;
+}
+
+function BaseWalker({ person, index, visitor = false }: { person: SocialPerson; index: number; visitor?: boolean }) {
+  return <div className={`${styles.baseWalker} ${visitor ? styles.baseWalkerVisitor : ""}`} style={{ "--walker-x": `${10 + index * 17 % 72}%`, "--walker-y": `${14 + index * 23 % 67}%`, "--walker-delay": `${-index * 1.7}s` } as React.CSSProperties} title={`${person.name} · ${person.job} Lv.${person.level}`}><span>{person.icon ? <NextImage src={person.icon} alt="" width={128} height={128} unoptimized /> : person.name.charAt(0)}</span><i /><b /><small>{person.name}</small></div>;
 }
 type EnemySkill = { name: string; rarity: "N" | "R"; maxUses: number; effect: string };
 type EnemyDefinition = { id: number; name: string; hp: number; atk: number; def: number; exp: number; drop: string; rareDrop: string; gold: number; skills?: EnemySkill[] };
@@ -99,8 +110,8 @@ type SharedExplorationSnapshot = {
 };
 type DungeonPartyListing = { map: string; color: PortalColor; level: DungeonLevel; hostName: string; memberCount: number; maxMembers: number };
 type BuildingUpgradeCatalog = Partial<Record<BuildingKind, Record<string, MaterialCost[]>>>;
-type BuildingDefinition = { name: string; icon: string; cost: { gold: number; materials: MaterialCost[] }; product: string; color: string };
-type TileDefinition = { name: string; image: string; materials: MaterialCost[] };
+type BuildingDefinition = { name: string; icon: string; cost: { gold: number; materials: MaterialCost[] }; product: string; color: string; decorative?: boolean };
+type TileDefinition = { name: string; image?: string; background?: string; materials: MaterialCost[] };
 type CrocsiansSaveData = {
   playerProgressionVersion?: number;
   merchantSkillResetVersion?: number;
@@ -152,6 +163,18 @@ const BUILDINGS: Record<BuildingKind, BuildingDefinition> = {
   apothecary: { name: "調合所", icon: "✚", cost: { gold: 140, materials: [{ name: "木材", quantity: 60 }, { name: "薬草", quantity: 15 }] }, product: "回復薬", color: "violet" },
   inn: { name: "宿屋", icon: "⌂", cost: { gold: 220, materials: [{ name: "木材", quantity: 80 }, { name: "石材", quantity: 20 }] }, product: "旅人の訪問", color: "gold" },
   furnace: { name: "溶鉱炉", icon: "♨", cost: { gold: 0, materials: [{ name: "石材", quantity: 200 }] }, product: "インゴット", color: "rust" },
+  fountain: { name: "星雫の噴水", icon: "♒", cost: { gold: 350, materials: [{ name: "石材", quantity: 90 }, { name: "清水", quantity: 40 }] }, product: "景観", color: "aqua", decorative: true },
+  garden: { name: "花咲く庭園", icon: "✿", cost: { gold: 180, materials: [{ name: "木材", quantity: 35 }, { name: "薬草", quantity: 45 }] }, product: "景観", color: "leaf", decorative: true },
+  gazebo: { name: "白木の東屋", icon: "⌂", cost: { gold: 260, materials: [{ name: "木材", quantity: 100 }, { name: "石材", quantity: 30 }] }, product: "景観", color: "ivory", decorative: true },
+  clockTower: { name: "時計塔", icon: "◷", cost: { gold: 700, materials: [{ name: "石材", quantity: 180 }, { name: "鉄インゴット", quantity: 25 }] }, product: "景観", color: "bronze", decorative: true },
+  monument: { name: "英雄の記念碑", icon: "♜", cost: { gold: 500, materials: [{ name: "石材", quantity: 160 }] }, product: "景観", color: "slate", decorative: true },
+  pond: { name: "睡蓮の池", icon: "◉", cost: { gold: 150, materials: [{ name: "石材", quantity: 40 }, { name: "清水", quantity: 60 }] }, product: "景観", color: "water", decorative: true },
+  marketStall: { name: "彩り屋台", icon: "▱", cost: { gold: 220, materials: [{ name: "木材", quantity: 70 }, { name: "布", quantity: 20 }] }, product: "景観", color: "festival", decorative: true },
+  campfire: { name: "旅人の焚き火", icon: "♨", cost: { gold: 60, materials: [{ name: "木材", quantity: 35 }, { name: "石材", quantity: 12 }] }, product: "景観", color: "ember", decorative: true },
+  flowerArch: { name: "花のアーチ", icon: "❀", cost: { gold: 120, materials: [{ name: "木材", quantity: 45 }, { name: "薬草", quantity: 30 }] }, product: "景観", color: "rose", decorative: true },
+  streetLamp: { name: "街路灯広場", icon: "✦", cost: { gold: 200, materials: [{ name: "石材", quantity: 45 }, { name: "鉄インゴット", quantity: 12 }] }, product: "景観", color: "lamp", decorative: true },
+  storageShed: { name: "木組みの物置", icon: "▣", cost: { gold: 140, materials: [{ name: "木材", quantity: 85 }] }, product: "景観", color: "wood", decorative: true },
+  courtyard: { name: "王家の中庭", icon: "♔", cost: { gold: 900, materials: [{ name: "石材", quantity: 220 }, { name: "レンガ", quantity: 80 }] }, product: "景観", color: "royal", decorative: true },
 };
 
 const TILES: Record<TileKind, TileDefinition> = {
@@ -162,12 +185,33 @@ const TILES: Record<TileKind, TileDefinition> = {
   carpet: { name: "絨毯", image: "carpet.png", materials: [{ name: "糸", quantity: 1 }, { name: "布", quantity: 2 }] },
   soil: { name: "土", image: "soil.png", materials: [] },
   mosaic: { name: "モザイクタイル", image: "mosic-tile.png", materials: [{ name: "石材", quantity: 2 }, { name: "レンガ", quantity: 2 }] },
+  brick: { name: "赤レンガ", background: "repeating-linear-gradient(0deg,#8f4937 0 20px,#552d26 21px 23px),repeating-linear-gradient(90deg,transparent 0 42px,#4b2923 43px 45px)", materials: [{ name: "レンガ", quantity: 2 }] },
+  woodPlank: { name: "木板フロア", background: "repeating-linear-gradient(90deg,#9a7047 0 31px,#5e402b 32px 34px),linear-gradient(#b18457,#755033)", materials: [{ name: "木材", quantity: 2 }] },
+  marble: { name: "白大理石", background: "linear-gradient(135deg,#e2e0d4 0 35%,#aeb2aa 36% 38%,#f0eee4 39% 70%,#babdb6 71% 73%,#dddcd4 74%)", materials: [{ name: "石材", quantity: 4 }] },
+  slate: { name: "黒い石板", background: "linear-gradient(135deg,#343b40 25%,#252b30 25% 50%,#3d4448 50% 75%,#292f34 75%)", materials: [{ name: "石材", quantity: 3 }] },
+  sand: { name: "白砂", background: "radial-gradient(circle at 25% 35%,#e1ce99 0 2px,transparent 3px),radial-gradient(circle at 70% 65%,#b99f68 0 1px,transparent 2px),#d4bd83", materials: [] },
+  gravel: { name: "砂利道", background: "radial-gradient(circle,#77796f 0 3px,#4f554d 4px 6px,transparent 7px),radial-gradient(circle at 70% 30%,#a0a092 0 2px,transparent 3px),#555b52", materials: [{ name: "石材", quantity: 1 }] },
+  checker: { name: "市松タイル", background: "conic-gradient(#e5dfce 25%,#303735 0 50%,#e5dfce 0 75%,#303735 0) 0 0/28px 28px", materials: [{ name: "石材", quantity: 3 }] },
+  terracotta: { name: "テラコッタ", background: "linear-gradient(45deg,#a85f42 25%,#874631 25% 50%,#b86b49 50% 75%,#914d36 75%)", materials: [{ name: "レンガ", quantity: 2 }] },
+  flowerGrass: { name: "花の芝生", background: "radial-gradient(circle at 25% 30%,#f4d66e 0 2px,transparent 3px),radial-gradient(circle at 70% 65%,#e9a5c4 0 2px,transparent 3px),radial-gradient(circle at 45% 80%,#d7e7a0 0 2px,transparent 3px),#557a46", materials: [{ name: "薬草", quantity: 1 }] },
+  cobblestone: { name: "丸石の舗道", background: "radial-gradient(ellipse at center,#85897e 0 45%,#4d534c 47% 55%,transparent 57%) 0 0/30px 22px,#555c53", materials: [{ name: "石材", quantity: 2 }] },
+  goldTrim: { name: "金縁タイル", background: "linear-gradient(90deg,#b99b43 0 3px,transparent 3px 43px,#b99b43 43px 46px),linear-gradient(#b99b43 0 3px,#242a27 3px 43px,#b99b43 43px 46px)", materials: [{ name: "石材", quantity: 3 }, { name: "金インゴット", quantity: 1 }] },
+  blueCarpet: { name: "蒼紺の絨毯", background: "repeating-linear-gradient(45deg,#263f68 0 8px,#31527f 8px 16px)", materials: [{ name: "布", quantity: 2 }, { name: "糸", quantity: 1 }] },
+  redCarpet: { name: "深紅の絨毯", background: "repeating-linear-gradient(45deg,#6d2930 0 8px,#8c3740 8px 16px)", materials: [{ name: "布", quantity: 2 }, { name: "糸", quantity: 1 }] },
+  blackTile: { name: "漆黒タイル", background: "linear-gradient(135deg,#171b1d 25%,#272d30 25% 50%,#141719 50% 75%,#303538 75%)", materials: [{ name: "石材", quantity: 4 }] },
+  shallowWater: { name: "浅瀬", background: "repeating-radial-gradient(ellipse at 20% 50%,#94d1cf 0 3px,#4b9498 4px 7px,#397b83 8px 12px)", materials: [{ name: "清水", quantity: 1 }] },
+  hedge: { name: "生垣", background: "radial-gradient(circle at 25% 30%,#7ca65d 0 8px,transparent 9px),radial-gradient(circle at 70% 65%,#4f7e43 0 10px,transparent 11px),#345f38", materials: [{ name: "薬草", quantity: 2 }] },
 };
 
 const TILE_KINDS = Object.keys(TILES) as TileKind[];
 
 function createInitialTiles(): TileKind[] {
   return Array.from({ length: MAP_CELL_COUNT }, () => "soil" as const);
+}
+
+function tileVisualStyle(kind: TileKind): React.CSSProperties {
+  const tile = TILES[kind];
+  return tile.image ? { backgroundImage: `url("/crocsians/base/tile/${tile.image}")` } : { background: tile.background ?? "#657050" };
 }
 
 function tileRectangleCells(start: number, end: number) {
@@ -186,13 +230,19 @@ function tileRectangleCells(start: number, end: number) {
   return { cells, width: right - left + 1, height: bottom - top + 1 };
 }
 
-function buildingImagePath(kind: BuildingKind, level: number) {
+function buildingImagePath(kind: BuildingKind, level: number): string | null {
+  if (BUILDINGS[kind].decorative) return null;
   const safeLevel = Math.max(1, Math.min(MAX_BUILDING_LEVEL, Math.floor(level)));
   if (kind === "furnace") return "/crocsians/base/building/furnace.png";
   if (kind === "mine") return `/crocsians/base/building/mine/${safeLevel}_256px-Photoroom.png`;
   if (kind === "forestry") return `/crocsians/base/building/plantation/${safeLevel}-Photoroom.png`;
-  const directory: Record<Exclude<BuildingKind, "mine" | "forestry" | "furnace">, string> = { farm: "farm", weapon: "weapon-forge", armor: "armor-forge", apothecary: "lab", inn: "inn" };
-  return `/crocsians/base/building/${directory[kind]}/${safeLevel}.png`;
+  const directory: Partial<Record<BuildingKind, string>> = { farm: "farm", weapon: "weapon-forge", armor: "armor-forge", apothecary: "lab", inn: "inn" };
+  return directory[kind] ? `/crocsians/base/building/${directory[kind]}/${safeLevel}.png` : null;
+}
+
+function BuildingArtwork({ kind, level, size = 256 }: { kind: BuildingKind; level: number; size?: number }) {
+  const image = buildingImagePath(kind, level);
+  return image ? <NextImage src={image} alt={BUILDINGS[kind].name} width={size} height={size} unoptimized /> : <span className={`${styles.decorativeArtwork} ${styles[`decorative_${BUILDINGS[kind].color}`] ?? ""}`} aria-hidden="true"><i>{BUILDINGS[kind].icon}</i><b /></span>;
 }
 
 const TOWN_BUILDINGS = [
@@ -233,6 +283,8 @@ const WARRIOR_STRONG_DUTY_DAMAGE_REDUCTION = 0.1;
 const WARRIOR_COUNTER_RATE_PER_LEVEL = 0.12;
 const THIEF_EVASION_RATE_PER_LEVEL = 0.04;
 const CRAFTING_KINDS = new Set<BuildingKind>(["weapon", "armor", "apothecary", "furnace"]);
+const DECORATIVE_KINDS = new Set<BuildingKind>((Object.keys(BUILDINGS) as BuildingKind[]).filter((kind) => BUILDINGS[kind].decorative));
+const NON_PRODUCTION_KINDS = new Set<BuildingKind>([...CRAFTING_KINDS, ...DECORATIVE_KINDS]);
 const PRODUCTION_INTERVAL_MS = 30 * 60 * 1000;
 const SMELTING_INTERVAL_MS = 5 * 60 * 1000;
 const ORE_PER_INGOT = 4;
@@ -250,7 +302,7 @@ const JOB_MODIFIERS: Record<JobName, { hp: number; atk: number; def: number; luc
   盗賊: { hp: 0.9, atk: 1.1, def: 0.9, luck: 1.6 },
   僧侶: { hp: 1, atk: 1, def: 1.1, luck: 1 },
 };
-const BUILDING_LIMITS: Record<BuildingKind, number> = { farm: 3, mine: 3, forestry: 3, weapon: 1, armor: 1, apothecary: 1, inn: 1, furnace: 3 };
+const BUILDING_LIMITS: Record<BuildingKind, number> = { farm: 3, mine: 3, forestry: 3, weapon: 1, armor: 1, apothecary: 1, inn: 1, furnace: 3, fountain: 6, garden: 12, gazebo: 6, clockTower: 2, monument: 6, pond: 8, marketStall: 8, campfire: 8, flowerArch: 12, streetLamp: 12, storageShed: 8, courtyard: 4 };
 const MATERIAL_PRODUCTION: Record<MaterialProductionKind, { base: MaterialCost; unlocks: { level: number; material: MaterialCost }[] }> = {
   farm: {
     base: { name: "薬草", quantity: 6 },
@@ -314,7 +366,7 @@ function normalizeBuilding(building: SavedBuilding, serverTime = Date.now()): Bu
     : building.ready ? MAX_STOCK_COUNT : 0;
   const stockCount = Math.min(MAX_STOCK_COUNT, Math.max(0, Math.floor(building.stockCount ?? migratedStock)));
   const smeltingJob = normalizeSmeltingJob(building.smeltingJob, serverTime);
-  return { id: building.id, kind: building.kind, level: building.level, stockCount, lastProductionAt: building.lastProductionAt ?? serverTime, ready: building.kind === "furnace" ? Boolean(smeltingJob && smeltingJob.completedAt <= serverTime) : stockCount === MAX_STOCK_COUNT, investedMaterials: building.investedMaterials ?? getBuildingMaterialInvestment(building.kind, building.level), smeltingJob };
+  return { id: building.id, kind: building.kind, level: building.level, stockCount: DECORATIVE_KINDS.has(building.kind) ? 0 : stockCount, lastProductionAt: building.lastProductionAt ?? serverTime, ready: DECORATIVE_KINDS.has(building.kind) ? false : building.kind === "furnace" ? Boolean(smeltingJob && smeltingJob.completedAt <= serverTime) : stockCount === MAX_STOCK_COUNT, investedMaterials: building.investedMaterials ?? getBuildingMaterialInvestment(building.kind, building.level), smeltingJob };
 }
 
 function stockProgress(building: Building) {
@@ -920,6 +972,7 @@ function ItemTexture({ kind, id, name }: { kind: ItemTextureKind; id: number; na
 
 export function CrocsiansGame() {
   const mapViewportRef = useRef<HTMLDivElement>(null);
+  const sharedBaseHandledRef = useRef(false);
   const bgmAudioRef = useRef<HTMLAudioElement | null>(null);
   const seVolumeRef = useRef(0.5);
   const activeSeRef = useRef<Set<HTMLAudioElement>>(new Set());
@@ -969,6 +1022,11 @@ export function CrocsiansGame() {
   const [basePanelTab, setBasePanelTab] = useState<BasePanelTab>("building");
   const [buildMode, setBuildMode] = useState<BuildingKind | null>(null);
   const [mobileBuildCell, setMobileBuildCell] = useState<number | null>(null);
+  const [constructionCategory, setConstructionCategory] = useState<ConstructionCategory>("production");
+  const [baseSocialOpen, setBaseSocialOpen] = useState(false);
+  const [baseSocialLoading, setBaseSocialLoading] = useState(false);
+  const [baseSocialData, setBaseSocialData] = useState<BaseSocialResponse | null>(null);
+  const [visitedBase, setVisitedBase] = useState<SocialBase | null>(null);
   const [tileMode, setTileMode] = useState<TileKind | null>(null);
   const [tileDragSelection, setTileDragSelection] = useState<{ start: number; end: number } | null>(null);
   const [selectedCell, setSelectedCell] = useState(0);
@@ -1331,6 +1389,16 @@ export function CrocsiansGame() {
   }, []);
 
   useEffect(() => {
+    if (!gameStarted || sharedBaseHandledRef.current) return;
+    sharedBaseHandledRef.current = true;
+    const sharedOwnerId = new URLSearchParams(window.location.search).get("visit");
+    if (sharedOwnerId) void visitPlayerBase(sharedOwnerId);
+    else void loadBaseSocial();
+  // Shared visit URLs are intentionally handled once after the saved character starts.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameStarted]);
+
+  useEffect(() => {
     const audioSession = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
     if (audioSession) audioSession.type = "ambient";
     if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "none";
@@ -1579,7 +1647,7 @@ export function CrocsiansGame() {
             changed = true;
             return;
           }
-          if (building.ready || CRAFTING_KINDS.has(building.kind)) return;
+          if (building.ready || NON_PRODUCTION_KINDS.has(building.kind)) return;
           const producedCount = Math.floor(Math.max(0, serverTime - building.lastProductionAt) / PRODUCTION_INTERVAL_MS);
           if (producedCount < 1) return;
           const stockCount = Math.min(MAX_STOCK_COUNT, building.stockCount + producedCount);
@@ -1916,8 +1984,8 @@ export function CrocsiansGame() {
 
   const selectedBuilding = buildings[selectedCell];
   const selectedTileCells = useMemo(() => new Set(tileDragSelection ? tileRectangleCells(tileDragSelection.start, tileDragSelection.end).cells : []), [tileDragSelection]);
-  const completed = useMemo(() => Object.values(buildings).filter((building) => building.ready && !CRAFTING_KINDS.has(building.kind)).length, [buildings]);
-  const collectableBuildingCount = useMemo(() => Object.values(buildings).filter((building) => building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind)).length, [buildings]);
+  const completed = useMemo(() => Object.values(buildings).filter((building) => building.ready && !NON_PRODUCTION_KINDS.has(building.kind)).length, [buildings]);
+  const collectableBuildingCount = useMemo(() => Object.values(buildings).filter((building) => building.stockCount > 0 && !NON_PRODUCTION_KINDS.has(building.kind)).length, [buildings]);
   const buildingCounts = useMemo(() => Object.values(buildings).reduce<Partial<Record<BuildingKind, number>>>((counts, building) => {
     counts[building.kind] = (counts[building.kind] ?? 0) + 1;
     return counts;
@@ -2063,6 +2131,31 @@ export function CrocsiansGame() {
     playSe("building");
   }
 
+  function placeTileFromConstructionMenu(cell: number, kind: TileKind) {
+    setSelectedCell(cell);
+    const definition = TILES[kind];
+    if (baseTiles[cell] === kind) {
+      setSystemMessage(`このマスは既に${definition.name}です`);
+      playSe("click");
+      return;
+    }
+    if (!canAffordTile(kind)) {
+      setSystemMessage(`${definition.name}に必要な素材が足りません`);
+      playSe("click");
+      return;
+    }
+    if (definition.materials.length > 0) {
+      setMaterialInventory((current) => {
+        const next = { ...current };
+        definition.materials.forEach((material) => { next[material.name] = (next[material.name] ?? 0) - material.quantity; });
+        return next;
+      });
+    }
+    setBaseTiles((current) => { const next = [...current]; next[cell] = kind; return next; });
+    setSystemMessage(`${definition.name}を張りました`);
+    playSe("building");
+  }
+
   function changeMapZoom(nextZoom: number) {
     const viewport = mapViewportRef.current;
     const clampedZoom = Math.max(MIN_MAP_ZOOM, Math.min(MAX_MAP_ZOOM, Math.round(nextZoom * 1000) / 1000));
@@ -2169,9 +2262,9 @@ export function CrocsiansGame() {
   function placeBuilding(cell: number, requestedKind: BuildingKind | null = buildMode) {
     setSelectedCell(cell);
     if (!requestedKind) {
-      if (typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches && !buildings[cell]) {
-        if (canPlaceFacility(buildings, cell)) setMobileBuildCell(cell);
-        else setSystemMessage("施設を建てられる空き2×2マスを選択してください");
+      if (!buildings[cell]) {
+        setConstructionCategory("production");
+        setMobileBuildCell(cell);
       }
       playSe("click");
       return;
@@ -2219,7 +2312,7 @@ export function CrocsiansGame() {
 
   function collect(cell: number) {
     const building = buildings[cell];
-    if (!building || building.stockCount === 0 || CRAFTING_KINDS.has(building.kind)) return;
+    if (!building || building.stockCount === 0 || NON_PRODUCTION_KINDS.has(building.kind)) return;
     const collectedCount = building.stockCount;
     const producedMaterials = getProductionMaterials(building);
     if (building.kind === "inn") setResources((current) => ({ gold: current.gold + 130 * building.level * collectedCount }));
@@ -2233,7 +2326,7 @@ export function CrocsiansGame() {
   }
 
   function collectAllResources() {
-    const collectable = Object.values(buildings).filter((building) => building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind));
+    const collectable = Object.values(buildings).filter((building) => building.stockCount > 0 && !NON_PRODUCTION_KINDS.has(building.kind));
     if (collectable.length === 0) {
       setSystemMessage("回収できる生産物はありません");
       playSe("click");
@@ -3025,6 +3118,86 @@ export function CrocsiansGame() {
     return clientId;
   }
 
+  function normalizeSocialBase(base: SocialBaseApi): SocialBase {
+    const normalizedBuildings = Object.fromEntries(Object.entries(base.buildings).flatMap(([cell, building]) => {
+      const numericCell = Number(cell);
+      if (!Number.isInteger(numericCell) || numericCell < 0 || numericCell >= MAP_CELL_COUNT || !building || !BUILDINGS[building.kind]) return [];
+      return [[numericCell, normalizeBuilding(building)]];
+    })) as Record<number, Building>;
+    const normalizedTiles = Array.isArray(base.baseTiles) && base.baseTiles.length === MAP_CELL_COUNT ? base.baseTiles.map((tile) => TILE_KINDS.includes(tile) ? tile : "soil") : createInitialTiles();
+    return { ...base, buildings: normalizedBuildings, baseTiles: normalizedTiles };
+  }
+
+  async function loadBaseSocial(ownerId?: string) {
+    setBaseSocialLoading(true);
+    try {
+      const response = await fetch(`/api/crocsians/base-social${ownerId ? `?ownerId=${encodeURIComponent(ownerId)}` : ""}`, { cache: "no-store" });
+      const data = await response.json() as BaseSocialResponse;
+      if (!response.ok) throw new Error(data.error ?? "拠点交流を読み込めませんでした");
+      setBaseSocialData(data);
+      if (ownerId && ownerId !== data.viewerId) setVisitedBase(normalizeSocialBase(data.base));
+      return data;
+    } catch (error) {
+      setSystemMessage(error instanceof Error ? error.message : "拠点交流を読み込めませんでした");
+      return null;
+    } finally {
+      setBaseSocialLoading(false);
+    }
+  }
+
+  async function baseSocialAction(action: "visit" | "like" | "favorite" | "help", ownerId: string, extra: Record<string, unknown> = {}) {
+    const response = await fetch("/api/crocsians/base-social", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action, ownerId, ...extra }) });
+    const result = await response.json() as { error?: string };
+    if (!response.ok) throw new Error(result.error ?? "拠点交流の操作に失敗しました");
+  }
+
+  async function visitPlayerBase(ownerId: string) {
+    try {
+      await baseSocialAction("visit", ownerId);
+      const data = await loadBaseSocial(ownerId);
+      if (!data) return;
+      setVisitedBase(normalizeSocialBase(data.base));
+      setBaseSocialOpen(false);
+      setView("base");
+      setSystemMessage(`${data.base.name}の拠点を訪問しています`);
+    } catch (error) {
+      setSystemMessage(error instanceof Error ? error.message : "拠点を訪問できませんでした");
+    }
+  }
+
+  async function toggleBaseSocialFlag(action: "like" | "favorite") {
+    if (!visitedBase) return;
+    const value = action === "like" ? !visitedBase.liked : !visitedBase.favorited;
+    try {
+      await baseSocialAction(action, visitedBase.ownerId, { value });
+      await loadBaseSocial(visitedBase.ownerId);
+      setSystemMessage(action === "like" ? value ? "この拠点にいいねしました" : "いいねを取り消しました" : value ? "お気に入り拠点に登録しました" : "お気に入りを解除しました");
+    } catch (error) {
+      setSystemMessage(error instanceof Error ? error.message : "操作に失敗しました");
+    }
+  }
+
+  async function helpVisitedBuilding(cell: number) {
+    if (!visitedBase || visitedBase.helpedToday) return;
+    try {
+      await baseSocialAction("help", visitedBase.ownerId, { buildingCell: cell });
+      await loadBaseSocial(visitedBase.ownerId);
+      setSystemMessage(`${visitedBase.name}の施設生産を手伝いました。本日の支援は完了です`);
+    } catch (error) {
+      setSystemMessage(error instanceof Error ? error.message : "生産を支援できませんでした");
+    }
+  }
+
+  async function copyBaseShareLink(ownerId: string) {
+    const url = `${window.location.origin}${window.location.pathname}?visit=${encodeURIComponent(ownerId)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setSystemMessage("拠点の共有リンクをコピーしました");
+    } catch {
+      window.prompt("拠点の共有リンクをコピーしてください", url);
+    }
+  }
+
   function warpToMap(map: MapDefinition) {
     setCurrentMap(map);
     setTempleOpen(false);
@@ -3299,6 +3472,36 @@ export function CrocsiansGame() {
 
   function renderDesktopChatPanel() {
     return <section className={`${styles.panelSection} ${styles.chatPanel} ${styles.desktopChatPanel}`}><div className={styles.chatTabs}><button type="button" className={desktopChatTab === "chat" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("chat")}>全体チャット</button><button type="button" className={desktopChatTab === "logs" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("logs")}>ログ</button></div>{desktopChatTab === "chat" ? <><div ref={desktopChatMessagesRef} className={styles.messages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></> : <div ref={desktopLogMessagesRef} onScroll={(event) => { const element = event.currentTarget; logWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 4; }} className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : [...explorationLogs].reverse().map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}</section>;
+  }
+
+  function renderVisitedBaseMap() {
+    if (!visitedBase) return null;
+    const owner: SocialPerson = visitedBase;
+    const viewer: SocialPerson = { ownerId: baseSocialData?.viewerId ?? "viewer", name: characterName, job, level: playerProgress.level, icon: characterIcon };
+    const walkers = [owner, viewer, ...visitedBase.visitors.filter((person) => person.ownerId !== owner.ownerId && person.ownerId !== viewer.ownerId)].slice(0, 6);
+    return <div ref={mapViewportRef} className={`${styles.mapViewport} ${styles.socialMapViewport}`} onTouchStart={beginMapTouch} onTouchMove={moveMapTouch} onTouchEnd={finishMapTouch} onTouchCancel={finishMapTouch}>
+      <div className={styles.mapCanvas} style={{ width: MAP_PIXEL_SIZE * zoom, height: MAP_PIXEL_SIZE * zoom }}>
+        <div className={styles.mapGrid} style={{ zoom, gridTemplateColumns: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridTemplateRows: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridAutoColumns: `${MAP_CELL_SIZE}px`, gridAutoRows: `${MAP_CELL_SIZE}px` } as React.CSSProperties}>
+          {visitedBase.baseTiles.map((tile, cell) => <span key={`social-floor-${cell}`} className={styles.floorTile} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1, ...tileVisualStyle(tile) }} />)}
+          {Array.from({ length: MAP_CELL_COUNT }, (_, cell) => {
+            const occupiedAnchor = buildingAnchorAtCell(visitedBase.buildings, cell);
+            if (occupiedAnchor !== undefined && occupiedAnchor !== cell) return null;
+            const building = visitedBase.buildings[cell];
+            const helpable = Boolean(building && !NON_PRODUCTION_KINDS.has(building.kind) && building.stockCount < MAX_STOCK_COUNT && !visitedBase.helpedToday);
+            const column = cell % MAP_SIZE + 1;
+            const row = Math.floor(cell / MAP_SIZE) + 1;
+            return <button type="button" key={cell} data-se="none" disabled={!helpable} style={{ gridColumn: `${column} / span ${building ? FACILITY_SIZE : 1}`, gridRow: `${row} / span ${building ? FACILITY_SIZE : 1}` }} aria-label={building ? helpable ? `${BUILDINGS[building.kind].name}の生産を手伝う` : BUILDINGS[building.kind].name : "空きマス"} className={`${styles.mapCell} ${building ? styles.facilityCell : ""} ${helpable ? styles.socialHelpable : ""}`} onClick={() => helpable && void helpVisitedBuilding(cell)}>{building ? <><span className={styles.buildingIcon}><BuildingArtwork kind={building.kind} level={building.level} /></span><small>Lv.{building.level}</small>{helpable && <i className={styles.socialHelpMark}>＋</i>}</> : null}</button>;
+          })}
+        </div>
+        <div className={styles.baseWalkers}>{walkers.map((person, index) => <BaseWalker key={`${person.ownerId}-${index}`} person={person} index={index} visitor={index > 0} />)}</div>
+      </div>
+      <div className={styles.mapLegend}><span>♡ {visitedBase.likes}</span><span>訪問者が拠点内を散策中</span><span>{visitedBase.helpedToday ? "本日の生産支援済み" : "＋印の施設をタップして生産支援"}</span></div>
+    </div>;
+  }
+
+  function renderVisitedBasePanel() {
+    if (!visitedBase) return null;
+    return <section className={`${styles.panelSection} ${styles.socialVisitPanel}`}><div className={styles.socialOwner}><span>{visitedBase.icon ? <NextImage src={visitedBase.icon} alt="" width={128} height={128} unoptimized /> : visitedBase.name.charAt(0)}</span><div><small>VISITING FRONTIER</small><h3>{visitedBase.name}</h3><p>{visitedBase.job} Lv.{visitedBase.level}</p></div></div><div className={styles.socialVisitActions}><button type="button" className={visitedBase.liked ? styles.socialActionActive : ""} onClick={() => void toggleBaseSocialFlag("like")}>♡ いいね {visitedBase.likes}</button><button type="button" className={visitedBase.favorited ? styles.socialActionActive : ""} onClick={() => void toggleBaseSocialFlag("favorite")}>☆ お気に入り</button><button type="button" onClick={() => void copyBaseShareLink(visitedBase.ownerId)}>共有リンク</button></div><div className={styles.socialHelpStatus}><strong>生産のお手伝い</strong><p>{visitedBase.helpedToday ? "今日はこの拠点を支援済みです。明日また手伝えます。" : "マップ上の＋印が付いた施設を選ぶと、ストックが1回分進みます。"}</p></div><button type="button" className={styles.socialReturnButton} onClick={() => { setVisitedBase(null); void loadBaseSocial(); }}>自分の拠点へ戻る</button></section>;
   }
 
   async function consumePotion() {
@@ -3932,7 +4135,7 @@ export function CrocsiansGame() {
           <section className={`${styles.weaponWorkshop} ${styles.apothecaryWorkshop}`} role="dialog" aria-modal="true" aria-labelledby="apothecary-workshop-title">
             <header><div><p>HERBAL CRAFT</p><h2 id="apothecary-workshop-title">薬草調合</h2></div><span>調合所 Lv.{selectedBuilding.level} · 1成功につき回復薬×{selectedBuilding.level}</span><button type="button" aria-label="薬草調合を閉じる" onClick={() => setApothecaryWorkshopOpen(false)}>×</button></header>
             <div className={styles.potionCraftBody}>
-              <div className={styles.potionCraftHero}><NextImage src={buildingImagePath("apothecary", selectedBuilding.level)} alt="調合所" width={180} height={180} unoptimized /><div><small>RECOVERY ITEM</small><h3>回復薬</h3><p>探索中に使用するとHPを{POTION_HEAL_AMOUNT}回復します。</p><strong>所持 ×{craftedItems.potion}</strong></div></div>
+              <div className={styles.potionCraftHero}><BuildingArtwork kind="apothecary" level={selectedBuilding.level} size={180} /><div><small>RECOVERY ITEM</small><h3>回復薬</h3><p>探索中に使用するとHPを{POTION_HEAL_AMOUNT}回復します。</p><strong>所持 ×{craftedItems.potion}</strong></div></div>
               <ul className={styles.potionMaterials}>{potionMaterialCosts.map((material) => { const owned = materialInventory[material.name] ?? 0; return <li key={material.name} className={owned < material.quantity * safePotionCraftAmount ? styles.materialShortage : ""}><span>{material.name}<small>1回 ×{material.quantity}</small></span><b>{owned} / {material.quantity * safePotionCraftAmount}</b></li>; })}</ul>
               <div className={styles.potionAmountControl}><div><span>調合回数</span><b>{maxPotionCraftAmount > 0 ? safePotionCraftAmount : 0}回</b></div><input type="range" min="1" max={Math.max(1, maxPotionCraftAmount)} value={safePotionCraftAmount} disabled={maxPotionCraftAmount < 1} onChange={(event) => setApothecaryCraftAmount(Number(event.target.value))} /><div className={styles.potionQuickAmounts}><button type="button" disabled={maxPotionCraftAmount < 1} onClick={() => setApothecaryCraftAmount(1)}>×1</button><button type="button" disabled={maxPotionCraftAmount < 1} onClick={() => setApothecaryCraftAmount(Math.min(5, maxPotionCraftAmount))}>×5</button><button type="button" disabled={maxPotionCraftAmount < 1} onClick={() => setApothecaryCraftAmount(maxPotionCraftAmount)}>MAX</button></div></div>
               <button type="button" className={styles.potionCraftAction} disabled={maxPotionCraftAmount < 1} onClick={() => craft("apothecary", safePotionCraftAmount)}>{maxPotionCraftAmount < 1 ? "素材が足りません" : `${safePotionCraftAmount}回調合する（最大 ${safePotionCraftAmount * selectedBuilding.level}個）`}</button>
@@ -3945,18 +4148,18 @@ export function CrocsiansGame() {
         {(expeditionPanelSide === "left" || chatPanelSide === "left") && <aside className={`${styles.sidePanel} ${styles.leftSidePanel} ${(view === "base" || expeditionPanelSide === "right" || chatPanelSide === "right") ? styles.singleSidePanel : ""}`}>{view !== "base" && expeditionPanelSide === "left" && renderDesktopStatusPanel()}{!isMobileLayout && chatPanelSide === "left" && renderDesktopChatPanel()}</aside>}
         <section className={`${styles.mainStage} ${view === "explore" ? styles.exploringStage : ""}`}>
           <div className={styles.stageTitle}>
-            <div><p>{view === "base" ? "MY FRONTIER" : view === "town" ? "COMMON DISTRICT" : `EXPEDITION · ${currentMap.code}`}</p><h2>{view === "base" ? `${characterName}の拠点` : view === "town" ? "イーストヘイヴン" : currentMap.name}</h2></div>
+            <div><p>{view === "base" ? visitedBase ? "VISITING FRONTIER" : "MY FRONTIER" : view === "town" ? "COMMON DISTRICT" : `EXPEDITION · ${currentMap.code}`}</p><h2>{view === "base" ? visitedBase ? `${visitedBase.name}の拠点` : `${characterName}の拠点` : view === "town" ? "イーストヘイヴン" : currentMap.name}</h2></div>
             <div className={styles.stageMeta}>
-              {view === "base" && <div className={styles.mapTools}><span>表示 <b>{Math.round(zoom * 100)}%</b></span><span>建物 <b>{Object.keys(buildings).length}/{MAP_CELL_COUNT / (FACILITY_SIZE * FACILITY_SIZE)}</b></span><button title="縮小" onClick={() => changeMapZoom(zoom - .1)}>−</button><button title="拡大" onClick={() => changeMapZoom(zoom + .1)}>＋</button></div>}
+              {view === "base" && <div className={styles.mapTools}><button className={styles.socialHubButton} type="button" onClick={() => { setBaseSocialOpen(true); void loadBaseSocial(); }}>拠点交流</button><span>表示 <b>{Math.round(zoom * 100)}%</b></span><span>建物 <b>{Object.keys(visitedBase?.buildings ?? buildings).length}/{MAP_CELL_COUNT / (FACILITY_SIZE * FACILITY_SIZE)}</b></span><button title="縮小" onClick={() => changeMapZoom(zoom - .1)}>−</button><button title="拡大" onClick={() => changeMapZoom(zoom + .1)}>＋</button></div>}
               {view === "explore" && <div className={styles.exploreMeta}><span>推奨 Lv.{currentMap.level}</span><span>接続プレイヤー {mapPlayers.length}人</span><span>イベント {eventCount}</span><button disabled={battleActive} onClick={leaveExploration}>{battleActive ? "交戦中" : "離脱"}</button></div>}
             </div>
           </div>
 
-          {view === "base" && (
+          {view === "base" && (visitedBase ? renderVisitedBaseMap() : (
             <div ref={mapViewportRef} className={styles.mapViewport} onTouchStart={beginMapTouch} onTouchMove={moveMapTouch} onTouchEnd={finishMapTouch} onTouchCancel={finishMapTouch}>
               <div className={styles.mapCanvas} style={{ width: MAP_PIXEL_SIZE * zoom, height: MAP_PIXEL_SIZE * zoom }}>
                 <div className={`${styles.mapGrid} ${basePanelTab === "tile" ? styles.tileEditing : ""}`} style={{ zoom, gridTemplateColumns: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridTemplateRows: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridAutoColumns: `${MAP_CELL_SIZE}px`, gridAutoRows: `${MAP_CELL_SIZE}px` } as React.CSSProperties} onPointerDown={beginTileDrag} onPointerMove={moveTileDrag} onPointerUp={finishTileDrag} onPointerCancel={cancelTileDrag} onContextMenu={(event) => { if (basePanelTab === "tile") event.preventDefault(); }}>
-                  {baseTiles.map((tile, cell) => <span key={`floor-${cell}`} className={styles.floorTile} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1, backgroundImage: `url("/crocsians/base/tile/${TILES[tile].image}")` }} />)}
+                  {baseTiles.map((tile, cell) => <span key={`floor-${cell}`} className={styles.floorTile} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1, ...tileVisualStyle(tile) }} />)}
                   {Array.from({ length: MAP_CELL_COUNT }, (_, cell) => {
                     const occupiedAnchor = buildingAnchorAtCell(buildings, cell);
                     if (occupiedAnchor !== undefined && occupiedAnchor !== cell) return null;
@@ -3965,15 +4168,16 @@ export function CrocsiansGame() {
                     const column = cell % MAP_SIZE + 1;
                     const row = Math.floor(cell / MAP_SIZE) + 1;
                     return <button key={cell} data-se="none" style={{ gridColumn: `${column} / span ${building ? FACILITY_SIZE : 1}`, gridRow: `${row} / span ${building ? FACILITY_SIZE : 1}` }} aria-label={building ? `${BUILDINGS[building.kind].name}（2×2）` : `空きマス ${column},${row}`} className={`${styles.mapCell} ${building ? styles.facilityCell : ""} ${basePanelTab === "building" && selectedCell === cell ? styles.selectedCell : ""} ${placeable ? styles.buildable : ""}`} onClick={() => { if (building && building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind)) { setSelectedCell(cell); collect(cell); } else placeBuilding(cell); }}>
-                      {building ? <><span className={styles.buildingIcon}><NextImage src={buildingImagePath(building.kind, building.level)} alt={BUILDINGS[building.kind].name} width={256} height={256} unoptimized /></span><small>Lv.{building.level}</small>{building.ready && (building.kind === "furnace" || !CRAFTING_KINDS.has(building.kind)) ? <i className={styles.ready}>!</i> : !CRAFTING_KINDS.has(building.kind) ? <i className={styles.progress} style={{ "--progress": `${stockProgress(building)}%` } as React.CSSProperties} /> : null}</> : null}
+                      {building ? <><span className={styles.buildingIcon}><BuildingArtwork kind={building.kind} level={building.level} /></span><small>Lv.{building.level}</small>{!DECORATIVE_KINDS.has(building.kind) && (building.ready && (building.kind === "furnace" || !CRAFTING_KINDS.has(building.kind)) ? <i className={styles.ready}>!</i> : !CRAFTING_KINDS.has(building.kind) ? <i className={styles.progress} style={{ "--progress": `${stockProgress(building)}%` } as React.CSSProperties} /> : null)}</> : null}
                     </button>;
                   })}
                   {basePanelTab === "tile" && baseTiles.map((tile, cell) => <button key={`tile-${cell}`} data-se="none" type="button" className={`${styles.tileCell} ${selectedCell === cell || selectedTileCells.has(cell) ? styles.selectedTileCell : ""}`} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1 }} aria-label={`${TILES[tile].name}の床 ${cell % MAP_SIZE + 1},${Math.floor(cell / MAP_SIZE) + 1}`} />)}
                 </div>
+                <div className={styles.baseWalkers}><BaseWalker person={{ ownerId: baseSocialData?.viewerId ?? "local", name: characterName, job, level: playerProgress.level, icon: characterIcon }} index={0} />{baseSocialData && baseSocialData.base.ownerId === baseSocialData.viewerId && baseSocialData.base.visitors.slice(0, 5).map((person, index) => <BaseWalker key={person.ownerId} person={person} index={index + 1} visitor />)}</div>
               </div>
               <div className={styles.mapLegend}><button type="button" className={styles.collectAllButton} disabled={collectableBuildingCount === 0} onClick={collectAllResources}>一括回収 {collectableBuildingCount}</button><span><i className={styles.legendReady} />回収可能 {completed}</span>{tileDragSelection && <span>選択範囲 {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).width} × {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).height}</span>}<span>{MAP_SIZE} × {MAP_SIZE} · 施設 2 × 2</span></div>
             </div>
-          )}
+          ))}
 
           {view === "town" && (
             <div className={styles.townView}>
@@ -4036,25 +4240,25 @@ export function CrocsiansGame() {
         </section>
 
         <aside className={`${styles.sidePanel} ${view !== "base" && expeditionPanelSide !== chatPanelSide ? styles.singleSidePanel : ""}`}>
-          {view === "base" ? (
+          {view === "base" ? visitedBase ? renderVisitedBasePanel() : (
             <>
               <section className={styles.panelSection}>
                 <div className={styles.basePanelTabs}><button className={basePanelTab === "building" ? styles.basePanelTabActive : ""} onClick={() => { setBasePanelTab("building"); setTileMode(null); }}>BUILDING</button><button className={basePanelTab === "tile" ? styles.basePanelTabActive : ""} onClick={() => { setBasePanelTab("tile"); setBuildMode(null); }}>TILE</button></div>
                 {basePanelTab === "building" ? <><div className={styles.sectionHeading}><div><p>BUILD</p><h3>施設を建てる</h3></div>{buildMode && <button onClick={() => setBuildMode(null)}>取消</button>}</div>
-                <div className={styles.buildingList}>{(Object.keys(BUILDINGS) as BuildingKind[]).map((kind) => { const item = BUILDINGS[kind]; const cost = buildingCost(kind); const count = buildingCounts[kind] ?? 0; const limit = BUILDING_LIMITS[kind]; const costLabel = [...cost.materials.map((material) => `${material.name}${material.quantity}`), ...(cost.gold > 0 ? [`G${cost.gold}`] : [])].join(" · "); return <button key={kind} className={buildMode === kind ? styles.buildSelected : ""} disabled={!canBuild(kind)} onClick={() => setBuildMode(kind)}><span className={styles.buildBadge}><NextImage src={buildingImagePath(kind, 1)} alt="" width={128} height={128} unoptimized /></span><div><strong>{item.name} <em>{count}/{limit}</em></strong><small>{count >= limit ? "建築上限" : costLabel}</small></div></button>; })}</div></> : <><div className={styles.sectionHeading}><div><p>FLOOR</p><h3>床を張る</h3></div>{tileMode && <button onClick={() => setTileMode(null)}>取消</button>}</div>
-                <div className={styles.tileList}>{TILE_KINDS.map((kind) => { const item = TILES[kind]; return <button key={kind} className={tileMode === kind ? styles.buildSelected : ""} disabled={!canAffordTile(kind)} onClick={() => setTileMode(kind)}><span style={{ backgroundImage: `url("/crocsians/base/tile/${item.image}")` }} /><div><strong>{item.name}</strong><small>{item.materials.length > 0 ? item.materials.map((material) => `${material.name}×${material.quantity}`).join(" · ") : "素材不要"}</small></div></button>; })}</div></>}
+                <div className={styles.buildingList}>{(Object.keys(BUILDINGS) as BuildingKind[]).map((kind) => { const item = BUILDINGS[kind]; const cost = buildingCost(kind); const count = buildingCounts[kind] ?? 0; const limit = BUILDING_LIMITS[kind]; const costLabel = [...cost.materials.map((material) => `${material.name}${material.quantity}`), ...(cost.gold > 0 ? [`G${cost.gold}`] : [])].join(" · "); return <button key={kind} className={buildMode === kind ? styles.buildSelected : ""} disabled={!canBuild(kind)} onClick={() => setBuildMode(kind)}><span className={styles.buildBadge}><BuildingArtwork kind={kind} level={1} size={128} /></span><div><strong>{item.name} <em>{count}/{limit}</em></strong><small>{count >= limit ? "建築上限" : item.decorative ? `景観 · ${costLabel}` : costLabel}</small></div></button>; })}</div></> : <><div className={styles.sectionHeading}><div><p>FLOOR</p><h3>床を張る</h3></div>{tileMode && <button onClick={() => setTileMode(null)}>取消</button>}</div>
+                <div className={styles.tileList}>{TILE_KINDS.map((kind) => { const item = TILES[kind]; return <button key={kind} className={tileMode === kind ? styles.buildSelected : ""} disabled={!canAffordTile(kind)} onClick={() => setTileMode(kind)}><span style={tileVisualStyle(kind)} /><div><strong>{item.name}</strong><small>{item.materials.length > 0 ? item.materials.map((material) => `${material.name}×${material.quantity}`).join(" · ") : "素材不要"}</small></div></button>; })}</div></>}
               </section>
               <section className={styles.panelSection}>
-                {basePanelTab === "tile" ? <><div className={styles.sectionHeading}><div><p>FLOOR DETAIL</p><h3>{TILES[baseTiles[selectedCell]].name}</h3></div></div><div className={styles.tileDetail}><span style={{ backgroundImage: `url("/crocsians/base/tile/${TILES[baseTiles[selectedCell]].image}")` }} /><div><strong>選択マス {selectedCell % MAP_SIZE + 1}, {Math.floor(selectedCell / MAP_SIZE) + 1}</strong><small>床を解体すると土へ戻ります。素材は返却されません。</small></div><button data-se="none" disabled={baseTiles[selectedCell] === "soil"} onClick={demolishSelectedTile}>{baseTiles[selectedCell] === "soil" ? "土の床です" : "床を解体する"}</button></div></> : <><div className={styles.sectionHeading}><div><p>DETAIL</p><h3>{selectedBuilding ? BUILDINGS[selectedBuilding.kind].name : "空きマス"}</h3></div>{selectedBuilding && <b>Lv.{selectedBuilding.level}</b>}</div>
+                {basePanelTab === "tile" ? <><div className={styles.sectionHeading}><div><p>FLOOR DETAIL</p><h3>{TILES[baseTiles[selectedCell]].name}</h3></div></div><div className={styles.tileDetail}><span style={tileVisualStyle(baseTiles[selectedCell])} /><div><strong>選択マス {selectedCell % MAP_SIZE + 1}, {Math.floor(selectedCell / MAP_SIZE) + 1}</strong><small>床を解体すると土へ戻ります。素材は返却されません。</small></div><button data-se="none" disabled={baseTiles[selectedCell] === "soil"} onClick={demolishSelectedTile}>{baseTiles[selectedCell] === "soil" ? "土の床です" : "床を解体する"}</button></div></> : <><div className={styles.sectionHeading}><div><p>DETAIL</p><h3>{selectedBuilding ? BUILDINGS[selectedBuilding.kind].name : "空きマス"}</h3></div>{selectedBuilding && <b>Lv.{selectedBuilding.level}</b>}</div>
                 {selectedBuilding ? <div className={styles.detail}>
-                  <div className={styles.detailVisual}><NextImage src={buildingImagePath(selectedBuilding.kind, selectedBuilding.level)} alt={BUILDINGS[selectedBuilding.kind].name} width={128} height={128} unoptimized /></div>
-                  {selectedBuilding.kind === "furnace" ? <div className={styles.production}><span>精錬ジョブ</span><strong>{selectedBuilding.smeltingJob ? selectedBuilding.ready ? "精錬完了" : `${selectedBuilding.smeltingJob.ingotName} ×${selectedBuilding.smeltingJob.quantity}` : "待機中"}</strong>{selectedBuilding.smeltingJob ? <><i><b style={{ width: `${selectedSmeltingProgress}%` }} /></i><small>{selectedBuilding.ready ? "受け取り可能" : `完了まで約${Math.max(1, Math.ceil((selectedBuilding.smeltingJob.completedAt - (Date.now() + serverTimeOffsetRef.current)) / 60000))}分`}</small></> : selectedSmeltingRecipe ? <div className={styles.smeltingControls}><select value={selectedSmeltingRecipe.ore.name} onChange={(event) => { setSmeltingRecipeName(event.target.value); setSmeltingAmount(1); }}>{SMELTING_RECIPES.map((recipe) => <option key={recipe.ore.name} value={recipe.ore.name}>{recipe.ore.name} → {recipe.ingot.name}</option>)}</select><label><span>生成数 {safeSmeltingAmount}</span><input type="range" min="1" max={Math.max(1, maxSmeltingAmount)} value={safeSmeltingAmount} disabled={maxSmeltingAmount < 1} onChange={(event) => setSmeltingAmount(Number(event.target.value))} /></label><small>{selectedSmeltingRecipe.ore.name}×{safeSmeltingAmount * ORE_PER_INGOT} / 所持 {materialInventory[selectedSmeltingRecipe.ore.name] ?? 0} · {safeSmeltingAmount * 5}分</small></div> : <small>精錬できる鉱石がありません</small>}</div> : CRAFTING_KINDS.has(selectedBuilding.kind) ? <div className={styles.production}><span>アイテム製作</span><strong>{selectedBuilding.kind === "weapon" ? `${unlockedWeaponCount}種 解放中` : selectedBuilding.kind === "armor" ? `${unlockedArmorCount}種 解放中` : "図鑑素材を消費"}</strong><small>{selectedBuilding.kind === "weapon" || selectedBuilding.kind === "armor" ? `N: Lv.1 · R: Lv.2 · SR: Lv.3 · SSR: Lv.4` : `${getCraftMaterialCosts([{ name: "薬草", quantity: 8 }, { name: "清水", quantity: 4 }, { name: "空き瓶", quantity: 2 }]).map((material) => `${material.name}${material.quantity}`).join(" · ")} / 所持 ${craftedItems.potion}`}</small></div> : <div className={styles.production}><span>{BUILDINGS[selectedBuilding.kind].product}のストック</span><strong>{selectedBuilding.ready ? "生産完了" : `${selectedBuilding.stockCount} / ${MAX_STOCK_COUNT}回分`}</strong><i><b style={{ width: `${stockProgress(selectedBuilding)}%` }} /></i>{isMaterialProductionKind(selectedBuilding.kind) && <small>30分ごと: {getProductionMaterials(selectedBuilding).map((material) => `${material.name}×${material.quantity}`).join("・")}</small>}<small>{selectedBuilding.ready ? "24回分に達したため生産停止中" : "サーバー時間で30分ごとに生産"}</small></div>}
-                  {selectedBuilding.kind === "weapon" ? <button className={styles.primaryAction} onClick={() => setWeaponWorkshopOpen(true)}>武器レシピを開く</button> : selectedBuilding.kind === "armor" ? <button className={styles.primaryAction} onClick={() => setArmorWorkshopOpen(true)}>防具レシピを開く</button> : selectedBuilding.kind === "apothecary" ? <button className={styles.primaryAction} onClick={() => { setApothecaryCraftAmount(1); setApothecaryWorkshopOpen(true); }}>薬草調合を開く</button> : selectedBuilding.kind === "furnace" ? <button className={styles.primaryAction} disabled={selectedBuilding.smeltingJob ? !selectedBuilding.ready : maxSmeltingAmount < 1} onClick={() => selectedBuilding.smeltingJob ? collectSmelting(selectedCell) : startSmelting(selectedCell)}>{selectedBuilding.smeltingJob ? selectedBuilding.ready ? "インゴットを受け取る" : "精錬中" : "精錬を開始"}</button> : CRAFTING_KINDS.has(selectedBuilding.kind) ? <button className={styles.primaryAction} onClick={() => craft(selectedBuilding.kind)}>{BUILDINGS[selectedBuilding.kind].product}を製作</button> : <button className={styles.primaryAction} disabled={selectedBuilding.stockCount === 0} onClick={() => collect(selectedCell)}>生産物を受け取る{selectedBuilding.stockCount > 0 ? `（${selectedBuilding.stockCount}回分）` : ""}</button>}
-                  <div className={styles.upgradeRequirements}>
+                  <div className={styles.detailVisual}><BuildingArtwork kind={selectedBuilding.kind} level={selectedBuilding.level} size={128} /></div>
+                  {BUILDINGS[selectedBuilding.kind].decorative ? <div className={styles.production}><span>景観施設</span><strong>拠点を彩る装飾です</strong><small>生産・強化はありません。床やほかの景観施設と組み合わせて配置できます。</small></div> : selectedBuilding.kind === "furnace" ? <div className={styles.production}><span>精錬ジョブ</span><strong>{selectedBuilding.smeltingJob ? selectedBuilding.ready ? "精錬完了" : `${selectedBuilding.smeltingJob.ingotName} ×${selectedBuilding.smeltingJob.quantity}` : "待機中"}</strong>{selectedBuilding.smeltingJob ? <><i><b style={{ width: `${selectedSmeltingProgress}%` }} /></i><small>{selectedBuilding.ready ? "受け取り可能" : `完了まで約${Math.max(1, Math.ceil((selectedBuilding.smeltingJob.completedAt - (Date.now() + serverTimeOffsetRef.current)) / 60000))}分`}</small></> : selectedSmeltingRecipe ? <div className={styles.smeltingControls}><select value={selectedSmeltingRecipe.ore.name} onChange={(event) => { setSmeltingRecipeName(event.target.value); setSmeltingAmount(1); }}>{SMELTING_RECIPES.map((recipe) => <option key={recipe.ore.name} value={recipe.ore.name}>{recipe.ore.name} → {recipe.ingot.name}</option>)}</select><label><span>生成数 {safeSmeltingAmount}</span><input type="range" min="1" max={Math.max(1, maxSmeltingAmount)} value={safeSmeltingAmount} disabled={maxSmeltingAmount < 1} onChange={(event) => setSmeltingAmount(Number(event.target.value))} /></label><small>{selectedSmeltingRecipe.ore.name}×{safeSmeltingAmount * ORE_PER_INGOT} / 所持 {materialInventory[selectedSmeltingRecipe.ore.name] ?? 0} · {safeSmeltingAmount * 5}分</small></div> : <small>精錬できる鉱石がありません</small>}</div> : CRAFTING_KINDS.has(selectedBuilding.kind) ? <div className={styles.production}><span>アイテム製作</span><strong>{selectedBuilding.kind === "weapon" ? `${unlockedWeaponCount}種 解放中` : selectedBuilding.kind === "armor" ? `${unlockedArmorCount}種 解放中` : "図鑑素材を消費"}</strong><small>{selectedBuilding.kind === "weapon" || selectedBuilding.kind === "armor" ? `N: Lv.1 · R: Lv.2 · SR: Lv.3 · SSR: Lv.4` : `${getCraftMaterialCosts([{ name: "薬草", quantity: 8 }, { name: "清水", quantity: 4 }, { name: "空き瓶", quantity: 2 }]).map((material) => `${material.name}${material.quantity}`).join(" · ")} / 所持 ${craftedItems.potion}`}</small></div> : <div className={styles.production}><span>{BUILDINGS[selectedBuilding.kind].product}のストック</span><strong>{selectedBuilding.ready ? "生産完了" : `${selectedBuilding.stockCount} / ${MAX_STOCK_COUNT}回分`}</strong><i><b style={{ width: `${stockProgress(selectedBuilding)}%` }} /></i>{isMaterialProductionKind(selectedBuilding.kind) && <small>30分ごと: {getProductionMaterials(selectedBuilding).map((material) => `${material.name}×${material.quantity}`).join("・")}</small>}<small>{selectedBuilding.ready ? "24回分に達したため生産停止中" : "サーバー時間で30分ごとに生産"}</small></div>}
+                  {BUILDINGS[selectedBuilding.kind].decorative ? <button className={styles.primaryAction} disabled>景観施設（生産なし）</button> : selectedBuilding.kind === "weapon" ? <button className={styles.primaryAction} onClick={() => setWeaponWorkshopOpen(true)}>武器レシピを開く</button> : selectedBuilding.kind === "armor" ? <button className={styles.primaryAction} onClick={() => setArmorWorkshopOpen(true)}>防具レシピを開く</button> : selectedBuilding.kind === "apothecary" ? <button className={styles.primaryAction} onClick={() => { setApothecaryCraftAmount(1); setApothecaryWorkshopOpen(true); }}>薬草調合を開く</button> : selectedBuilding.kind === "furnace" ? <button className={styles.primaryAction} disabled={selectedBuilding.smeltingJob ? !selectedBuilding.ready : maxSmeltingAmount < 1} onClick={() => selectedBuilding.smeltingJob ? collectSmelting(selectedCell) : startSmelting(selectedCell)}>{selectedBuilding.smeltingJob ? selectedBuilding.ready ? "インゴットを受け取る" : "精錬中" : "精錬を開始"}</button> : CRAFTING_KINDS.has(selectedBuilding.kind) ? <button className={styles.primaryAction} onClick={() => craft(selectedBuilding.kind)}>{BUILDINGS[selectedBuilding.kind].product}を製作</button> : <button className={styles.primaryAction} disabled={selectedBuilding.stockCount === 0} onClick={() => collect(selectedCell)}>生産物を受け取る{selectedBuilding.stockCount > 0 ? `（${selectedBuilding.stockCount}回分）` : ""}</button>}
+                  {!BUILDINGS[selectedBuilding.kind].decorative && <><div className={styles.upgradeRequirements}>
                     <strong>{selectedBuilding.level >= MAX_BUILDING_LEVEL ? "最大レベル到達" : `Lv.${selectedBuilding.level + 1} 強化素材`}</strong>
                     {selectedUpgradeRecipe && <ul>{selectedUpgradeRecipe.map((material) => { const owned = materialInventory[material.name] ?? 0; return <li key={material.name} className={owned < material.quantity ? styles.materialShortage : ""}><span>{material.name} ×{material.quantity}</span><small>{owned}/{material.quantity}</small></li>; })}</ul>}
                   </div>
-                  <button data-se="none" className={styles.secondaryAction} disabled={selectedBuilding.level >= MAX_BUILDING_LEVEL || !canUpgradeSelectedBuilding} onClick={levelUp}>{selectedBuilding.level >= MAX_BUILDING_LEVEL ? "強化完了" : `Lv.${selectedBuilding.level + 1}へ強化`}</button>
+                  <button data-se="none" className={styles.secondaryAction} disabled={selectedBuilding.level >= MAX_BUILDING_LEVEL || !canUpgradeSelectedBuilding} onClick={levelUp}>{selectedBuilding.level >= MAX_BUILDING_LEVEL ? "強化完了" : `Lv.${selectedBuilding.level + 1}へ強化`}</button></>}
                   <div className={styles.demolitionRefund}><strong>解体時の返却素材</strong><span>{selectedBuilding.investedMaterials.length > 0 ? selectedBuilding.investedMaterials.map((material) => `${material.name}×${material.quantity}`).join("・") : "なし（初期施設）"}</span></div>
                   <button data-se="none" className={styles.demolishAction} onClick={() => { if (window.confirm(`${BUILDINGS[selectedBuilding.kind].name}を解体しますか？`)) demolishSelectedBuilding(); else playSe("click"); }}>施設を解体する</button>
                 </div> : <p className={styles.emptyDetail}>マップの建物を選択すると、稼働状況を確認できます。</p>}</>}
@@ -4065,7 +4269,9 @@ export function CrocsiansGame() {
         </aside>
       </div>
 
-      {mobileBuildCell !== null && <div className={styles.mobileBuildBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setMobileBuildCell(null); }}><section className={styles.mobileBuildSheet} role="dialog" aria-modal="true" aria-labelledby="mobile-build-title"><header><div><small>BUILD ON SELECTED LAND</small><h2 id="mobile-build-title">建設する施設を選択</h2><p>マス {mobileBuildCell % MAP_SIZE + 1}, {Math.floor(mobileBuildCell / MAP_SIZE) + 1} を起点に2×2で建設します</p></div><button type="button" aria-label="建設メニューを閉じる" onClick={() => setMobileBuildCell(null)}>×</button></header><div className={styles.mobileBuildChoices}>{(Object.keys(BUILDINGS) as BuildingKind[]).map((kind) => { const definition = BUILDINGS[kind]; const cost = buildingCost(kind); const count = buildingCounts[kind] ?? 0; const atLimit = count >= BUILDING_LIMITS[kind]; const affordable = canAfford(kind); return <button type="button" key={kind} disabled={atLimit || !affordable} onClick={() => { placeBuilding(mobileBuildCell, kind); setMobileBuildCell(null); }}><NextImage src={buildingImagePath(kind, 1)} alt="" width={128} height={128} unoptimized /><span><strong>{definition.name}</strong><small>{atLimit ? `建築上限 ${count}/${BUILDING_LIMITS[kind]}` : !affordable ? "素材不足" : [...cost.materials.map((material) => `${material.name}×${material.quantity}`), ...(cost.gold > 0 ? [`${cost.gold}G`] : [])].join("・")}</small></span></button>; })}</div><button type="button" className={styles.mobileBuildCancel} onClick={() => setMobileBuildCell(null)}>キャンセル</button></section></div>}
+      {baseSocialOpen && <div className={styles.catalogBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setBaseSocialOpen(false); }}><section className={styles.baseSocialHub} role="dialog" aria-modal="true" aria-labelledby="base-social-title"><header><div><p>FRONTIER COMMUNITY</p><h2 id="base-social-title">みんなの拠点</h2></div><span>{baseSocialLoading ? "更新中…" : `${baseSocialData?.directory.length ?? 0}拠点`}</span><button type="button" aria-label="拠点交流を閉じる" onClick={() => setBaseSocialOpen(false)}>×</button></header><div className={styles.baseSocialToolbar}><button type="button" onClick={() => void copyBaseShareLink(baseSocialData?.viewerId ?? "")}>自分の拠点リンクを共有</button><span>お気に入り登録した拠点を先頭に表示しています</span></div><div className={styles.baseSocialContent}><section><h3>訪問できる拠点</h3><div className={styles.baseDirectory}>{baseSocialData?.directory.map((base) => <article key={base.ownerId} className={base.favorited ? styles.baseDirectoryFavorite : ""}><span>{base.icon ? <NextImage src={base.icon} alt="" width={128} height={128} unoptimized /> : base.name.charAt(0)}</span><div><strong>{base.name}</strong><small>{base.job} Lv.{base.level}</small><em>♡ {base.likes}{base.favorited ? " · ★ お気に入り" : ""}</em></div><button type="button" onClick={() => void visitPlayerBase(base.ownerId)}>訪問</button></article>)}{!baseSocialLoading && !baseSocialData?.directory.length && <p className={styles.catalogEmpty}>訪問できる拠点がまだありません。</p>}</div></section><aside><h3>最近の足跡</h3><div className={styles.baseFootprints}>{baseSocialData && baseSocialData.base.ownerId === baseSocialData.viewerId && baseSocialData.base.visitors.length > 0 ? baseSocialData.base.visitors.map((visitor) => <div key={visitor.ownerId}><span>{visitor.icon ? <NextImage src={visitor.icon} alt="" width={96} height={96} unoptimized /> : visitor.name.charAt(0)}</span><p><strong>{visitor.name}</strong><small>{visitor.visitedAt ? new Date(visitor.visitedAt).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "訪問"}</small></p></div>) : <p className={styles.catalogEmpty}>まだ足跡はありません。</p>}</div></aside></div></section></div>}
+
+      {mobileBuildCell !== null && <div className={styles.mobileBuildBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setMobileBuildCell(null); }}><section className={styles.mobileBuildSheet} role="dialog" aria-modal="true" aria-labelledby="mobile-build-title"><header><div><small>BUILD ON SELECTED LAND</small><h2 id="mobile-build-title">建設する施設を選択</h2><p>マス {mobileBuildCell % MAP_SIZE + 1}, {Math.floor(mobileBuildCell / MAP_SIZE) + 1} を起点に2×2で建設します</p></div><button type="button" aria-label="建設メニューを閉じる" onClick={() => setMobileBuildCell(null)}>×</button></header><div className={styles.mobileBuildChoices}>{(Object.keys(BUILDINGS) as BuildingKind[]).map((kind) => { const definition = BUILDINGS[kind]; const cost = buildingCost(kind); const count = buildingCounts[kind] ?? 0; const atLimit = count >= BUILDING_LIMITS[kind]; const affordable = canAfford(kind); return <button type="button" key={kind} disabled={atLimit || !affordable} onClick={() => { placeBuilding(mobileBuildCell, kind); setMobileBuildCell(null); }}><BuildingArtwork kind={kind} level={1} size={128} /><span><strong>{definition.name}</strong><small>{definition.decorative ? "景観施設 · " : ""}{atLimit ? `建築上限 ${count}/${BUILDING_LIMITS[kind]}` : !affordable ? "素材不足" : [...cost.materials.map((material) => `${material.name}×${material.quantity}`), ...(cost.gold > 0 ? [`${cost.gold}G`] : [])].join("・")}</small></span></button>; })}</div><button type="button" className={styles.mobileBuildCancel} onClick={() => setMobileBuildCell(null)}>キャンセル</button></section></div>}
 
       <button className={styles.mobileChatTrigger} type="button" aria-label={unreadChatCount > 0 ? `全体チャットを開く、未読${unreadChatCount}件` : "全体チャットを開く"} aria-expanded={mobileChatOpen} onClick={() => { lastReadChatMessageIdRef.current = latestChatMessageId ?? null; setUnreadChatCount(0); setMobileChatOpen(true); }}><span aria-hidden="true">◆</span>{unreadChatCount > 0 && <b>{unreadChatCount}</b>}</button>
       {mobileChatOpen && <div className={styles.mobileChatBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setMobileChatOpen(false); }}>
