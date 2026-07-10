@@ -36,7 +36,7 @@ type PortalKeyInventory = Partial<Record<PortalColor, Partial<Record<PortalLevel
 type CardinalId = "bread" | "batrump" | "interstellar" | "elizabeth" | "mushroom";
 type CardinalLevels = Partial<Record<CardinalId, number>>;
 type ConnectedPlayer = { id: string; name: string; job: string; level: number; hp: number; maxHp?: number; statusEffect?: string | null; icon: string | null; atk?: number; def?: number; luck?: number; skillLevels?: Record<string, number>; cardinalLevels?: CardinalLevels; equippedCardinal?: CardinalId | null; equippedWeapon?: string | null; equippedArmor?: string | null; equippedWeaponHighQuality?: boolean; equippedArmorHighQuality?: boolean; treasureHunt?: number; autoHealLevel?: number; autoHealRecovery?: number; autoResurrectLevel?: number; autoResurrectUses?: number; divineDevotionLevel?: number; divineDevotionAtkBonus?: number; strongDutyLevel?: number; strongDutyThreatMultiplier?: number; strongDutyDamageReduction?: number; counterAttackRate?: number; evasionRate?: number; safeFleeLevel?: number; falsePraiseLevel?: number; falsePraiseUses?: number; rareDropBonus?: number; joinedAt?: number; waiting?: boolean };
-type ChatMessage = { id: string; name: string; job: string; text: string; createdAt: string; icon: string | null };
+type ChatMessage = { id: string; name: string; job: string; text: string; imageUrl: string | null; imageExpired: boolean; createdAt: string; icon: string | null };
 type EnemySkill = { name: string; rarity: "N" | "R"; maxUses: number; effect: string };
 type EnemyDefinition = { id: number; name: string; hp: number; atk: number; def: number; exp: number; drop: string; rareDrop: string; gold: number; skills?: EnemySkill[] };
 type EnemyInstance = EnemyDefinition & { currentHp: number; skillUses?: number[] };
@@ -951,6 +951,8 @@ export function CrocsiansGame() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [messagesMapKey, setMessagesMapKey] = useState("");
   const [chat, setChat] = useState("");
+  const [chatImage, setChatImage] = useState<File | null>(null);
+  const [expandedChatImage, setExpandedChatImage] = useState<string | null>(null);
   const [mobileChatOpen, setMobileChatOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [job, setJob] = useState<JobName>("戦士");
@@ -3019,13 +3021,20 @@ export function CrocsiansGame() {
   async function sendChat(event: FormEvent) {
     event.preventDefault();
     const text = chat.trim();
-    if (!text) return;
+    if (!text && !chatImage) return;
+    const pendingImage = chatImage;
     setChat("");
+    setChatImage(null);
     try {
-      const response = await fetch("/api/crocsians/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ map: chatMapKey, text }) });
+      const body = new FormData();
+      body.set("text", text);
+      if (pendingImage) body.set("image", pendingImage);
+      const response = await fetch("/api/crocsians/chat", { method: "POST", body });
       if (!response.ok) {
         setChat(text);
-        setSystemMessage(response.status === 429 ? "チャットの送信間隔を空けてください" : "チャットを送信できませんでした");
+        setChatImage(pendingImage);
+        const error = await response.json().catch(() => null) as { error?: string } | null;
+        setSystemMessage(response.status === 429 ? "チャットの送信間隔を空けてください" : error?.error ?? "チャットを送信できませんでした");
         return;
       }
       const data = await response.json() as { message?: ChatMessage };
@@ -3036,8 +3045,22 @@ export function CrocsiansGame() {
       }
     } catch {
       setChat(text);
+      setChatImage(pendingImage);
       setSystemMessage("チャットサーバーへ接続できませんでした");
     }
+  }
+
+  function selectChatImage(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0] ?? null;
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return setSystemMessage("画像ファイルを選択してください");
+    if (file.size > 15 * 1024 * 1024) return setSystemMessage("画像は15MB以下にしてください");
+    setChatImage(file);
+  }
+
+  function renderChatMessage(message: ChatMessage) {
+    return <div key={message.id} className={styles.message}><span className={styles.miniAvatar}>{message.icon ? <NextImage src={message.icon} alt="" width={256} height={256} unoptimized /> : message.name.charAt(0)}</span><div><p><strong>{message.name}</strong><small>{message.job} · {new Date(message.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</small></p>{message.text && <span>{message.text}</span>}{message.imageUrl ? <button type="button" className={styles.chatImageButton} onClick={() => setExpandedChatImage(message.imageUrl)}><NextImage src={message.imageUrl} alt={`${message.name}が送信した画像`} width={1024} height={1024} unoptimized /></button> : message.imageExpired ? <span className={styles.chatImageExpired}>アップロードから72時間経過したので画像を削除しました</span> : null}</div></div>;
   }
 
   async function consumePotion() {
@@ -3784,8 +3807,8 @@ export function CrocsiansGame() {
           )}
           <section className={`${styles.panelSection} ${styles.chatPanel} ${styles.desktopChatPanel}`}>
             <div className={styles.chatTabs}><button className={styles.chatActive}>全体チャット</button></div>
-            <div ref={desktopChatMessagesRef} className={styles.messages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map((message) => <div key={message.id} className={styles.message}><span className={styles.miniAvatar}>{message.icon ? <NextImage src={message.icon} alt="" width={256} height={256} unoptimized /> : message.name.charAt(0)}</span><div><p><strong>{message.name}</strong><small>{message.job} · {new Date(message.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</small></p><span>{message.text}</span></div></div>)}</div>
-            <form className={styles.chatForm} onSubmit={sendChat}><input value={chat} maxLength={300} onChange={(event) => setChat(event.target.value)} placeholder="メッセージを入力" aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form>
+            <div ref={desktopChatMessagesRef} className={styles.messages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div>
+            <form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form>
           </section>
         </aside>
       </div>
@@ -3794,10 +3817,11 @@ export function CrocsiansGame() {
       {mobileChatOpen && <div className={styles.mobileChatBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setMobileChatOpen(false); }}>
         <section className={styles.mobileChatModal} role="dialog" aria-modal="true" aria-labelledby="mobile-chat-title">
           <header><div><p>GLOBAL CHANNEL</p><h2 id="mobile-chat-title">全体チャット</h2></div><button type="button" aria-label="全体チャットを閉じる" onClick={() => setMobileChatOpen(false)}>×</button></header>
-          <div ref={mobileChatMessagesRef} className={styles.mobileChatMessages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map((message) => <div key={message.id} className={styles.message}><span className={styles.miniAvatar}>{message.icon ? <NextImage src={message.icon} alt="" width={256} height={256} unoptimized /> : message.name.charAt(0)}</span><div><p><strong>{message.name}</strong><small>{message.job} · {new Date(message.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</small></p><span>{message.text}</span></div></div>)}</div>
-          <form className={styles.chatForm} onSubmit={sendChat}><input value={chat} maxLength={300} onChange={(event) => setChat(event.target.value)} placeholder="メッセージを入力" aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form>
+          <div ref={mobileChatMessagesRef} className={styles.mobileChatMessages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div>
+          <form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form>
         </section>
       </div>}
+      {expandedChatImage && <div className={styles.chatImageModal} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setExpandedChatImage(null); }}><section role="dialog" aria-modal="true" aria-label="チャット画像の拡大表示"><button type="button" aria-label="拡大画像を閉じる" onClick={() => setExpandedChatImage(null)}>×</button><NextImage src={expandedChatImage} alt="チャット画像の拡大表示" width={1024} height={1024} unoptimized /></section></div>}
     </main>
   );
 }

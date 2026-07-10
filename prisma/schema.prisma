@@ -139,9 +139,13 @@ model CrocsiansChatMessage {
   job           String
   level         Int
   text          String
+  imageData     Bytes?
+  imageContentType String?
+  imageExpiresAt DateTime?
   createdAt     DateTime @default(now())
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([map, createdAt])
   @@index([userId, createdAt])
+  @@index([imageExpiresAt])
 }
