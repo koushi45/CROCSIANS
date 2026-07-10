@@ -540,6 +540,15 @@ type ReleaseNote = {
 
 const RELEASE_NOTES: ReleaseNote[] = [
   {
+    version: "ver 0.3.11",
+    items: [
+      { title: "スマホ版の拠点建築と資材回収を改善しました", details: ["空いている土地をタップすると、建設する施設をアイコン付きのシートから選べるようにしました", "生産物がある施設をタップすると、その場で回収できるようにしました", "回収可能な施設からまとめて受け取れる一括回収ボタンを追加しました"] },
+      { title: "武器・防具・薬草製造をスマホ向けに改善しました", details: ["武器・防具レシピを全画面のコンパクトな一覧へ変更し、名前検索を追加しました", "薬草調合に専用画面を追加し、必要素材と所持数を確認できるようにしました", "薬草調合は1回・5回・最大から回数を選び、まとめて実行できます"] },
+      { title: "スマホ版のチャットと探索メンバー表示を修正しました", details: ["スマホでは展開式チャットを使用し、通常画面下部にPC用チャット・ログ欄を描画しないようにしました", "チャットを開いた際、本文がタブへ重なってログを選択できない問題を修正しました", "探索メンバー欄で自分のキャラクター画像だけ表示されない問題を修正しました"] },
+      { title: "サウンド設定とほかのアプリとの共存を改善しました", details: ["表示・サウンド設定に、BGMとSEをまとめて無効化・再有効化できるボタンを追加しました", "ゲームがバックグラウンドになった際はBGMとSEを停止するようにしました", "対応端末ではゲーム音声を環境音として扱い、動画・音楽アプリの再生へ影響しにくい設定にしました"] },
+    ],
+  },
+  {
     version: "ver 0.3.10",
     items: [
       { title: "チャットとログの自動スクロールを調整しました", details: ["チャットやログを開いた時と、既に最下部を表示している時だけ最新メッセージへ追従するようにしました", "過去メッセージを読んでいる最中に表示位置が移動しないようにしました"] },
@@ -944,15 +953,18 @@ export function CrocsiansGame() {
   const [startScreenMessage, setStartScreenMessage] = useState("セーブデータを確認しています…");
   const [bgmVolume, setBgmVolume] = useState(0.35);
   const [seVolume, setSeVolume] = useState(0.5);
+  const soundVolumeBeforeMuteRef = useRef({ bgm: 0.35, se: 0.5 });
   const [textSize, setTextSize] = useState<TextSize>("small");
   const [expeditionPanelSide, setExpeditionPanelSide] = useState<DesktopPanelSide>("right");
   const [chatPanelSide, setChatPanelSide] = useState<DesktopPanelSide>("right");
   const [view, setView] = useState<View>("base");
+  const [isMobileLayout, setIsMobileLayout] = useState(false);
   const [resources, setResources] = useState<Resources>(INITIAL_RESOURCES);
   const [buildings, setBuildings] = useState<Record<number, Building>>(() => createInitialBuildings());
   const [baseTiles, setBaseTiles] = useState<TileKind[]>(() => createInitialTiles());
   const [basePanelTab, setBasePanelTab] = useState<BasePanelTab>("building");
   const [buildMode, setBuildMode] = useState<BuildingKind | null>(null);
+  const [mobileBuildCell, setMobileBuildCell] = useState<number | null>(null);
   const [tileMode, setTileMode] = useState<TileKind | null>(null);
   const [tileDragSelection, setTileDragSelection] = useState<{ start: number; end: number } | null>(null);
   const [selectedCell, setSelectedCell] = useState(0);
@@ -1033,9 +1045,13 @@ export function CrocsiansGame() {
   const [materialInventory, setMaterialInventory] = useState<MaterialInventory>(INITIAL_MATERIAL_INVENTORY);
   const [lastLoot, setLastLoot] = useState<LootEntry[]>([]);
   const [weaponWorkshopOpen, setWeaponWorkshopOpen] = useState(false);
+  const [weaponRecipeSearch, setWeaponRecipeSearch] = useState("");
   const [weaponInventory, setWeaponInventory] = useState<WeaponInventory>({});
   const [highQualityWeaponInventory, setHighQualityWeaponInventory] = useState<WeaponInventory>({});
   const [armorWorkshopOpen, setArmorWorkshopOpen] = useState(false);
+  const [armorRecipeSearch, setArmorRecipeSearch] = useState("");
+  const [apothecaryWorkshopOpen, setApothecaryWorkshopOpen] = useState(false);
+  const [apothecaryCraftAmount, setApothecaryCraftAmount] = useState(1);
   const [armorInventory, setArmorInventory] = useState<ArmorInventory>({});
   const [highQualityArmorInventory, setHighQualityArmorInventory] = useState<ArmorInventory>({});
   const [craftOutcome, setCraftOutcome] = useState<{ success: boolean; message: string } | null>(null);
@@ -1295,6 +1311,32 @@ export function CrocsiansGame() {
     void loadAccountSave();
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 760px)");
+    const update = () => setIsMobileLayout(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const audioSession = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+    if (audioSession) audioSession.type = "ambient";
+    if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "none";
+    const handleVisibility = () => {
+      if (document.hidden) {
+        bgmAudioRef.current?.pause();
+        activeSeRef.current.forEach((audio) => audio.pause());
+        activeSeRef.current.clear();
+        buildingSeRef.current = null;
+      } else if (bgmTrack && bgmVolume > 0) {
+        void bgmAudioRef.current?.play().catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [bgmTrack, bgmVolume]);
 
   useEffect(() => {
     const audio = bgmAudioRef.current ?? new Audio();
@@ -1863,6 +1905,7 @@ export function CrocsiansGame() {
   const selectedBuilding = buildings[selectedCell];
   const selectedTileCells = useMemo(() => new Set(tileDragSelection ? tileRectangleCells(tileDragSelection.start, tileDragSelection.end).cells : []), [tileDragSelection]);
   const completed = useMemo(() => Object.values(buildings).filter((building) => building.ready && !CRAFTING_KINDS.has(building.kind)).length, [buildings]);
+  const collectableBuildingCount = useMemo(() => Object.values(buildings).filter((building) => building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind)).length, [buildings]);
   const buildingCounts = useMemo(() => Object.values(buildings).reduce<Partial<Record<BuildingKind, number>>>((counts, building) => {
     counts[building.kind] = (counts[building.kind] ?? 0) + 1;
     return counts;
@@ -1891,6 +1934,11 @@ export function CrocsiansGame() {
   const filteredInventoryArmors = useMemo(() => sortItemList(ARMORS.filter((armor) => (!inventoryQuery || armor.name.toLocaleLowerCase("ja-JP").includes(inventoryQuery)) && (!ownedMaterialsOnly || (armorInventory[armor.name] ?? 0) + (highQualityArmorInventory[armor.name] ?? 0) > 0)), inventorySort, (armor) => (armorInventory[armor.name] ?? 0) + (highQualityArmorInventory[armor.name] ?? 0)), [armorInventory, highQualityArmorInventory, inventoryQuery, inventorySort, ownedMaterialsOnly]);
   const unlockedWeaponCount = selectedBuilding?.kind === "weapon" ? WEAPONS.filter((weapon) => weapon.requiredLevel <= selectedBuilding.level).length : 0;
   const unlockedArmorCount = selectedBuilding?.kind === "armor" ? ARMORS.filter((armor) => armor.requiredLevel <= selectedBuilding.level).length : 0;
+  const visibleWeaponRecipes = WEAPONS.filter((weapon) => weapon.name.toLocaleLowerCase("ja-JP").includes(weaponRecipeSearch.trim().toLocaleLowerCase("ja-JP")));
+  const visibleArmorRecipes = ARMORS.filter((armor) => armor.name.toLocaleLowerCase("ja-JP").includes(armorRecipeSearch.trim().toLocaleLowerCase("ja-JP")));
+  const potionMaterialCosts = getCraftMaterialCosts([{ name: "薬草", quantity: 8 }, { name: "清水", quantity: 4 }, { name: "空き瓶", quantity: 2 }]);
+  const maxPotionCraftAmount = Math.max(0, Math.min(...potionMaterialCosts.map((material) => Math.floor((materialInventory[material.name] ?? 0) / material.quantity))));
+  const safePotionCraftAmount = Math.min(Math.max(1, apothecaryCraftAmount), Math.max(1, maxPotionCraftAmount));
   const jobSkills = useMemo(() => SKILLS.filter((skill) => skill.job === job), [job]);
   const merchantQuery = merchantSearch.trim().toLocaleLowerCase("ja-JP");
   const merchantMaterials = useMemo(() => sortItemList(MATERIALS.filter((material) => (!merchantOwnedOnly || (materialInventory[material.name] ?? 0) > 0) && (!merchantQuery || [material.name, material.category, material.uses].some((value) => value.toLocaleLowerCase("ja-JP").includes(merchantQuery)))), merchantSort, (material) => materialInventory[material.name] ?? 0), [materialInventory, merchantOwnedOnly, merchantQuery, merchantSort]);
@@ -2105,9 +2153,13 @@ export function CrocsiansGame() {
     playSe("building");
   }
 
-  function placeBuilding(cell: number) {
+  function placeBuilding(cell: number, requestedKind: BuildingKind | null = buildMode) {
     setSelectedCell(cell);
-    if (!buildMode) {
+    if (!requestedKind) {
+      if (typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches && !buildings[cell]) {
+        if (canPlaceFacility(buildings, cell)) setMobileBuildCell(cell);
+        else setSystemMessage("施設を建てられる空き2×2マスを選択してください");
+      }
       playSe("click");
       return;
     }
@@ -2116,15 +2168,15 @@ export function CrocsiansGame() {
       setSystemMessage("施設は空いている2×2マスに建築してください");
       return;
     }
-    const definition = BUILDINGS[buildMode];
-    const cost = buildingCost(buildMode);
-    if ((buildingCounts[buildMode] ?? 0) >= BUILDING_LIMITS[buildMode]) {
+    const definition = BUILDINGS[requestedKind];
+    const cost = buildingCost(requestedKind);
+    if ((buildingCounts[requestedKind] ?? 0) >= BUILDING_LIMITS[requestedKind]) {
       playSe("click");
-      setSystemMessage(`${definition.name}は最大${BUILDING_LIMITS[buildMode]}つまで建築できます`);
+      setSystemMessage(`${definition.name}は最大${BUILDING_LIMITS[requestedKind]}つまで建築できます`);
       setBuildMode(null);
       return;
     }
-    if (!canAfford(buildMode)) {
+    if (!canAfford(requestedKind)) {
       playSe("click");
       setSystemMessage("建築資材が足りません");
       return;
@@ -2135,10 +2187,21 @@ export function CrocsiansGame() {
       cost.materials.forEach((material) => { next[material.name] -= material.quantity; });
       return next;
     });
-    setBuildings((current) => ({ ...current, [cell]: { id: cell, kind: buildMode, level: 1, stockCount: 0, lastProductionAt: Date.now() + serverTimeOffsetRef.current, ready: false, investedMaterials: cost.materials.map((material) => ({ ...material })) } }));
+    setBuildings((current) => ({ ...current, [cell]: { id: cell, kind: requestedKind, level: 1, stockCount: 0, lastProductionAt: Date.now() + serverTimeOffsetRef.current, ready: false, investedMaterials: cost.materials.map((material) => ({ ...material })) } }));
     setSystemMessage(`${definition.name}の建築を開始しました`);
     setBuildMode(null);
     playSe("building");
+  }
+
+  function toggleSoundMuted() {
+    if (bgmVolume > 0 || seVolume > 0) {
+      soundVolumeBeforeMuteRef.current = { bgm: bgmVolume || 0.35, se: seVolume || 0.5 };
+      setBgmVolume(0);
+      setSeVolume(0);
+    } else {
+      setBgmVolume(soundVolumeBeforeMuteRef.current.bgm);
+      setSeVolume(soundVolumeBeforeMuteRef.current.se);
+    }
   }
 
   function collect(cell: number) {
@@ -2154,6 +2217,28 @@ export function CrocsiansGame() {
     });
     setBuildings((current) => ({ ...current, [cell]: { ...building, stockCount: 0, lastProductionAt: building.ready ? Date.now() + serverTimeOffsetRef.current : building.lastProductionAt, ready: false } }));
     setSystemMessage(`${BUILDINGS[building.kind].product}を${collectedCount}回分まとめて回収しました`);
+  }
+
+  function collectAllResources() {
+    const collectable = Object.values(buildings).filter((building) => building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind));
+    if (collectable.length === 0) {
+      setSystemMessage("回収できる生産物はありません");
+      playSe("click");
+      return;
+    }
+    let collectedGold = 0;
+    const collectedMaterials: MaterialInventory = {};
+    for (const building of collectable) {
+      if (building.kind === "inn") collectedGold += 130 * building.level * building.stockCount;
+      for (const material of getProductionMaterials(building)) collectedMaterials[material.name] = (collectedMaterials[material.name] ?? 0) + material.quantity * building.stockCount;
+    }
+    if (collectedGold > 0) setResources((current) => ({ gold: current.gold + collectedGold }));
+    if (Object.keys(collectedMaterials).length > 0) setMaterialInventory((current) => { const next = { ...current }; Object.entries(collectedMaterials).forEach(([name, quantity]) => { next[name] = (next[name] ?? 0) + quantity; }); return next; });
+    const collectedIds = new Set(collectable.map((building) => building.id));
+    const now = Date.now() + serverTimeOffsetRef.current;
+    setBuildings((current) => Object.fromEntries(Object.entries(current).map(([cell, building]) => [cell, collectedIds.has(building.id) ? { ...building, stockCount: 0, lastProductionAt: building.ready ? now : building.lastProductionAt, ready: false } : building])));
+    setSystemMessage(`${collectable.length}施設から生産物を一括回収しました${collectedGold > 0 ? `（${collectedGold}Gを含む）` : ""}`);
+    playSe("building");
   }
 
   function startSmelting(cell: number) {
@@ -2213,29 +2298,32 @@ export function CrocsiansGame() {
     }, 3200);
   }
 
-  function craft(kind: BuildingKind) {
+  function craft(kind: BuildingKind, attempts = 1) {
     const recipes: Partial<Record<BuildingKind, { materials: MaterialCost[]; item: keyof CraftedItems }>> = {
       apothecary: { materials: [{ name: "薬草", quantity: 8 }, { name: "清水", quantity: 4 }, { name: "空き瓶", quantity: 2 }], item: "potion" },
     };
     const recipe = recipes[kind];
     const materialCosts = recipe ? getCraftMaterialCosts(recipe.materials) : [];
-    if (!recipe || !materialCosts.every((material) => (materialInventory[material.name] ?? 0) >= material.quantity)) {
+    const safeAttempts = Math.max(1, Math.floor(attempts));
+    if (!recipe || !materialCosts.every((material) => (materialInventory[material.name] ?? 0) >= material.quantity * safeAttempts)) {
       setSystemMessage("製作に必要なアイテムが足りません");
       return;
     }
     setMaterialInventory((current) => {
       const next = { ...current };
-      materialCosts.forEach((material) => { next[material.name] -= material.quantity; });
+      materialCosts.forEach((material) => { next[material.name] -= material.quantity * safeAttempts; });
       return next;
     });
     const successRate = Math.min(100, 75 + Math.min(10, Math.floor(totalLuck / 10)));
-    if (!randomChance(successRate)) {
-      setSystemMessage(`調合に失敗しました（成功率${successRate}%）`);
+    let successes = 0;
+    for (let attempt = 0; attempt < safeAttempts; attempt += 1) if (randomChance(successRate)) successes += 1;
+    if (successes === 0) {
+      setSystemMessage(`調合に失敗しました（${safeAttempts}回・成功率${successRate}%）`);
       return;
     }
-    const produced = Math.max(1, selectedBuilding?.level ?? 1);
+    const produced = Math.max(1, selectedBuilding?.level ?? 1) * successes;
     setCraftedItems((current) => ({ ...current, [recipe.item]: current[recipe.item] + produced }));
-    setSystemMessage(`${BUILDINGS[kind].product}を${produced}個製作しました`);
+    setSystemMessage(`${BUILDINGS[kind].product}を${produced}個製作しました（${safeAttempts}回中${successes}回成功）`);
   }
 
   function canCraftWeapon(weapon: WeaponDefinition) {
@@ -3533,6 +3621,7 @@ export function CrocsiansGame() {
                     <div className={styles.characterTextSizeControl}><span>文字サイズ</span><div>{(["small", "medium", "large"] as const).map((size, index) => <button key={size} type="button" className={textSize === size ? styles.textSizeActive : ""} aria-pressed={textSize === size} onClick={() => setTextSize(size)}>{["小", "中", "大"][index]}</button>)}</div></div>
                     <label><span>BGM</span><input aria-label="BGM音量" type="range" min="0" max="100" value={Math.round(bgmVolume * 100)} onChange={(event) => setBgmVolume(Number(event.target.value) / 100)} /><b>{Math.round(bgmVolume * 100)}%</b></label>
                     <label><span>SE</span><input aria-label="SE音量" type="range" min="0" max="100" value={Math.round(seVolume * 100)} onChange={(event) => setSeVolume(Number(event.target.value) / 100)} /><b>{Math.round(seVolume * 100)}%</b></label>
+                    <button type="button" className={`${styles.soundMuteToggle} ${bgmVolume === 0 && seVolume === 0 ? styles.soundMuted : ""}`} aria-pressed={bgmVolume === 0 && seVolume === 0} onClick={toggleSoundMuted}>{bgmVolume === 0 && seVolume === 0 ? "サウンドを有効にする" : "サウンドを無効にする"}</button>
                   </div>
                 </section>
                 <section className={styles.desktopLayoutSettings}>
@@ -3754,8 +3843,9 @@ export function CrocsiansGame() {
               <button type="button" aria-label="武器工房を閉じる" onClick={() => setWeaponWorkshopOpen(false)}>×</button>
             </header>
             <div className={styles.weaponLevelGuide}><span>N <b>Lv.1</b></span><span>R <b>Lv.2</b></span><span>SR <b>Lv.3</b></span><span>SSR <b>Lv.4</b></span></div>
+            <div className={styles.craftRecipeSearch}><input type="search" value={weaponRecipeSearch} onChange={(event) => setWeaponRecipeSearch(event.target.value)} placeholder="武器名で検索" aria-label="武器レシピを検索" /><span>{visibleWeaponRecipes.length}件</span></div>
             <div className={styles.weaponList}>
-              {WEAPONS.map((weapon) => {
+              {visibleWeaponRecipes.map((weapon) => {
                 const unlocked = selectedBuilding.level >= weapon.requiredLevel;
                 const craftable = canCraftWeapon(weapon);
                 const materialCosts = getCraftMaterialCosts(weapon.materials);
@@ -3784,8 +3874,9 @@ export function CrocsiansGame() {
               <button type="button" aria-label="防具工房を閉じる" onClick={() => setArmorWorkshopOpen(false)}>×</button>
             </header>
             <div className={styles.weaponLevelGuide}><span>N <b>Lv.1</b></span><span>R <b>Lv.2</b></span><span>SR <b>Lv.3</b></span><span>SSR <b>Lv.4</b></span></div>
+            <div className={styles.craftRecipeSearch}><input type="search" value={armorRecipeSearch} onChange={(event) => setArmorRecipeSearch(event.target.value)} placeholder="防具名で検索" aria-label="防具レシピを検索" /><span>{visibleArmorRecipes.length}件</span></div>
             <div className={styles.weaponList}>
-              {ARMORS.map((armor) => {
+              {visibleArmorRecipes.map((armor) => {
                 const unlocked = selectedBuilding.level >= armor.requiredLevel;
                 const craftable = canCraftArmor(armor);
                 const owned = armorInventory[armor.name] ?? 0;
@@ -3806,8 +3897,22 @@ export function CrocsiansGame() {
         </div>
       )}
 
+      {apothecaryWorkshopOpen && selectedBuilding?.kind === "apothecary" && (
+        <div className={styles.catalogBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setApothecaryWorkshopOpen(false); }}>
+          <section className={`${styles.weaponWorkshop} ${styles.apothecaryWorkshop}`} role="dialog" aria-modal="true" aria-labelledby="apothecary-workshop-title">
+            <header><div><p>HERBAL CRAFT</p><h2 id="apothecary-workshop-title">薬草調合</h2></div><span>調合所 Lv.{selectedBuilding.level} · 1成功につき回復薬×{selectedBuilding.level}</span><button type="button" aria-label="薬草調合を閉じる" onClick={() => setApothecaryWorkshopOpen(false)}>×</button></header>
+            <div className={styles.potionCraftBody}>
+              <div className={styles.potionCraftHero}><NextImage src={buildingImagePath("apothecary", selectedBuilding.level)} alt="調合所" width={180} height={180} unoptimized /><div><small>RECOVERY ITEM</small><h3>回復薬</h3><p>探索中に使用するとHPを{POTION_HEAL_AMOUNT}回復します。</p><strong>所持 ×{craftedItems.potion}</strong></div></div>
+              <ul className={styles.potionMaterials}>{potionMaterialCosts.map((material) => { const owned = materialInventory[material.name] ?? 0; return <li key={material.name} className={owned < material.quantity * safePotionCraftAmount ? styles.materialShortage : ""}><span>{material.name}<small>1回 ×{material.quantity}</small></span><b>{owned} / {material.quantity * safePotionCraftAmount}</b></li>; })}</ul>
+              <div className={styles.potionAmountControl}><div><span>調合回数</span><b>{maxPotionCraftAmount > 0 ? safePotionCraftAmount : 0}回</b></div><input type="range" min="1" max={Math.max(1, maxPotionCraftAmount)} value={safePotionCraftAmount} disabled={maxPotionCraftAmount < 1} onChange={(event) => setApothecaryCraftAmount(Number(event.target.value))} /><div className={styles.potionQuickAmounts}><button type="button" disabled={maxPotionCraftAmount < 1} onClick={() => setApothecaryCraftAmount(1)}>×1</button><button type="button" disabled={maxPotionCraftAmount < 1} onClick={() => setApothecaryCraftAmount(Math.min(5, maxPotionCraftAmount))}>×5</button><button type="button" disabled={maxPotionCraftAmount < 1} onClick={() => setApothecaryCraftAmount(maxPotionCraftAmount)}>MAX</button></div></div>
+              <button type="button" className={styles.potionCraftAction} disabled={maxPotionCraftAmount < 1} onClick={() => craft("apothecary", safePotionCraftAmount)}>{maxPotionCraftAmount < 1 ? "素材が足りません" : `${safePotionCraftAmount}回調合する（最大 ${safePotionCraftAmount * selectedBuilding.level}個）`}</button>
+            </div>
+          </section>
+        </div>
+      )}
+
       <div className={`${styles.workspace} ${expeditionPanelSide === "left" || chatPanelSide === "left" ? styles.workspaceHasLeft : ""} ${view === "base" || expeditionPanelSide === "right" || chatPanelSide === "right" ? styles.workspaceHasRight : ""} ${view !== "base" && expeditionPanelSide === "left" && chatPanelSide === "right" ? styles.compactLeftPanel : ""} ${view !== "base" && expeditionPanelSide === "right" && chatPanelSide === "left" ? styles.compactRightPanel : ""}`}>
-        {(expeditionPanelSide === "left" || chatPanelSide === "left") && <aside className={`${styles.sidePanel} ${styles.leftSidePanel} ${(view === "base" || expeditionPanelSide === "right" || chatPanelSide === "right") ? styles.singleSidePanel : ""}`}>{view !== "base" && expeditionPanelSide === "left" && renderDesktopStatusPanel()}{chatPanelSide === "left" && renderDesktopChatPanel()}</aside>}
+        {(expeditionPanelSide === "left" || chatPanelSide === "left") && <aside className={`${styles.sidePanel} ${styles.leftSidePanel} ${(view === "base" || expeditionPanelSide === "right" || chatPanelSide === "right") ? styles.singleSidePanel : ""}`}>{view !== "base" && expeditionPanelSide === "left" && renderDesktopStatusPanel()}{!isMobileLayout && chatPanelSide === "left" && renderDesktopChatPanel()}</aside>}
         <section className={`${styles.mainStage} ${view === "explore" ? styles.exploringStage : ""}`}>
           <div className={styles.stageTitle}>
             <div><p>{view === "base" ? "MY FRONTIER" : view === "town" ? "COMMON DISTRICT" : `EXPEDITION · ${currentMap.code}`}</p><h2>{view === "base" ? `${characterName}の拠点` : view === "town" ? "イーストヘイヴン" : currentMap.name}</h2></div>
@@ -3829,14 +3934,14 @@ export function CrocsiansGame() {
                     const placeable = basePanelTab === "building" && buildMode ? canPlaceFacility(buildings, cell) : false;
                     const column = cell % MAP_SIZE + 1;
                     const row = Math.floor(cell / MAP_SIZE) + 1;
-                    return <button key={cell} data-se="none" style={{ gridColumn: `${column} / span ${building ? FACILITY_SIZE : 1}`, gridRow: `${row} / span ${building ? FACILITY_SIZE : 1}` }} aria-label={building ? `${BUILDINGS[building.kind].name}（2×2）` : `空きマス ${column},${row}`} className={`${styles.mapCell} ${building ? styles.facilityCell : ""} ${basePanelTab === "building" && selectedCell === cell ? styles.selectedCell : ""} ${placeable ? styles.buildable : ""}`} onClick={() => placeBuilding(cell)}>
+                    return <button key={cell} data-se="none" style={{ gridColumn: `${column} / span ${building ? FACILITY_SIZE : 1}`, gridRow: `${row} / span ${building ? FACILITY_SIZE : 1}` }} aria-label={building ? `${BUILDINGS[building.kind].name}（2×2）` : `空きマス ${column},${row}`} className={`${styles.mapCell} ${building ? styles.facilityCell : ""} ${basePanelTab === "building" && selectedCell === cell ? styles.selectedCell : ""} ${placeable ? styles.buildable : ""}`} onClick={() => { if (building && building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind)) { setSelectedCell(cell); collect(cell); } else placeBuilding(cell); }}>
                       {building ? <><span className={styles.buildingIcon}><NextImage src={buildingImagePath(building.kind, building.level)} alt={BUILDINGS[building.kind].name} width={256} height={256} unoptimized /></span><small>Lv.{building.level}</small>{building.ready && (building.kind === "furnace" || !CRAFTING_KINDS.has(building.kind)) ? <i className={styles.ready}>!</i> : !CRAFTING_KINDS.has(building.kind) ? <i className={styles.progress} style={{ "--progress": `${stockProgress(building)}%` } as React.CSSProperties} /> : null}</> : null}
                     </button>;
                   })}
                   {basePanelTab === "tile" && baseTiles.map((tile, cell) => <button key={`tile-${cell}`} data-se="none" type="button" className={`${styles.tileCell} ${selectedCell === cell || selectedTileCells.has(cell) ? styles.selectedTileCell : ""}`} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1 }} aria-label={`${TILES[tile].name}の床 ${cell % MAP_SIZE + 1},${Math.floor(cell / MAP_SIZE) + 1}`} />)}
                 </div>
               </div>
-              <div className={styles.mapLegend}><span><i className={styles.legendReady} />回収可能 {completed}</span>{tileDragSelection && <span>選択範囲 {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).width} × {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).height}</span>}<span>{MAP_SIZE} × {MAP_SIZE} · 施設 2 × 2</span></div>
+              <div className={styles.mapLegend}><button type="button" className={styles.collectAllButton} disabled={collectableBuildingCount === 0} onClick={collectAllResources}>一括回収 {collectableBuildingCount}</button><span><i className={styles.legendReady} />回収可能 {completed}</span>{tileDragSelection && <span>選択範囲 {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).width} × {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).height}</span>}<span>{MAP_SIZE} × {MAP_SIZE} · 施設 2 × 2</span></div>
             </div>
           )}
 
@@ -3914,7 +4019,7 @@ export function CrocsiansGame() {
                 {selectedBuilding ? <div className={styles.detail}>
                   <div className={styles.detailVisual}><NextImage src={buildingImagePath(selectedBuilding.kind, selectedBuilding.level)} alt={BUILDINGS[selectedBuilding.kind].name} width={128} height={128} unoptimized /></div>
                   {selectedBuilding.kind === "furnace" ? <div className={styles.production}><span>精錬ジョブ</span><strong>{selectedBuilding.smeltingJob ? selectedBuilding.ready ? "精錬完了" : `${selectedBuilding.smeltingJob.ingotName} ×${selectedBuilding.smeltingJob.quantity}` : "待機中"}</strong>{selectedBuilding.smeltingJob ? <><i><b style={{ width: `${selectedSmeltingProgress}%` }} /></i><small>{selectedBuilding.ready ? "受け取り可能" : `完了まで約${Math.max(1, Math.ceil((selectedBuilding.smeltingJob.completedAt - (Date.now() + serverTimeOffsetRef.current)) / 60000))}分`}</small></> : selectedSmeltingRecipe ? <div className={styles.smeltingControls}><select value={selectedSmeltingRecipe.ore.name} onChange={(event) => { setSmeltingRecipeName(event.target.value); setSmeltingAmount(1); }}>{SMELTING_RECIPES.map((recipe) => <option key={recipe.ore.name} value={recipe.ore.name}>{recipe.ore.name} → {recipe.ingot.name}</option>)}</select><label><span>生成数 {safeSmeltingAmount}</span><input type="range" min="1" max={Math.max(1, maxSmeltingAmount)} value={safeSmeltingAmount} disabled={maxSmeltingAmount < 1} onChange={(event) => setSmeltingAmount(Number(event.target.value))} /></label><small>{selectedSmeltingRecipe.ore.name}×{safeSmeltingAmount * ORE_PER_INGOT} / 所持 {materialInventory[selectedSmeltingRecipe.ore.name] ?? 0} · {safeSmeltingAmount * 5}分</small></div> : <small>精錬できる鉱石がありません</small>}</div> : CRAFTING_KINDS.has(selectedBuilding.kind) ? <div className={styles.production}><span>アイテム製作</span><strong>{selectedBuilding.kind === "weapon" ? `${unlockedWeaponCount}種 解放中` : selectedBuilding.kind === "armor" ? `${unlockedArmorCount}種 解放中` : "図鑑素材を消費"}</strong><small>{selectedBuilding.kind === "weapon" || selectedBuilding.kind === "armor" ? `N: Lv.1 · R: Lv.2 · SR: Lv.3 · SSR: Lv.4` : `${getCraftMaterialCosts([{ name: "薬草", quantity: 8 }, { name: "清水", quantity: 4 }, { name: "空き瓶", quantity: 2 }]).map((material) => `${material.name}${material.quantity}`).join(" · ")} / 所持 ${craftedItems.potion}`}</small></div> : <div className={styles.production}><span>{BUILDINGS[selectedBuilding.kind].product}のストック</span><strong>{selectedBuilding.ready ? "生産完了" : `${selectedBuilding.stockCount} / ${MAX_STOCK_COUNT}回分`}</strong><i><b style={{ width: `${stockProgress(selectedBuilding)}%` }} /></i>{isMaterialProductionKind(selectedBuilding.kind) && <small>30分ごと: {getProductionMaterials(selectedBuilding).map((material) => `${material.name}×${material.quantity}`).join("・")}</small>}<small>{selectedBuilding.ready ? "24回分に達したため生産停止中" : "サーバー時間で30分ごとに生産"}</small></div>}
-                  {selectedBuilding.kind === "weapon" ? <button className={styles.primaryAction} onClick={() => setWeaponWorkshopOpen(true)}>武器レシピを開く</button> : selectedBuilding.kind === "armor" ? <button className={styles.primaryAction} onClick={() => setArmorWorkshopOpen(true)}>防具レシピを開く</button> : selectedBuilding.kind === "furnace" ? <button className={styles.primaryAction} disabled={selectedBuilding.smeltingJob ? !selectedBuilding.ready : maxSmeltingAmount < 1} onClick={() => selectedBuilding.smeltingJob ? collectSmelting(selectedCell) : startSmelting(selectedCell)}>{selectedBuilding.smeltingJob ? selectedBuilding.ready ? "インゴットを受け取る" : "精錬中" : "精錬を開始"}</button> : CRAFTING_KINDS.has(selectedBuilding.kind) ? <button className={styles.primaryAction} onClick={() => craft(selectedBuilding.kind)}>{BUILDINGS[selectedBuilding.kind].product}を製作</button> : <button className={styles.primaryAction} disabled={selectedBuilding.stockCount === 0} onClick={() => collect(selectedCell)}>生産物を受け取る{selectedBuilding.stockCount > 0 ? `（${selectedBuilding.stockCount}回分）` : ""}</button>}
+                  {selectedBuilding.kind === "weapon" ? <button className={styles.primaryAction} onClick={() => setWeaponWorkshopOpen(true)}>武器レシピを開く</button> : selectedBuilding.kind === "armor" ? <button className={styles.primaryAction} onClick={() => setArmorWorkshopOpen(true)}>防具レシピを開く</button> : selectedBuilding.kind === "apothecary" ? <button className={styles.primaryAction} onClick={() => { setApothecaryCraftAmount(1); setApothecaryWorkshopOpen(true); }}>薬草調合を開く</button> : selectedBuilding.kind === "furnace" ? <button className={styles.primaryAction} disabled={selectedBuilding.smeltingJob ? !selectedBuilding.ready : maxSmeltingAmount < 1} onClick={() => selectedBuilding.smeltingJob ? collectSmelting(selectedCell) : startSmelting(selectedCell)}>{selectedBuilding.smeltingJob ? selectedBuilding.ready ? "インゴットを受け取る" : "精錬中" : "精錬を開始"}</button> : CRAFTING_KINDS.has(selectedBuilding.kind) ? <button className={styles.primaryAction} onClick={() => craft(selectedBuilding.kind)}>{BUILDINGS[selectedBuilding.kind].product}を製作</button> : <button className={styles.primaryAction} disabled={selectedBuilding.stockCount === 0} onClick={() => collect(selectedCell)}>生産物を受け取る{selectedBuilding.stockCount > 0 ? `（${selectedBuilding.stockCount}回分）` : ""}</button>}
                   <div className={styles.upgradeRequirements}>
                     <strong>{selectedBuilding.level >= MAX_BUILDING_LEVEL ? "最大レベル到達" : `Lv.${selectedBuilding.level + 1} 強化素材`}</strong>
                     {selectedUpgradeRecipe && <ul>{selectedUpgradeRecipe.map((material) => { const owned = materialInventory[material.name] ?? 0; return <li key={material.name} className={owned < material.quantity ? styles.materialShortage : ""}><span>{material.name} ×{material.quantity}</span><small>{owned}/{material.quantity}</small></li>; })}</ul>}
@@ -3926,9 +4031,11 @@ export function CrocsiansGame() {
               </section>
             </>
           ) : expeditionPanelSide === "right" ? renderDesktopStatusPanel() : null}
-          {chatPanelSide === "right" && renderDesktopChatPanel()}
+          {!isMobileLayout && chatPanelSide === "right" && renderDesktopChatPanel()}
         </aside>
       </div>
+
+      {mobileBuildCell !== null && <div className={styles.mobileBuildBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setMobileBuildCell(null); }}><section className={styles.mobileBuildSheet} role="dialog" aria-modal="true" aria-labelledby="mobile-build-title"><header><div><small>BUILD ON SELECTED LAND</small><h2 id="mobile-build-title">建設する施設を選択</h2><p>マス {mobileBuildCell % MAP_SIZE + 1}, {Math.floor(mobileBuildCell / MAP_SIZE) + 1} を起点に2×2で建設します</p></div><button type="button" aria-label="建設メニューを閉じる" onClick={() => setMobileBuildCell(null)}>×</button></header><div className={styles.mobileBuildChoices}>{(Object.keys(BUILDINGS) as BuildingKind[]).map((kind) => { const definition = BUILDINGS[kind]; const cost = buildingCost(kind); const count = buildingCounts[kind] ?? 0; const atLimit = count >= BUILDING_LIMITS[kind]; const affordable = canAfford(kind); return <button type="button" key={kind} disabled={atLimit || !affordable} onClick={() => { placeBuilding(mobileBuildCell, kind); setMobileBuildCell(null); }}><NextImage src={buildingImagePath(kind, 1)} alt="" width={128} height={128} unoptimized /><span><strong>{definition.name}</strong><small>{atLimit ? `建築上限 ${count}/${BUILDING_LIMITS[kind]}` : !affordable ? "素材不足" : [...cost.materials.map((material) => `${material.name}×${material.quantity}`), ...(cost.gold > 0 ? [`${cost.gold}G`] : [])].join("・")}</small></span></button>; })}</div><button type="button" className={styles.mobileBuildCancel} onClick={() => setMobileBuildCell(null)}>キャンセル</button></section></div>}
 
       <button className={styles.mobileChatTrigger} type="button" aria-label={unreadChatCount > 0 ? `全体チャットを開く、未読${unreadChatCount}件` : "全体チャットを開く"} aria-expanded={mobileChatOpen} onClick={() => { lastReadChatMessageIdRef.current = latestChatMessageId ?? null; setUnreadChatCount(0); setMobileChatOpen(true); }}><span aria-hidden="true">◆</span>{unreadChatCount > 0 && <b>{unreadChatCount}</b>}</button>
       {mobileChatOpen && <div className={styles.mobileChatBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setMobileChatOpen(false); }}>
