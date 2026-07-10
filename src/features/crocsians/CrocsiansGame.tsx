@@ -39,6 +39,10 @@ type CardinalId = "bread" | "batrump" | "interstellar" | "elizabeth" | "mushroom
 type CardinalLevels = Partial<Record<CardinalId, number>>;
 type ConnectedPlayer = { id: string; name: string; job: string; level: number; hp: number; maxHp?: number; statusEffect?: string | null; icon: string | null; atk?: number; def?: number; luck?: number; skillLevels?: Record<string, number>; cardinalLevels?: CardinalLevels; equippedCardinal?: CardinalId | null; equippedWeapon?: string | null; equippedArmor?: string | null; equippedWeaponHighQuality?: boolean; equippedArmorHighQuality?: boolean; treasureHunt?: number; autoHealLevel?: number; autoHealRecovery?: number; autoResurrectLevel?: number; autoResurrectUses?: number; divineDevotionLevel?: number; divineDevotionAtkBonus?: number; strongDutyLevel?: number; strongDutyThreatMultiplier?: number; strongDutyDamageReduction?: number; counterAttackRate?: number; evasionRate?: number; safeFleeLevel?: number; falsePraiseLevel?: number; falsePraiseUses?: number; rareDropBonus?: number; joinedAt?: number; waiting?: boolean };
 type ChatMessage = { id: string; name: string; job: string; text: string; imageUrl: string | null; imageExpired: boolean; createdAt: string; icon: string | null };
+
+function InventoryIcon() {
+  return <svg viewBox="0 0 1000 1000" aria-hidden="true"><path d="M758 107q-12-4-148-10-129-5-227-5-43 0-83 16t-71 47q-45 45-82 107-9 13-2 26 4 8 12 15l144 113-154 80q-12 6-18 15-8 14-5 38 9 56 39 275 2 19 15 32 18 20 53 23l388 28q20 3 40-2 16-4 31-12 11-6 20-14l115-109q20-21 28-40 5-14 7-40 2-47 6-156l3-101q24-174-29-261-28-45-78-63zM529 638l-58 46-6 2q-6 3-11 0l-33 22 76 46q10 6 10 17t-9.5 16.5-19.5.5l-79-42-2 41h12q7 0 11 4t4 10-4 10.5-11 4.5h-12v18q0 8-6 14t-14 6-13.5-6-5.5-14v-18h-14q-6 0-10.5-4.5T329 801t4.5-10 10.5-4h14l-2-41-79 42q-7 4-14.5 2t-11.5-9-2-15 9-12l76-47-42-26-8 22-73-49 45-37q9-7 18.5-9.5t17.5 3 10 12.5-1 18l55 29 2-90q0-8 5.5-13.5t14-5.5 14 5.5T397 580l2 90 35-18q1-5 6-10l5-3 69-27q15-6 24-1 3 2 3 6 1 11-12 21zm133-110l-490-18 163-83 470 13z" /></svg>;
+}
 type EnemySkill = { name: string; rarity: "N" | "R"; maxUses: number; effect: string };
 type EnemyDefinition = { id: number; name: string; hp: number; atk: number; def: number; exp: number; drop: string; rareDrop: string; gold: number; skills?: EnemySkill[] };
 type EnemyInstance = EnemyDefinition & { currentHp: number; skillUses?: number[] };
@@ -198,7 +202,7 @@ const TOWN_BUILDINGS = [
 
 const CARDINALS: Record<CardinalId, { id: CardinalId; name: string; badge: string; color: PortalColor; image: string; skillId: SkillId; skillName: string; description: string; hp: number; atk: number; def: number; luck: number; statusResist: number; accuracy: number }> = {
   bread: { id: "bread", name: "食パン枢機卿", badge: "青のバッジ", color: "blue", image: "/crocsians/cardinal/blue.png", skillId: "holyBread", skillName: "パンを神の子の肉に", description: "探索者全員に1度のみ有効なバリアを貼る", hp: 0.05, atk: 0.05, def: 0.1, luck: 0, statusResist: 0, accuracy: 0 },
-  batrump: { id: "batrump", name: "バトランプ枢機卿", badge: "黄のバッジ", color: "yellow", image: "/crocsians/cardinal/yellow.png", skillId: "bloodWine", skillName: "返り血をワインに", description: "ATK倍率攻撃を行い、与えたダメージの3割を回復", hp: 0.1, atk: 0.05, def: 0.05, luck: 0, statusResist: 0, accuracy: 0.05 },
+  batrump: { id: "batrump", name: "パトランプ枢機卿", badge: "黄のバッジ", color: "yellow", image: "/crocsians/cardinal/yellow.png", skillId: "bloodWine", skillName: "返り血をワインに", description: "ATK倍率攻撃を行い、与えたダメージの3割を回復", hp: 0.1, atk: 0.05, def: 0.05, luck: 0, statusResist: 0, accuracy: 0.05 },
   interstellar: { id: "interstellar", name: "インターステラー枢機卿", badge: "赤のバッジ", color: "red", image: "/crocsians/cardinal/red.png", skillId: "starCrown", skillName: "宇宙からの宝冠", description: "戦闘中の味方スキル使用回数で威力が上がる攻撃", hp: 0.05, atk: 0.1, def: 0.05, luck: 0, statusResist: 0, accuracy: 0 },
   elizabeth: { id: "elizabeth", name: "エリザベス枢機卿", badge: "緑のバッジ", color: "green", image: "/crocsians/cardinal/green.png", skillId: "eternalMercy", skillName: "慈悲よ永久に", description: "戦闘後、自分の他スキル使用回数を1回復", hp: 0.05, atk: 0, def: 0.05, luck: 0, statusResist: 0.1, accuracy: 0 },
   mushroom: { id: "mushroom", name: "マッシュルーム枢機卿", badge: "紫のバッジ", color: "purple", image: "/crocsians/cardinal/purple.png", skillId: "borrowPower", skillName: "少し力を貸せ", description: "戦闘中、自分以外の味方探索者のステータスになる", hp: 0.05, atk: 0, def: 0.05, luck: 0.05, statusResist: 0, accuracy: 0 },
@@ -535,6 +539,13 @@ type ReleaseNote = {
 
 
 const RELEASE_NOTES: ReleaseNote[] = [
+  {
+    version: "ver 0.3.9",
+    items: [
+      { title: "スマホ版のゲームヘッダーを整理しました", details: ["スマホ版ではCROCSIANSの文字を非表示にし、ブランドアイコンのみ表示するようにしました", "ブランドアイコン、画面タブ、所持品ボタンを一行にまとめました"] },
+      { title: "所持品ボタンをアイコン表示へ変更しました", details: ["PC版・スマホ版ともに所持品ボタンを専用アイコンのみの表示へ変更しました", "画面をすっきり見せながら、所持品を開く操作とアクセシビリティ用ラベルは維持しています"] },
+    ],
+  },
   {
     version: "ver 0.3.8",
     items: [
@@ -3400,7 +3411,7 @@ export function CrocsiansGame() {
           <button className={view === "explore" ? styles.activeTab : ""} onClick={() => navigate("explore")}><span>⌖</span> 探索</button>
         </nav>
         <div className={styles.profile}>
-          <button className={styles.catalogTrigger} type="button" onClick={() => setMaterialCatalogOpen(true)}>◇所持品</button>
+          <button className={styles.catalogTrigger} type="button" aria-label="所持品を開く" title="所持品" onClick={() => setMaterialCatalogOpen(true)}><InventoryIcon /></button>
           <button className={styles.avatar} type="button" aria-label="キャラクター設定を開く" onClick={openCharacterPanel}>{characterIcon ? <NextImage src={characterIcon} alt="" width={256} height={256} unoptimized /> : characterName.charAt(0)}</button>
           <div className={styles.profileIdentity}><strong>{characterName}</strong><span>{job} Lv.{playerProgress.level}</span></div>
           <span className={styles.profileJob}>CURRENT JOB</span>
