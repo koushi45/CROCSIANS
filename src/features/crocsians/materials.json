@@ -1,0 +1,1190 @@
+[
+    {
+        "id":  1,
+        "name":  "木材",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  8,
+        "uses":  "施設・武器",
+        "description":  "基本的な建築素材。杖や弓にも使う"
+    },
+    {
+        "id":  2,
+        "name":  "丈夫な木材",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  12,
+        "uses":  "施設・武器",
+        "description":  "通常の木材より耐久性が高い"
+    },
+    {
+        "id":  3,
+        "name":  "硬木",
+        "category":  "建材",
+        "rarity":  "R",
+        "sellPrice":  80,
+        "uses":  "施設・武器",
+        "description":  "強度の高い木材。中級施設に使う"
+    },
+    {
+        "id":  4,
+        "name":  "古木材",
+        "category":  "建材",
+        "rarity":  "SR",
+        "sellPrice":  320,
+        "uses":  "施設・武器",
+        "description":  "長い年月を経た希少な木材"
+    },
+    {
+        "id":  132,
+        "name":  "世界樹材",
+        "category":  "建材",
+        "rarity":  "SSR",
+        "sellPrice":  1800,
+        "uses":  "施設・武器",
+        "description":  "世界樹から得られる神秘的な最上位木材"
+    },
+    {
+        "id":  5,
+        "name":  "石材",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  8,
+        "uses":  "施設",
+        "description":  "基本的な建築素材"
+    },
+    {
+        "id":  6,
+        "name":  "硬石",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  14,
+        "uses":  "施設・防具",
+        "description":  "石壁や防具の補強に使う"
+    },
+    {
+        "id":  7,
+        "name":  "大理石",
+        "category":  "建材",
+        "rarity":  "R",
+        "sellPrice":  90,
+        "uses":  "施設",
+        "description":  "高級施設や神殿系施設に使う"
+    },
+    {
+        "id":  8,
+        "name":  "黒曜石",
+        "category":  "建材",
+        "rarity":  "SR",
+        "sellPrice":  360,
+        "uses":  "施設・武器",
+        "description":  "魔力を帯びた黒い石"
+    },
+    {
+        "id":  9,
+        "name":  "粘土",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  6,
+        "uses":  "施設",
+        "description":  "窯、炉、壁材に使う"
+    },
+    {
+        "id":  10,
+        "name":  "レンガ",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  10,
+        "uses":  "施設",
+        "description":  "加工済みの建築素材"
+    },
+    {
+        "id":  11,
+        "name":  "強化レンガ",
+        "category":  "建材",
+        "rarity":  "R",
+        "sellPrice":  85,
+        "uses":  "施設",
+        "description":  "耐火性の高い建築素材"
+    },
+    {
+        "id":  12,
+        "name":  "砂",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  5,
+        "uses":  "施設",
+        "description":  "ガラスや石材加工に使う"
+    },
+    {
+        "id":  13,
+        "name":  "ガラス片",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  10,
+        "uses":  "施設・回復",
+        "description":  "瓶や窓材に使う"
+    },
+    {
+        "id":  14,
+        "name":  "透明ガラス",
+        "category":  "建材",
+        "rarity":  "R",
+        "sellPrice":  95,
+        "uses":  "施設・回復",
+        "description":  "薬瓶や研究施設に使う"
+    },
+    {
+        "id":  15,
+        "name":  "鉄くぎ",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  12,
+        "uses":  "施設",
+        "description":  "木材を固定する基本素材"
+    },
+    {
+        "id":  16,
+        "name":  "鉄板",
+        "category":  "建材",
+        "rarity":  "N",
+        "sellPrice":  28,
+        "uses":  "施設・防具",
+        "description":  "補強材として使う"
+    },
+    {
+        "id":  17,
+        "name":  "鋼板",
+        "category":  "建材",
+        "rarity":  "R",
+        "sellPrice":  130,
+        "uses":  "施設・防具",
+        "description":  "強固な施設や鎧に使う"
+    },
+    {
+        "id":  18,
+        "name":  "歯車",
+        "category":  "機械素材",
+        "rarity":  "R",
+        "sellPrice":  140,
+        "uses":  "施設・武器",
+        "description":  "工房や機械装置に使う"
+    },
+    {
+        "id":  19,
+        "name":  "精密歯車",
+        "category":  "機械素材",
+        "rarity":  "SR",
+        "sellPrice":  520,
+        "uses":  "施設・武器",
+        "description":  "高度な設備や特殊武器に使う"
+    },
+    {
+        "id":  20,
+        "name":  "魔導コア",
+        "category":  "機械素材",
+        "rarity":  "SSR",
+        "sellPrice":  1800,
+        "uses":  "施設・武器・防具",
+        "description":  "魔力で動く装置の中核素材"
+    },
+    {
+        "id":  21,
+        "name":  "銅鉱石",
+        "category":  "鉱石",
+        "rarity":  "N",
+        "sellPrice":  14,
+        "uses":  "武器・施設",
+        "description":  "序盤の金属素材"
+    },
+    {
+        "id":  22,
+        "name":  "銅インゴット",
+        "category":  "金属",
+        "rarity":  "N",
+        "sellPrice":  56,
+        "uses":  "武器・防具・施設",
+        "description":  "銅鉱石を精錬した素材"
+    },
+    {
+        "id":  23,
+        "name":  "鉄鉱石",
+        "category":  "鉱石",
+        "rarity":  "N",
+        "sellPrice":  18,
+        "uses":  "武器・防具・施設",
+        "description":  "最も基本的な鉱石"
+    },
+    {
+        "id":  24,
+        "name":  "鉄インゴット",
+        "category":  "金属",
+        "rarity":  "N",
+        "sellPrice":  72,
+        "uses":  "武器・防具・施設",
+        "description":  "鉄製装備に使う"
+    },
+    {
+        "id":  25,
+        "name":  "銀鉱石",
+        "category":  "鉱石",
+        "rarity":  "R",
+        "sellPrice":  110,
+        "uses":  "武器・防具",
+        "description":  "魔物に有効な装備素材"
+    },
+    {
+        "id":  26,
+        "name":  "銀インゴット",
+        "category":  "金属",
+        "rarity":  "R",
+        "sellPrice":  440,
+        "uses":  "武器・防具",
+        "description":  "銀装備や魔法装備に使う"
+    },
+    {
+        "id":  27,
+        "name":  "金鉱石",
+        "category":  "鉱石",
+        "rarity":  "R",
+        "sellPrice":  140,
+        "uses":  "施設・装飾",
+        "description":  "高級施設や装飾品に使う"
+    },
+    {
+        "id":  28,
+        "name":  "金インゴット",
+        "category":  "金属",
+        "rarity":  "R",
+        "sellPrice":  560,
+        "uses":  "施設・防具",
+        "description":  "高価な強化素材"
+    },
+    {
+        "id":  29,
+        "name":  "ミスリル鉱石",
+        "category":  "鉱石",
+        "rarity":  "SR",
+        "sellPrice":  420,
+        "uses":  "武器・防具",
+        "description":  "軽くて強い希少鉱石"
+    },
+    {
+        "id":  30,
+        "name":  "ミスリルインゴット",
+        "category":  "金属",
+        "rarity":  "SR",
+        "sellPrice":  1680,
+        "uses":  "武器・防具",
+        "description":  "中盤以降の高性能装備に使う"
+    },
+    {
+        "id":  31,
+        "name":  "黒鉄鉱石",
+        "category":  "鉱石",
+        "rarity":  "SR",
+        "sellPrice":  380,
+        "uses":  "武器・防具",
+        "description":  "重く硬い黒色の鉱石"
+    },
+    {
+        "id":  32,
+        "name":  "黒鉄インゴット",
+        "category":  "金属",
+        "rarity":  "SR",
+        "sellPrice":  1520,
+        "uses":  "武器・防具",
+        "description":  "高DEF装備に向いた素材"
+    },
+    {
+        "id":  33,
+        "name":  "魔銀鉱石",
+        "category":  "鉱石",
+        "rarity":  "SR",
+        "sellPrice":  460,
+        "uses":  "武器・防具",
+        "description":  "魔力を帯びた銀色の鉱石"
+    },
+    {
+        "id":  34,
+        "name":  "魔銀インゴット",
+        "category":  "金属",
+        "rarity":  "SR",
+        "sellPrice":  1840,
+        "uses":  "武器・防具",
+        "description":  "魔法武器や魔法鎧に使う"
+    },
+    {
+        "id":  35,
+        "name":  "竜鉄鉱石",
+        "category":  "鉱石",
+        "rarity":  "SSR",
+        "sellPrice":  1600,
+        "uses":  "武器・防具",
+        "description":  "竜の力を帯びた希少鉱石"
+    },
+    {
+        "id":  36,
+        "name":  "竜鉄インゴット",
+        "category":  "金属",
+        "rarity":  "SSR",
+        "sellPrice":  6400,
+        "uses":  "武器・防具",
+        "description":  "終盤装備の主素材"
+    },
+    {
+        "id":  37,
+        "name":  "星鋼石",
+        "category":  "鉱石",
+        "rarity":  "SSR",
+        "sellPrice":  2200,
+        "uses":  "武器・防具",
+        "description":  "隕石から採れる伝説級素材"
+    },
+    {
+        "id":  38,
+        "name":  "星鋼インゴット",
+        "category":  "金属",
+        "rarity":  "SSR",
+        "sellPrice":  8800,
+        "uses":  "武器・防具",
+        "description":  "最強クラスの装備に使う"
+    },
+    {
+        "id":  39,
+        "name":  "錆びた金属片",
+        "category":  "金属",
+        "rarity":  "N",
+        "sellPrice":  9,
+        "uses":  "武器・施設",
+        "description":  "分解や再精錬に使う"
+    },
+    {
+        "id":  40,
+        "name":  "古代合金",
+        "category":  "金属",
+        "rarity":  "SSR",
+        "sellPrice":  3600,
+        "uses":  "武器・防具・施設",
+        "description":  "古代文明の技術で作られた合金"
+    },
+    {
+        "id":  41,
+        "name":  "獣の皮",
+        "category":  "革素材",
+        "rarity":  "N",
+        "sellPrice":  12,
+        "uses":  "防具",
+        "description":  "軽装防具の基本素材"
+    },
+    {
+        "id":  42,
+        "name":  "なめし革",
+        "category":  "革素材",
+        "rarity":  "N",
+        "sellPrice":  22,
+        "uses":  "防具",
+        "description":  "加工済みの革"
+    },
+    {
+        "id":  43,
+        "name":  "厚い獣皮",
+        "category":  "革素材",
+        "rarity":  "R",
+        "sellPrice":  95,
+        "uses":  "防具",
+        "description":  "耐久性の高い革素材"
+    },
+    {
+        "id":  44,
+        "name":  "魔獣の皮",
+        "category":  "革素材",
+        "rarity":  "SR",
+        "sellPrice":  430,
+        "uses":  "防具",
+        "description":  "魔力を帯びた防具に使う"
+    },
+    {
+        "id":  45,
+        "name":  "竜の鱗",
+        "category":  "竜素材",
+        "rarity":  "SSR",
+        "sellPrice":  1700,
+        "uses":  "防具",
+        "description":  "高耐久防具の希少素材"
+    },
+    {
+        "id":  46,
+        "name":  "竜の革",
+        "category":  "竜素材",
+        "rarity":  "SSR",
+        "sellPrice":  1900,
+        "uses":  "防具",
+        "description":  "軽く強い最上級の革素材"
+    },
+    {
+        "id":  47,
+        "name":  "糸",
+        "category":  "繊維",
+        "rarity":  "N",
+        "sellPrice":  6,
+        "uses":  "防具・回復",
+        "description":  "布や包帯の材料"
+    },
+    {
+        "id":  48,
+        "name":  "布",
+        "category":  "繊維",
+        "rarity":  "N",
+        "sellPrice":  12,
+        "uses":  "防具・回復",
+        "description":  "ローブや包帯に使う"
+    },
+    {
+        "id":  49,
+        "name":  "丈夫な布",
+        "category":  "繊維",
+        "rarity":  "N",
+        "sellPrice":  20,
+        "uses":  "防具・回復",
+        "description":  "防具や回復アイテムの材料"
+    },
+    {
+        "id":  50,
+        "name":  "絹布",
+        "category":  "繊維",
+        "rarity":  "R",
+        "sellPrice":  100,
+        "uses":  "防具",
+        "description":  "魔法系防具に使う"
+    },
+    {
+        "id":  51,
+        "name":  "魔法布",
+        "category":  "繊維",
+        "rarity":  "SR",
+        "sellPrice":  400,
+        "uses":  "防具",
+        "description":  "魔力を通しやすい布"
+    },
+    {
+        "id":  52,
+        "name":  "聖布",
+        "category":  "繊維",
+        "rarity":  "SR",
+        "sellPrice":  440,
+        "uses":  "防具・回復",
+        "description":  "聖属性の装備や治療具に使う"
+    },
+    {
+        "id":  53,
+        "name":  "影布",
+        "category":  "繊維",
+        "rarity":  "SR",
+        "sellPrice":  420,
+        "uses":  "防具",
+        "description":  "回避系防具に使う"
+    },
+    {
+        "id":  54,
+        "name":  "羽毛",
+        "category":  "繊維",
+        "rarity":  "N",
+        "sellPrice":  10,
+        "uses":  "防具・回復",
+        "description":  "軽装備や寝具施設に使う"
+    },
+    {
+        "id":  55,
+        "name":  "天使の羽",
+        "category":  "繊維",
+        "rarity":  "SSR",
+        "sellPrice":  1600,
+        "uses":  "防具・回復",
+        "description":  "高級回復アイテムや聖具に使う"
+    },
+    {
+        "id":  56,
+        "name":  "小さな牙",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  10,
+        "uses":  "武器",
+        "description":  "短剣や矢じりに使う"
+    },
+    {
+        "id":  57,
+        "name":  "鋭い牙",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  85,
+        "uses":  "武器",
+        "description":  "攻撃力を高める素材"
+    },
+    {
+        "id":  58,
+        "name":  "巨獣の牙",
+        "category":  "魔物素材",
+        "rarity":  "SR",
+        "sellPrice":  360,
+        "uses":  "武器",
+        "description":  "大型武器に向いた素材"
+    },
+    {
+        "id":  59,
+        "name":  "小さな爪",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  10,
+        "uses":  "武器・防具",
+        "description":  "武器の刃や防具の装飾に使う"
+    },
+    {
+        "id":  60,
+        "name":  "鋭い爪",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  85,
+        "uses":  "武器",
+        "description":  "斬撃系武器に使う"
+    },
+    {
+        "id":  61,
+        "name":  "魔獣の爪",
+        "category":  "魔物素材",
+        "rarity":  "SR",
+        "sellPrice":  380,
+        "uses":  "武器",
+        "description":  "高ATK武器に使う"
+    },
+    {
+        "id":  62,
+        "name":  "角の欠片",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  12,
+        "uses":  "武器・防具",
+        "description":  "加工しやすい硬質素材"
+    },
+    {
+        "id":  63,
+        "name":  "大きな角",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  95,
+        "uses":  "武器・防具",
+        "description":  "槍や兜に使う"
+    },
+    {
+        "id":  64,
+        "name":  "魔獣の角",
+        "category":  "魔物素材",
+        "rarity":  "SR",
+        "sellPrice":  420,
+        "uses":  "武器・防具",
+        "description":  "魔力を帯びた硬質素材"
+    },
+    {
+        "id":  65,
+        "name":  "甲殻",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  14,
+        "uses":  "防具",
+        "description":  "盾や鎧の補強に使う"
+    },
+    {
+        "id":  66,
+        "name":  "硬い甲殻",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  105,
+        "uses":  "防具",
+        "description":  "中級防具に使う"
+    },
+    {
+        "id":  67,
+        "name":  "黒い甲殻",
+        "category":  "魔物素材",
+        "rarity":  "SR",
+        "sellPrice":  430,
+        "uses":  "防具",
+        "description":  "高DEF防具に使う"
+    },
+    {
+        "id":  68,
+        "name":  "毒針",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  90,
+        "uses":  "武器・回復",
+        "description":  "毒武器や解毒薬の材料"
+    },
+    {
+        "id":  69,
+        "name":  "毒袋",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  95,
+        "uses":  "武器・回復",
+        "description":  "毒薬や解毒薬に使う"
+    },
+    {
+        "id":  70,
+        "name":  "魔物の骨",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  12,
+        "uses":  "武器・防具",
+        "description":  "骨製装備に使う"
+    },
+    {
+        "id":  71,
+        "name":  "巨獣の骨",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  100,
+        "uses":  "武器・防具",
+        "description":  "大型装備に使う"
+    },
+    {
+        "id":  72,
+        "name":  "魔獣の血",
+        "category":  "魔物素材",
+        "rarity":  "SR",
+        "sellPrice":  460,
+        "uses":  "武器・回復",
+        "description":  "強化薬や魔法武器に使う"
+    },
+    {
+        "id":  73,
+        "name":  "竜の牙",
+        "category":  "竜素材",
+        "rarity":  "SSR",
+        "sellPrice":  1800,
+        "uses":  "武器",
+        "description":  "最上級武器に使う"
+    },
+    {
+        "id":  74,
+        "name":  "竜の爪",
+        "category":  "竜素材",
+        "rarity":  "SSR",
+        "sellPrice":  1900,
+        "uses":  "武器",
+        "description":  "攻撃特化武器に使う"
+    },
+    {
+        "id":  75,
+        "name":  "竜の心臓",
+        "category":  "竜素材",
+        "rarity":  "SSR",
+        "sellPrice":  4000,
+        "uses":  "武器・防具・回復",
+        "description":  "伝説級アイテムの中核素材"
+    },
+    {
+        "id":  76,
+        "name":  "薬草",
+        "category":  "薬草",
+        "rarity":  "N",
+        "sellPrice":  6,
+        "uses":  "回復",
+        "description":  "基本的な回復薬の材料"
+    },
+    {
+        "id":  77,
+        "name":  "上薬草",
+        "category":  "薬草",
+        "rarity":  "N",
+        "sellPrice":  12,
+        "uses":  "回復",
+        "description":  "薬草より効果が高い"
+    },
+    {
+        "id":  78,
+        "name":  "癒し草",
+        "category":  "薬草",
+        "rarity":  "R",
+        "sellPrice":  75,
+        "uses":  "回復",
+        "description":  "HP回復薬に使う"
+    },
+    {
+        "id":  79,
+        "name":  "生命草",
+        "category":  "薬草",
+        "rarity":  "SR",
+        "sellPrice":  320,
+        "uses":  "回復",
+        "description":  "高級回復薬に使う"
+    },
+    {
+        "id":  80,
+        "name":  "聖なる薬草",
+        "category":  "薬草",
+        "rarity":  "SR",
+        "sellPrice":  360,
+        "uses":  "回復",
+        "description":  "状態異常回復に使う"
+    },
+    {
+        "id":  81,
+        "name":  "毒消し草",
+        "category":  "薬草",
+        "rarity":  "N",
+        "sellPrice":  8,
+        "uses":  "回復",
+        "description":  "解毒薬の材料"
+    },
+    {
+        "id":  82,
+        "name":  "眠り覚まし草",
+        "category":  "薬草",
+        "rarity":  "N",
+        "sellPrice":  8,
+        "uses":  "回復",
+        "description":  "睡眠回復薬の材料"
+    },
+    {
+        "id":  83,
+        "name":  "気付け草",
+        "category":  "薬草",
+        "rarity":  "R",
+        "sellPrice":  90,
+        "uses":  "回復",
+        "description":  "戦闘不能回復薬の材料"
+    },
+    {
+        "id":  84,
+        "name":  "魔力草",
+        "category":  "薬草",
+        "rarity":  "R",
+        "sellPrice":  95,
+        "uses":  "回復",
+        "description":  "MP回復薬や魔法薬に使う"
+    },
+    {
+        "id":  85,
+        "name":  "月光草",
+        "category":  "薬草",
+        "rarity":  "SR",
+        "sellPrice":  380,
+        "uses":  "回復",
+        "description":  "夜に採れる希少な薬草"
+    },
+    {
+        "id":  86,
+        "name":  "太陽花",
+        "category":  "薬草",
+        "rarity":  "SR",
+        "sellPrice":  400,
+        "uses":  "回復",
+        "description":  "強力な治療薬に使う"
+    },
+    {
+        "id":  87,
+        "name":  "霊薬の花",
+        "category":  "薬草",
+        "rarity":  "SSR",
+        "sellPrice":  1500,
+        "uses":  "回復",
+        "description":  "最上級回復薬に使う"
+    },
+    {
+        "id":  88,
+        "name":  "赤い実",
+        "category":  "食材",
+        "rarity":  "N",
+        "sellPrice":  5,
+        "uses":  "回復",
+        "description":  "簡易回復アイテムの材料"
+    },
+    {
+        "id":  89,
+        "name":  "青い実",
+        "category":  "食材",
+        "rarity":  "N",
+        "sellPrice":  5,
+        "uses":  "回復",
+        "description":  "魔力回復アイテムの材料"
+    },
+    {
+        "id":  90,
+        "name":  "蜂蜜",
+        "category":  "食材",
+        "rarity":  "N",
+        "sellPrice":  14,
+        "uses":  "回復",
+        "description":  "回復薬の効果を高める"
+    },
+    {
+        "id":  91,
+        "name":  "清水",
+        "category":  "液体",
+        "rarity":  "N",
+        "sellPrice":  6,
+        "uses":  "回復",
+        "description":  "ポーション作成の基本素材"
+    },
+    {
+        "id":  92,
+        "name":  "霊水",
+        "category":  "液体",
+        "rarity":  "R",
+        "sellPrice":  90,
+        "uses":  "回復",
+        "description":  "高級回復薬に使う"
+    },
+    {
+        "id":  93,
+        "name":  "聖水",
+        "category":  "液体",
+        "rarity":  "SR",
+        "sellPrice":  360,
+        "uses":  "回復",
+        "description":  "呪いや毒の回復に使う"
+    },
+    {
+        "id":  94,
+        "name":  "妖精の雫",
+        "category":  "液体",
+        "rarity":  "SSR",
+        "sellPrice":  1700,
+        "uses":  "回復",
+        "description":  "蘇生薬や最上級回復薬に使う"
+    },
+    {
+        "id":  95,
+        "name":  "空き瓶",
+        "category":  "容器",
+        "rarity":  "N",
+        "sellPrice":  8,
+        "uses":  "回復",
+        "description":  "ポーション作成に必要"
+    },
+    {
+        "id":  96,
+        "name":  "丈夫な瓶",
+        "category":  "容器",
+        "rarity":  "R",
+        "sellPrice":  80,
+        "uses":  "回復",
+        "description":  "中級以上の薬品に使う"
+    },
+    {
+        "id":  97,
+        "name":  "魔法瓶",
+        "category":  "容器",
+        "rarity":  "SR",
+        "sellPrice":  380,
+        "uses":  "回復",
+        "description":  "魔力を含む薬品に使う"
+    },
+    {
+        "id":  98,
+        "name":  "薬研",
+        "category":  "道具素材",
+        "rarity":  "N",
+        "sellPrice":  20,
+        "uses":  "回復・施設",
+        "description":  "薬草加工や調合施設に使う"
+    },
+    {
+        "id":  99,
+        "name":  "調合灰",
+        "category":  "薬素材",
+        "rarity":  "R",
+        "sellPrice":  85,
+        "uses":  "回復",
+        "description":  "薬効を安定させる粉末"
+    },
+    {
+        "id":  100,
+        "name":  "賢者の石片",
+        "category":  "薬素材",
+        "rarity":  "SSR",
+        "sellPrice":  3500,
+        "uses":  "回復・武器・防具",
+        "description":  "伝説級クラフトに使う万能素材"
+    },
+    {
+        "id":  101,
+        "name":  "スライムゼリー",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  8,
+        "uses":  "回復",
+        "description":  "スライム系の体内から採れる弾力のある素材"
+    },
+    {
+        "id":  102,
+        "name":  "ネズミのしっぽ",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  7,
+        "uses":  "武器・回復",
+        "description":  "小型魔物から採れる細い素材"
+    },
+    {
+        "id":  103,
+        "name":  "コウモリの羽",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  9,
+        "uses":  "防具・回復",
+        "description":  "軽い布や飛行系装備の材料"
+    },
+    {
+        "id":  104,
+        "name":  "ゴブリンの耳",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  12,
+        "uses":  "武器・防具",
+        "description":  "ゴブリン系から採れる討伐証にもなる素材"
+    },
+    {
+        "id":  105,
+        "name":  "盗賊の布切れ",
+        "category":  "繊維",
+        "rarity":  "N",
+        "sellPrice":  9,
+        "uses":  "防具",
+        "description":  "盗賊や山賊が身につけていた布"
+    },
+    {
+        "id":  106,
+        "name":  "キノコの胞子",
+        "category":  "薬素材",
+        "rarity":  "N",
+        "sellPrice":  8,
+        "uses":  "回復",
+        "description":  "毒薬や解毒薬の調合に使う胞子"
+    },
+    {
+        "id":  107,
+        "name":  "カエルの油",
+        "category":  "薬素材",
+        "rarity":  "N",
+        "sellPrice":  10,
+        "uses":  "回復",
+        "description":  "軟膏や薬品の材料になる油"
+    },
+    {
+        "id":  108,
+        "name":  "蛇の抜け殻",
+        "category":  "魔物素材",
+        "rarity":  "N",
+        "sellPrice":  12,
+        "uses":  "防具・回復",
+        "description":  "軽装防具や薬の材料"
+    },
+    {
+        "id":  109,
+        "name":  "サソリの尾",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  95,
+        "uses":  "武器・回復",
+        "description":  "毒武器や解毒薬の材料"
+    },
+    {
+        "id":  110,
+        "name":  "ミイラの包帯",
+        "category":  "繊維",
+        "rarity":  "R",
+        "sellPrice":  105,
+        "uses":  "防具・回復",
+        "description":  "古い呪力を帯びた包帯"
+    },
+    {
+        "id":  111,
+        "name":  "砂獣の毛皮",
+        "category":  "革素材",
+        "rarity":  "R",
+        "sellPrice":  110,
+        "uses":  "防具",
+        "description":  "砂漠の魔獣から採れる丈夫な毛皮"
+    },
+    {
+        "id":  112,
+        "name":  "氷の結晶",
+        "category":  "鉱石",
+        "rarity":  "R",
+        "sellPrice":  120,
+        "uses":  "武器・防具・回復",
+        "description":  "冷気を帯びた結晶"
+    },
+    {
+        "id":  113,
+        "name":  "霜の核",
+        "category":  "魔物素材",
+        "rarity":  "SR",
+        "sellPrice":  480,
+        "uses":  "武器・防具",
+        "description":  "氷属性装備の中核素材"
+    },
+    {
+        "id":  114,
+        "name":  "炎の欠片",
+        "category":  "鉱石",
+        "rarity":  "R",
+        "sellPrice":  120,
+        "uses":  "武器・施設",
+        "description":  "熱を帯びた鉱石片"
+    },
+    {
+        "id":  115,
+        "name":  "溶岩の核",
+        "category":  "魔物素材",
+        "rarity":  "SR",
+        "sellPrice":  520,
+        "uses":  "武器・防具・施設",
+        "description":  "溶岩系魔物の中心部にある核"
+    },
+    {
+        "id":  116,
+        "name":  "灰",
+        "category":  "薬素材",
+        "rarity":  "N",
+        "sellPrice":  6,
+        "uses":  "回復・施設",
+        "description":  "火山やアンデッドから採れる調合素材"
+    },
+    {
+        "id":  117,
+        "name":  "呪いの人形片",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  110,
+        "uses":  "武器・防具",
+        "description":  "呪術系アイテムの材料"
+    },
+    {
+        "id":  118,
+        "name":  "亡霊の残滓",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  115,
+        "uses":  "防具・回復",
+        "description":  "霊体が消えた後に残る淡い光"
+    },
+    {
+        "id":  119,
+        "name":  "吸血牙",
+        "category":  "魔物素材",
+        "rarity":  "SR",
+        "sellPrice":  520,
+        "uses":  "武器",
+        "description":  "吸血系魔物の鋭い牙"
+    },
+    {
+        "id":  120,
+        "name":  "深海の鱗",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  120,
+        "uses":  "防具",
+        "description":  "水圧に耐える硬い鱗"
+    },
+    {
+        "id":  121,
+        "name":  "珊瑚片",
+        "category":  "建材",
+        "rarity":  "R",
+        "sellPrice":  100,
+        "uses":  "施設・回復",
+        "description":  "海底で採れる美しい建材兼薬素材"
+    },
+    {
+        "id":  122,
+        "name":  "真珠",
+        "category":  "装飾素材",
+        "rarity":  "R",
+        "sellPrice":  150,
+        "uses":  "施設・防具",
+        "description":  "装飾や魔法防具に使う宝石素材"
+    },
+    {
+        "id":  123,
+        "name":  "雷の羽根",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  120,
+        "uses":  "武器・防具",
+        "description":  "雷を帯びた鳥の羽根"
+    },
+    {
+        "id":  124,
+        "name":  "風切り羽",
+        "category":  "魔物素材",
+        "rarity":  "R",
+        "sellPrice":  105,
+        "uses":  "防具",
+        "description":  "軽装防具や弓に使う羽根"
+    },
+    {
+        "id":  125,
+        "name":  "雲糸",
+        "category":  "繊維",
+        "rarity":  "R",
+        "sellPrice":  115,
+        "uses":  "防具・回復",
+        "description":  "雲のように軽い特殊な糸"
+    },
+    {
+        "id":  126,
+        "name":  "闇の結晶",
+        "category":  "鉱石",
+        "rarity":  "SR",
+        "sellPrice":  540,
+        "uses":  "武器・防具",
+        "description":  "闇属性装備に使う結晶"
+    },
+    {
+        "id":  127,
+        "name":  "悪魔の翼膜",
+        "category":  "魔物素材",
+        "rarity":  "SR",
+        "sellPrice":  560,
+        "uses":  "防具",
+        "description":  "悪魔系から採れる丈夫な翼膜"
+    },
+    {
+        "id":  128,
+        "name":  "次元の欠片",
+        "category":  "鉱石",
+        "rarity":  "SSR",
+        "sellPrice":  2800,
+        "uses":  "武器・防具・施設",
+        "description":  "空間の歪みから生じる希少素材"
+    },
+    {
+        "id":  129,
+        "name":  "虚無の結晶",
+        "category":  "鉱石",
+        "rarity":  "SSR",
+        "sellPrice":  3000,
+        "uses":  "武器・防具",
+        "description":  "虚無の力を帯びた終盤素材"
+    },
+    {
+        "id":  130,
+        "name":  "魔王の角",
+        "category":  "魔物素材",
+        "rarity":  "SSR",
+        "sellPrice":  3800,
+        "uses":  "武器・防具",
+        "description":  "魔王の力を宿す角"
+    },
+    {
+        "id":  131,
+        "name":  "魔王の心臓",
+        "category":  "魔物素材",
+        "rarity":  "SSR",
+        "sellPrice":  5000,
+        "uses":  "武器・防具・回復",
+        "description":  "最強装備や究極薬の中核素材"
+    }
+]

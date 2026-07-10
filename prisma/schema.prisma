@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                     String                      @id @default(cuid())
+  accountName            String                      @unique
+  passwordHash           String
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
+  sessions               Session[]
+  crocsiansSave          CrocsiansSave?
+  crocsiansCharacterIcon CrocsiansCharacterIcon?
+  crocsiansSkillUsage    CrocsiansSkillUsage?
+  crocsiansChatMessages  CrocsiansChatMessage[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+enum CrocsiansItemType {
+  MATERIAL
+  WEAPON
+  ARMOR
+  SUPPLY
+}
+
+enum CrocsiansMarketListingStatus {
+  ACTIVE
+  SOLD
+  WITHDRAWN
+}
+
+model CrocsiansMarketListing {
+  id             String                        @id @default(cuid())
+  sellerId       String
+  sellerName     String
+  itemType       CrocsiansItemType
+  itemId         Int
+  itemName       String
+  quantity       Int
+  price          Int
+  npcPrice       Int
+  status         CrocsiansMarketListingStatus @default(ACTIVE)
+  buyerId        String?
+  buyerName      String?
+  taxRate        Float?
+  buyerPaid      Int?
+  sellerClaimed  Boolean                       @default(false)
+  createdAt      DateTime                      @default(now())
+  soldAt         DateTime?
+  withdrawnAt    DateTime?
+
+  @@index([status, createdAt])
+  @@index([sellerId, status])
+}
+
+model CrocsiansTradeLog {
+  id         String             @id @default(cuid())
+  listingId  String
+  sellerId   String
+  sellerName String
+  buyerId    String
+  buyerName  String
+  itemType   CrocsiansItemType
+  itemId     Int
+  itemName   String
+  quantity   Int
+  price      Int
+  taxRate    Float
+  buyerPaid  Int
+  taxAmount  Int
+  createdAt  DateTime           @default(now())
+
+  @@index([sellerId, createdAt])
+  @@index([buyerId, createdAt])
+  @@index([listingId])
+}
+
+model CrocsiansMarketSetting {
+  id        Int      @id @default(1)
+  level     Int      @default(1)
+  updatedAt DateTime @updatedAt
+}
+
+model CrocsiansSave {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  version   Int      @default(1)
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([updatedAt])
+}
+
+model CrocsiansCharacterIcon {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  contentType String   @default("image/webp")
+  data        Bytes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CrocsiansSkillUsage {
+  id        String    @id @default(cuid())
+  userId    String    @unique
+  uses      Json      @default("{}")
+  resetAt   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([resetAt])
+}
+
+model CrocsiansChatMessage {
+  id            String   @id @default(cuid())
+  userId        String
+  map           String
+  characterName String
+  job           String
+  level         Int
+  text          String
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([map, createdAt])
+  @@index([userId, createdAt])
+}

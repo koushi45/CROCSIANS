@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: .
+      target: development
+      args:
+        NODE_VERSION: 24.16.0
+    environment:
+      DATABASE_URL: postgresql://crocsians_app:crocsians_local_db_password@db:5432/crocsians?schema=public
+      SERVER_SHARED_PASSWORD: "newbalance"
+    ports:
+      - "3100:3100"
+    volumes:
+      - .:/workspace
+      - crocsians_node_modules:/workspace/node_modules
+      - crocsians_next_cache:/workspace/.next
+    depends_on:
+      db:
+        condition: service_healthy
+    command: bash -lc "npm ci && npx prisma generate && npx prisma db push && npm run dev -- --hostname 0.0.0.0 --port 3100"
+
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: crocsians
+      POSTGRES_USER: crocsians_app
+      POSTGRES_PASSWORD: crocsians_local_db_password
+    ports:
+      - "16432:5432"
+    volumes:
+      - crocsians_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crocsians_app -d crocsians"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  crocsians_node_modules:
+  crocsians_next_cache:
+  crocsians_postgres_data:

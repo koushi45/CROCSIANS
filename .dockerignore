@@ -1,0 +1,14 @@
+.git
+.local
+.next
+.env
+.env.*
+!.env.example
+data
+node_modules
+npm-debug.log*
+Dockerfile
+docker-compose*.yml
+deploy-*.tar.gz
+*.pem
+*.key

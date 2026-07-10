@@ -1,0 +1,44 @@
+{
+  "farm": {
+    "2": [{"name":"木材","quantity":20},{"name":"薬草","quantity":12}],
+    "3": [{"name":"丈夫な木材","quantity":18},{"name":"癒し草","quantity":10},{"name":"鉄板","quantity":8}],
+    "4": [{"name":"硬木","quantity":16},{"name":"生命草","quantity":12},{"name":"透明ガラス","quantity":10}],
+    "5": [{"name":"古木材","quantity":12},{"name":"霊薬の花","quantity":6},{"name":"妖精の雫","quantity":5}]
+  },
+  "mine": {
+    "2": [{"name":"石材","quantity":24},{"name":"木材","quantity":12},{"name":"鉄くぎ","quantity":8}],
+    "3": [{"name":"硬石","quantity":20},{"name":"鉄インゴット","quantity":12},{"name":"歯車","quantity":6}],
+    "4": [{"name":"黒曜石","quantity":14},{"name":"鋼板","quantity":14},{"name":"精密歯車","quantity":6}],
+    "5": [{"name":"星鋼石","quantity":8},{"name":"古代合金","quantity":8},{"name":"魔導コア","quantity":5}]
+  },
+  "forestry": {
+    "2": [{"name":"木材","quantity":24},{"name":"石材","quantity":12},{"name":"鉄くぎ","quantity":8}],
+    "3": [{"name":"丈夫な木材","quantity":20},{"name":"鉄板","quantity":10},{"name":"歯車","quantity":6}],
+    "4": [{"name":"硬木","quantity":16},{"name":"鋼板","quantity":10},{"name":"精密歯車","quantity":6}],
+    "5": [{"name":"古木材","quantity":12},{"name":"古代合金","quantity":6},{"name":"魔導コア","quantity":4}]
+  },
+  "weapon": {
+    "2": [{"name":"鉄インゴット","quantity":15},{"name":"鉄板","quantity":10},{"name":"丈夫な木材","quantity":12}],
+    "3": [{"name":"銀インゴット","quantity":12},{"name":"鋼板","quantity":12},{"name":"鋭い牙","quantity":10}],
+    "4": [{"name":"ミスリルインゴット","quantity":12},{"name":"魔銀インゴット","quantity":10},{"name":"精密歯車","quantity":8}],
+    "5": [{"name":"竜鉄インゴット","quantity":10},{"name":"星鋼インゴット","quantity":8},{"name":"魔導コア","quantity":5}]
+  },
+  "armor": {
+    "2": [{"name":"鉄板","quantity":16},{"name":"なめし革","quantity":12},{"name":"丈夫な布","quantity":10}],
+    "3": [{"name":"鋼板","quantity":14},{"name":"厚い獣皮","quantity":12},{"name":"硬い甲殻","quantity":10}],
+    "4": [{"name":"黒鉄インゴット","quantity":12},{"name":"魔獣の皮","quantity":10},{"name":"黒い甲殻","quantity":8}],
+    "5": [{"name":"竜の鱗","quantity":10},{"name":"竜の革","quantity":8},{"name":"古代合金","quantity":8}]
+  },
+  "apothecary": {
+    "2": [{"name":"薬草","quantity":20},{"name":"清水","quantity":12},{"name":"空き瓶","quantity":10}],
+    "3": [{"name":"癒し草","quantity":15},{"name":"霊水","quantity":10},{"name":"丈夫な瓶","quantity":8}],
+    "4": [{"name":"生命草","quantity":12},{"name":"聖水","quantity":10},{"name":"魔法瓶","quantity":8}],
+    "5": [{"name":"霊薬の花","quantity":6},{"name":"妖精の雫","quantity":6},{"name":"賢者の石片","quantity":4}]
+  },
+  "inn": {
+    "2": [{"name":"木材","quantity":20},{"name":"布","quantity":14},{"name":"レンガ","quantity":12}],
+    "3": [{"name":"丈夫な木材","quantity":18},{"name":"絹布","quantity":10},{"name":"大理石","quantity":10}],
+    "4": [{"name":"硬木","quantity":16},{"name":"魔法布","quantity":10},{"name":"強化レンガ","quantity":12}],
+    "5": [{"name":"古木材","quantity":10},{"name":"聖布","quantity":8},{"name":"天使の羽","quantity":6}]
+  }
+}

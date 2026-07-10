@@ -1,0 +1,22 @@
+[
+  {"id":1,"name":"木製クロックスクラブ","rarity":"N","atk":8,"se":"blow","sellPrice":80,"requiredLevel":1,"materials":[{"name":"木材","quantity":12},{"name":"鉄くぎ","quantity":8}]},
+  {"id":2,"name":"石付きクロックスメイス","rarity":"N","atk":11,"se":"blow","sellPrice":110,"requiredLevel":1,"materials":[{"name":"石材","quantity":10},{"name":"丈夫な木材","quantity":6},{"name":"鉄くぎ","quantity":4}]},
+  {"id":3,"name":"銅刃クロックスナイフ","rarity":"N","atk":15,"se":"slash","sellPrice":150,"requiredLevel":1,"materials":[{"name":"銅インゴット","quantity":8},{"name":"小さな牙","quantity":7},{"name":"なめし革","quantity":5}]},
+  {"id":4,"name":"鉄製クロックスソード","rarity":"N","atk":20,"se":"slash","sellPrice":210,"requiredLevel":1,"materials":[{"name":"鉄インゴット","quantity":10},{"name":"鉄板","quantity":5},{"name":"獣の皮","quantity":5}]},
+  {"id":5,"name":"クロックスボーンスピア","rarity":"N","atk":24,"se":"strike","sellPrice":260,"requiredLevel":1,"materials":[{"name":"魔物の骨","quantity":9},{"name":"角の欠片","quantity":6},{"name":"丈夫な木材","quantity":5}]},
+  {"id":6,"name":"毒針クロックスダガー","rarity":"R","atk":30,"se":"strike","sellPrice":420,"requiredLevel":2,"materials":[{"name":"毒針","quantity":8},{"name":"毒袋","quantity":7},{"name":"鉄インゴット","quantity":10}]},
+  {"id":7,"name":"銀牙クロックスセイバー","rarity":"R","atk":36,"se":"slash","sellPrice":520,"requiredLevel":2,"materials":[{"name":"銀インゴット","quantity":10},{"name":"鋭い牙","quantity":8},{"name":"厚い獣皮","quantity":7}]},
+  {"id":8,"name":"大角クロックスランス","rarity":"R","atk":43,"se":"strike","sellPrice":650,"requiredLevel":2,"materials":[{"name":"大きな角","quantity":8},{"name":"鋼板","quantity":9},{"name":"硬木","quantity":8}]},
+  {"id":9,"name":"氷結クロックスブレード","rarity":"R","atk":51,"se":"slash","sellPrice":800,"requiredLevel":2,"materials":[{"name":"氷の結晶","quantity":9},{"name":"銀インゴット","quantity":8},{"name":"透明ガラス","quantity":8}]},
+  {"id":10,"name":"炎片クロックスアックス","rarity":"R","atk":60,"se":"slash","sellPrice":980,"requiredLevel":2,"materials":[{"name":"炎の欠片","quantity":9},{"name":"鋼板","quantity":10},{"name":"硬い甲殻","quantity":6}]},
+  {"id":11,"name":"精密クロックスギアソード","rarity":"SR","atk":72,"se":"slash","sellPrice":1300,"requiredLevel":3,"materials":[{"name":"精密歯車","quantity":8},{"name":"ミスリルインゴット","quantity":12},{"name":"魔銀鉱石","quantity":10}]},
+  {"id":12,"name":"黒曜クロックスロッド","rarity":"SR","atk":84,"se":"magic","sellPrice":1550,"requiredLevel":3,"materials":[{"name":"黒曜石","quantity":10},{"name":"魔銀インゴット","quantity":9},{"name":"魔力草","quantity":11}]},
+  {"id":13,"name":"魔獣爪クロックスクロー","rarity":"SR","atk":98,"se":"slash","sellPrice":1850,"requiredLevel":3,"materials":[{"name":"魔獣の爪","quantity":11},{"name":"魔獣の血","quantity":8},{"name":"黒鉄インゴット","quantity":11}]},
+  {"id":14,"name":"溶岩核クロックスハンマー","rarity":"SR","atk":114,"se":"blow","sellPrice":2200,"requiredLevel":3,"materials":[{"name":"溶岩の核","quantity":8},{"name":"黒鉄インゴット","quantity":14},{"name":"強化レンガ","quantity":8}]},
+  {"id":15,"name":"闇晶クロックスサイズ","rarity":"SR","atk":132,"se":"slash","sellPrice":2600,"requiredLevel":3,"materials":[{"name":"闇の結晶","quantity":10},{"name":"影布","quantity":8},{"name":"魔獣の角","quantity":12}]},
+  {"id":16,"name":"竜牙クロックスブレード","rarity":"SSR","atk":155,"se":"slash","sellPrice":3600,"requiredLevel":4,"materials":[{"name":"竜の牙","quantity":8},{"name":"竜鉄インゴット","quantity":14},{"name":"竜の鱗","quantity":8}]},
+  {"id":17,"name":"星鋼クロックスツヴァイ","rarity":"SSR","atk":180,"se":"slash","sellPrice":4500,"requiredLevel":4,"materials":[{"name":"星鋼インゴット","quantity":14},{"name":"古代合金","quantity":10},{"name":"魔導コア","quantity":6}]},
+  {"id":18,"name":"次元クロックススピア","rarity":"SSR","atk":210,"se":"strike","sellPrice":5600,"requiredLevel":4,"materials":[{"name":"次元の欠片","quantity":8},{"name":"竜鉄インゴット","quantity":12},{"name":"精密歯車","quantity":6},{"name":"魔導コア","quantity":4}]},
+  {"id":19,"name":"魔王角クロックスアックス","rarity":"SSR","atk":245,"se":"slash","sellPrice":6900,"requiredLevel":4,"materials":[{"name":"魔王の角","quantity":7},{"name":"虚無の結晶","quantity":9},{"name":"古代合金","quantity":9},{"name":"魔導コア","quantity":5}]},
+  {"id":20,"name":"究極クロックスエンド","rarity":"SSR","atk":300,"se":"dark-magic2","sellPrice":9000,"requiredLevel":4,"materials":[{"name":"魔王の心臓","quantity":3},{"name":"竜の心臓","quantity":3},{"name":"星鋼インゴット","quantity":10},{"name":"賢者の石片","quantity":6},{"name":"魔導コア","quantity":8}]}
+]

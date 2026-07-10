@@ -1,0 +1,4432 @@
+[
+  {
+    "id": 1,
+    "name": "ひび割れスライム",
+    "hp": 40,
+    "atk": 6,
+    "def": 3,
+    "drop": "スライムゼリー",
+    "rareDrop": "薬草",
+    "gold": 7,
+    "exp": 25,
+    "skills": []
+  },
+  {
+    "id": 2,
+    "name": "牙ネズミ",
+    "hp": 42,
+    "atk": 6,
+    "def": 3,
+    "drop": "ネズミのしっぽ",
+    "rareDrop": "小さな牙",
+    "gold": 10,
+    "exp": 35,
+    "skills": []
+  },
+  {
+    "id": 3,
+    "name": "小鬼の見習い",
+    "hp": 44,
+    "atk": 7,
+    "def": 4,
+    "drop": "ゴブリンの耳",
+    "rareDrop": "錆びた金属片",
+    "gold": 12,
+    "exp": 40,
+    "skills": []
+  },
+  {
+    "id": 4,
+    "name": "毒コウモリ",
+    "hp": 47,
+    "atk": 8,
+    "def": 4,
+    "drop": "コウモリの羽",
+    "rareDrop": "小さな牙",
+    "gold": 15,
+    "exp": 45,
+    "skills": []
+  },
+  {
+    "id": 5,
+    "name": "さびた短剣ゴブリン",
+    "hp": 50,
+    "atk": 9,
+    "def": 5,
+    "drop": "ゴブリンの耳",
+    "rareDrop": "錆びた金属片",
+    "gold": 17,
+    "exp": 50,
+    "skills": []
+  },
+  {
+    "id": 6,
+    "name": "泥まみれウルフ",
+    "hp": 54,
+    "atk": 10,
+    "def": 5,
+    "drop": "獣の皮",
+    "rareDrop": "鋭い牙",
+    "gold": 20,
+    "exp": 60,
+    "skills": []
+  },
+  {
+    "id": 7,
+    "name": "草むらトカゲ",
+    "hp": 57,
+    "atk": 11,
+    "def": 6,
+    "drop": "小さな爪",
+    "rareDrop": "鋭い牙",
+    "gold": 23,
+    "exp": 65,
+    "skills": []
+  },
+  {
+    "id": 8,
+    "name": "骨かじり犬",
+    "hp": 61,
+    "atk": 12,
+    "def": 7,
+    "drop": "魔物の骨",
+    "rareDrop": "巨獣の骨",
+    "gold": 25,
+    "exp": 70,
+    "skills": []
+  },
+  {
+    "id": 9,
+    "name": "見張りゴブリン",
+    "hp": 66,
+    "atk": 13,
+    "def": 8,
+    "drop": "ゴブリンの耳",
+    "rareDrop": "錆びた金属片",
+    "gold": 28,
+    "exp": 75,
+    "skills": []
+  },
+  {
+    "id": 10,
+    "name": "小さな山賊",
+    "hp": 70,
+    "atk": 14,
+    "def": 8,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "鉄インゴット",
+    "gold": 31,
+    "exp": 90,
+    "skills": []
+  },
+  {
+    "id": 11,
+    "name": "森の盗賊",
+    "hp": 75,
+    "atk": 16,
+    "def": 9,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "鉄インゴット",
+    "gold": 33,
+    "exp": 90,
+    "skills": []
+  },
+  {
+    "id": 12,
+    "name": "毒針ビー",
+    "hp": 79,
+    "atk": 17,
+    "def": 10,
+    "drop": "毒針",
+    "rareDrop": "蜂蜜",
+    "gold": 36,
+    "exp": 100,
+    "skills": []
+  },
+  {
+    "id": 13,
+    "name": "迷いキノコ",
+    "hp": 84,
+    "atk": 18,
+    "def": 11,
+    "drop": "キノコの胞子",
+    "rareDrop": "毒消し草",
+    "gold": 39,
+    "exp": 105,
+    "skills": []
+  },
+  {
+    "id": 14,
+    "name": "双牙ウルフ",
+    "hp": 89,
+    "atk": 20,
+    "def": 12,
+    "drop": "獣の皮",
+    "rareDrop": "鋭い牙",
+    "gold": 42,
+    "exp": 115,
+    "skills": []
+  },
+  {
+    "id": 15,
+    "name": "木こりオーク",
+    "hp": 94,
+    "atk": 21,
+    "def": 13,
+    "drop": "厚い獣皮",
+    "rareDrop": "大きな角",
+    "gold": 45,
+    "exp": 120,
+    "skills": []
+  },
+  {
+    "id": 16,
+    "name": "沼地の大ガエル",
+    "hp": 100,
+    "atk": 23,
+    "def": 14,
+    "drop": "カエルの油",
+    "rareDrop": "毒消し草",
+    "gold": 48,
+    "exp": 130,
+    "skills": []
+  },
+  {
+    "id": 17,
+    "name": "暗がりスネーク",
+    "hp": 105,
+    "atk": 24,
+    "def": 15,
+    "drop": "蛇の抜け殻",
+    "rareDrop": "毒袋",
+    "gold": 51,
+    "exp": 135,
+    "skills": []
+  },
+  {
+    "id": 18,
+    "name": "盗賊リーダー",
+    "hp": 111,
+    "atk": 26,
+    "def": 16,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "鉄インゴット",
+    "gold": 54,
+    "exp": 145,
+    "skills": []
+  },
+  {
+    "id": 19,
+    "name": "鎧ゴブリン",
+    "hp": 116,
+    "atk": 27,
+    "def": 17,
+    "drop": "ゴブリンの耳",
+    "rareDrop": "錆びた金属片",
+    "gold": 58,
+    "exp": 150,
+    "skills": []
+  },
+  {
+    "id": 20,
+    "name": "森の番人トロル",
+    "hp": 122,
+    "atk": 29,
+    "def": 18,
+    "drop": "厚い獣皮",
+    "rareDrop": "大きな角",
+    "gold": 61,
+    "exp": 185,
+    "skills": []
+  },
+  {
+    "id": 21,
+    "name": "砂漠サソリ",
+    "hp": 128,
+    "atk": 30,
+    "def": 19,
+    "drop": "サソリの尾",
+    "rareDrop": "毒袋",
+    "gold": 64,
+    "exp": 170,
+    "skills": []
+  },
+  {
+    "id": 22,
+    "name": "乾きのミイラ",
+    "hp": 134,
+    "atk": 32,
+    "def": 20,
+    "drop": "ミイラの包帯",
+    "rareDrop": "調合灰",
+    "gold": 67,
+    "exp": 180,
+    "skills": []
+  },
+  {
+    "id": 23,
+    "name": "砂走りリザード",
+    "hp": 140,
+    "atk": 34,
+    "def": 21,
+    "drop": "小さな爪",
+    "rareDrop": "砂獣の毛皮",
+    "gold": 71,
+    "exp": 190,
+    "skills": []
+  },
+  {
+    "id": 24,
+    "name": "荒野の斧兵",
+    "hp": 146,
+    "atk": 36,
+    "def": 22,
+    "drop": "鉄インゴット",
+    "rareDrop": "鋼板",
+    "gold": 74,
+    "exp": 195,
+    "skills": []
+  },
+  {
+    "id": 25,
+    "name": "岩肌オーク",
+    "hp": 153,
+    "atk": 37,
+    "def": 23,
+    "drop": "厚い獣皮",
+    "rareDrop": "大きな角",
+    "gold": 77,
+    "exp": 200,
+    "skills": []
+  },
+  {
+    "id": 26,
+    "name": "砂塵の盗賊",
+    "hp": 159,
+    "atk": 39,
+    "def": 24,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "鉄インゴット",
+    "gold": 81,
+    "exp": 210,
+    "skills": []
+  },
+  {
+    "id": 27,
+    "name": "毒尾マンティス",
+    "hp": 166,
+    "atk": 41,
+    "def": 25,
+    "drop": "鋭い爪",
+    "rareDrop": "毒針",
+    "gold": 84,
+    "exp": 220,
+    "skills": []
+  },
+  {
+    "id": 28,
+    "name": "甲殻サソリ",
+    "hp": 172,
+    "atk": 43,
+    "def": 26,
+    "drop": "サソリの尾",
+    "rareDrop": "毒袋",
+    "gold": 88,
+    "exp": 230,
+    "skills": []
+  },
+  {
+    "id": 29,
+    "name": "砂漠の呪術師",
+    "hp": 179,
+    "atk": 45,
+    "def": 28,
+    "drop": "魔力草",
+    "rareDrop": "砂獣の毛皮",
+    "gold": 92,
+    "exp": 235,
+    "skills": []
+  },
+  {
+    "id": 30,
+    "name": "荒野のミノタウロス",
+    "hp": 186,
+    "atk": 46,
+    "def": 29,
+    "drop": "厚い獣皮",
+    "rareDrop": "大きな角",
+    "gold": 95,
+    "exp": 265,
+    "skills": []
+  },
+  {
+    "id": 31,
+    "name": "赤砂の狼",
+    "hp": 192,
+    "atk": 48,
+    "def": 30,
+    "drop": "獣の皮",
+    "rareDrop": "鋭い牙",
+    "gold": 99,
+    "exp": 255,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "name": "流砂スライム",
+    "hp": 199,
+    "atk": 50,
+    "def": 31,
+    "drop": "スライムゼリー",
+    "rareDrop": "砂獣の毛皮",
+    "gold": 103,
+    "exp": 265,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "name": "日照りの骸骨",
+    "hp": 206,
+    "atk": 52,
+    "def": 32,
+    "drop": "魔物の骨",
+    "rareDrop": "巨獣の骨",
+    "gold": 106,
+    "exp": 270,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "name": "砂丘の弓兵",
+    "hp": 213,
+    "atk": 54,
+    "def": 34,
+    "drop": "鉄インゴット",
+    "rareDrop": "鋼板",
+    "gold": 110,
+    "exp": 280,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "name": "鉄棘サボテン",
+    "hp": 220,
+    "atk": 56,
+    "def": 35,
+    "drop": "丈夫な木材",
+    "rareDrop": "毒針",
+    "gold": 114,
+    "exp": 290,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "name": "砂嵐の魔獣",
+    "hp": 228,
+    "atk": 58,
+    "def": 36,
+    "drop": "獣の皮",
+    "rareDrop": "鋭い牙",
+    "gold": 118,
+    "exp": 300,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "name": "蜃気楼の魔術師",
+    "hp": 235,
+    "atk": 60,
+    "def": 38,
+    "drop": "魔力草",
+    "rareDrop": "魔法布",
+    "gold": 122,
+    "exp": 305,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "全体をNo*2回復"
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "name": "古代墓守",
+    "hp": 242,
+    "atk": 62,
+    "def": 39,
+    "drop": "大理石",
+    "rareDrop": "錆びた金属片",
+    "gold": 126,
+    "exp": 315,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "name": "砂王の近衛兵",
+    "hp": 250,
+    "atk": 64,
+    "def": 40,
+    "drop": "鉄インゴット",
+    "rareDrop": "鋼板",
+    "gold": 130,
+    "exp": 325,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "name": "砂漠の守護獣",
+    "hp": 257,
+    "atk": 66,
+    "def": 41,
+    "drop": "厚い獣皮",
+    "rareDrop": "巨獣の牙",
+    "gold": 134,
+    "exp": 385,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "name": "雪原ウルフ",
+    "hp": 265,
+    "atk": 68,
+    "def": 43,
+    "drop": "獣の皮",
+    "rareDrop": "氷の結晶",
+    "gold": 138,
+    "exp": 365,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "name": "氷牙ベア",
+    "hp": 272,
+    "atk": 70,
+    "def": 44,
+    "drop": "厚い獣皮",
+    "rareDrop": "氷の結晶",
+    "gold": 142,
+    "exp": 375,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "name": "凍える亡霊",
+    "hp": 280,
+    "atk": 73,
+    "def": 45,
+    "drop": "亡霊の残滓",
+    "rareDrop": "闇の結晶",
+    "gold": 146,
+    "exp": 385,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "name": "氷結スライム",
+    "hp": 288,
+    "atk": 75,
+    "def": 47,
+    "drop": "スライムゼリー",
+    "rareDrop": "氷の結晶",
+    "gold": 151,
+    "exp": 395,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "name": "雪山の槍兵",
+    "hp": 296,
+    "atk": 77,
+    "def": 48,
+    "drop": "鉄インゴット",
+    "rareDrop": "氷の結晶",
+    "gold": 155,
+    "exp": 410,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "name": "白銀ゴーレム",
+    "hp": 303,
+    "atk": 79,
+    "def": 50,
+    "drop": "硬石",
+    "rareDrop": "銀鉱石",
+    "gold": 159,
+    "exp": 415,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "name": "吹雪の魔女",
+    "hp": 311,
+    "atk": 81,
+    "def": 51,
+    "drop": "魔力草",
+    "rareDrop": "霜の核",
+    "gold": 164,
+    "exp": 430,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "全体をNo*2回復"
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "name": "氷鎧ナイト",
+    "hp": 319,
+    "atk": 84,
+    "def": 52,
+    "drop": "鉄インゴット",
+    "rareDrop": "氷の結晶",
+    "gold": 168,
+    "exp": 440,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "name": "霜巨人の子",
+    "hp": 327,
+    "atk": 86,
+    "def": 54,
+    "drop": "巨獣の骨",
+    "rareDrop": "霜の核",
+    "gold": 173,
+    "exp": 450,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "name": "氷獄トロル",
+    "hp": 336,
+    "atk": 88,
+    "def": 55,
+    "drop": "巨獣の骨",
+    "rareDrop": "霜の核",
+    "gold": 177,
+    "exp": 495,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "name": "氷穴コウモリ",
+    "hp": 344,
+    "atk": 90,
+    "def": 57,
+    "drop": "コウモリの羽",
+    "rareDrop": "小さな牙",
+    "gold": 182,
+    "exp": 475,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "name": "霜噛みワーム",
+    "hp": 352,
+    "atk": 93,
+    "def": 58,
+    "drop": "蛇の抜け殻",
+    "rareDrop": "霜の核",
+    "gold": 186,
+    "exp": 480,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "name": "白毛の山賊",
+    "hp": 360,
+    "atk": 95,
+    "def": 60,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "鉄インゴット",
+    "gold": 191,
+    "exp": 495,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "name": "氷柱の精霊",
+    "hp": 369,
+    "atk": 97,
+    "def": 61,
+    "drop": "氷の結晶",
+    "rareDrop": "霜の核",
+    "gold": 196,
+    "exp": 505,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "name": "雪崩オーク",
+    "hp": 377,
+    "atk": 100,
+    "def": 63,
+    "drop": "巨獣の骨",
+    "rareDrop": "霜の核",
+    "gold": 200,
+    "exp": 515,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "name": "凍土の番犬",
+    "hp": 385,
+    "atk": 102,
+    "def": 64,
+    "drop": "獣の皮",
+    "rareDrop": "氷の結晶",
+    "gold": 205,
+    "exp": 525,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "name": "氷鏡の魔導士",
+    "hp": 394,
+    "atk": 104,
+    "def": 66,
+    "drop": "魔力草",
+    "rareDrop": "霜の核",
+    "gold": 210,
+    "exp": 535,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "全体をNo*2回復"
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "name": "霜刃アサシン",
+    "hp": 402,
+    "atk": 107,
+    "def": 67,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "鉄インゴット",
+    "gold": 215,
+    "exp": 550,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "name": "白銀の巨人",
+    "hp": 411,
+    "atk": 109,
+    "def": 69,
+    "drop": "厚い獣皮",
+    "rareDrop": "大きな角",
+    "gold": 220,
+    "exp": 565,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "name": "雪原の主",
+    "hp": 420,
+    "atk": 111,
+    "def": 70,
+    "drop": "厚い獣皮",
+    "rareDrop": "氷の結晶",
+    "gold": 225,
+    "exp": 660,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "name": "火山コウモリ",
+    "hp": 428,
+    "atk": 114,
+    "def": 72,
+    "drop": "コウモリの羽",
+    "rareDrop": "小さな牙",
+    "gold": 230,
+    "exp": 635,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "name": "溶岩スライム",
+    "hp": 437,
+    "atk": 116,
+    "def": 73,
+    "drop": "スライムゼリー",
+    "rareDrop": "溶岩の核",
+    "gold": 235,
+    "exp": 650,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "name": "火吹きリザード",
+    "hp": 446,
+    "atk": 119,
+    "def": 75,
+    "drop": "小さな爪",
+    "rareDrop": "炎の欠片",
+    "gold": 240,
+    "exp": 660,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "name": "焦げた骸骨兵",
+    "hp": 455,
+    "atk": 121,
+    "def": 76,
+    "drop": "魔物の骨",
+    "rareDrop": "巨獣の骨",
+    "gold": 245,
+    "exp": 675,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "name": "火山の斧オーク",
+    "hp": 464,
+    "atk": 124,
+    "def": 78,
+    "drop": "巨獣の骨",
+    "rareDrop": "溶岩の核",
+    "gold": 250,
+    "exp": 690,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "name": "炎の魔導士",
+    "hp": 473,
+    "atk": 126,
+    "def": 80,
+    "drop": "魔力草",
+    "rareDrop": "炎の欠片",
+    "gold": 255,
+    "exp": 700,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "全体をNo*2回復"
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "name": "黒煙ゴーレム",
+    "hp": 482,
+    "atk": 129,
+    "def": 81,
+    "drop": "硬石",
+    "rareDrop": "溶岩の核",
+    "gold": 261,
+    "exp": 710,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "name": "溶岩の番犬",
+    "hp": 491,
+    "atk": 131,
+    "def": 83,
+    "drop": "獣の皮",
+    "rareDrop": "炎の欠片",
+    "gold": 266,
+    "exp": 725,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "name": "灼熱ミノタウロス",
+    "hp": 500,
+    "atk": 134,
+    "def": 84,
+    "drop": "巨獣の骨",
+    "rareDrop": "溶岩の核",
+    "gold": 271,
+    "exp": 740,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "name": "火山竜の幼体",
+    "hp": 509,
+    "atk": 136,
+    "def": 86,
+    "drop": "竜の鱗",
+    "rareDrop": "竜鉄鉱石",
+    "gold": 277,
+    "exp": 815,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "name": "火種インプ",
+    "hp": 518,
+    "atk": 139,
+    "def": 88,
+    "drop": "悪魔の翼膜",
+    "rareDrop": "闇の結晶",
+    "gold": 282,
+    "exp": 770,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "name": "灰かぶり盗賊",
+    "hp": 528,
+    "atk": 141,
+    "def": 89,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "鉄インゴット",
+    "gold": 288,
+    "exp": 780,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "name": "燃える甲虫",
+    "hp": 537,
+    "atk": 144,
+    "def": 91,
+    "drop": "甲殻",
+    "rareDrop": "硬い甲殻",
+    "gold": 293,
+    "exp": 795,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "name": "火口の槍兵",
+    "hp": 546,
+    "atk": 146,
+    "def": 93,
+    "drop": "鉄インゴット",
+    "rareDrop": "炎の欠片",
+    "gold": 299,
+    "exp": 810,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "name": "赤熱ゴブリン",
+    "hp": 556,
+    "atk": 149,
+    "def": 94,
+    "drop": "ゴブリンの耳",
+    "rareDrop": "錆びた金属片",
+    "gold": 304,
+    "exp": 825,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "name": "煤煙の魔女",
+    "hp": 565,
+    "atk": 152,
+    "def": 96,
+    "drop": "魔力草",
+    "rareDrop": "魔法布",
+    "gold": 310,
+    "exp": 840,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "全体をNo*2回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "name": "焦土の騎士",
+    "hp": 574,
+    "atk": 154,
+    "def": 98,
+    "drop": "鉄インゴット",
+    "rareDrop": "炎の欠片",
+    "gold": 316,
+    "exp": 850,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "name": "溶鉄ゴーレム",
+    "hp": 584,
+    "atk": 157,
+    "def": 99,
+    "drop": "硬石",
+    "rareDrop": "溶岩の核",
+    "gold": 321,
+    "exp": 865,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 79,
+    "name": "炎獣サラマンダー",
+    "hp": 594,
+    "atk": 160,
+    "def": 101,
+    "drop": "獣の皮",
+    "rareDrop": "炎の欠片",
+    "gold": 327,
+    "exp": 880,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "name": "火山の守護竜",
+    "hp": 603,
+    "atk": 162,
+    "def": 103,
+    "drop": "竜の鱗",
+    "rareDrop": "竜鉄鉱石",
+    "gold": 333,
+    "exp": 1025,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 81,
+    "name": "古城の兵士",
+    "hp": 613,
+    "atk": 165,
+    "def": 104,
+    "drop": "錆びた金属片",
+    "rareDrop": "銀インゴット",
+    "gold": 339,
+    "exp": 1010,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "name": "朽ちた鎧騎士",
+    "hp": 622,
+    "atk": 168,
+    "def": 106,
+    "drop": "錆びた金属片",
+    "rareDrop": "銀インゴット",
+    "gold": 345,
+    "exp": 1025,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "name": "吸血コウモリ王",
+    "hp": 632,
+    "atk": 170,
+    "def": 108,
+    "drop": "コウモリの羽",
+    "rareDrop": "吸血牙",
+    "gold": 351,
+    "exp": 1045,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 84,
+    "name": "呪われた人形",
+    "hp": 642,
+    "atk": 173,
+    "def": 110,
+    "drop": "呪いの人形片",
+    "rareDrop": "魔法布",
+    "gold": 357,
+    "exp": 1065,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 85,
+    "name": "黒衣の暗殺者",
+    "hp": 652,
+    "atk": 176,
+    "def": 111,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "影布",
+    "gold": 363,
+    "exp": 1075,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 86,
+    "name": "古城の魔術師",
+    "hp": 662,
+    "atk": 179,
+    "def": 113,
+    "drop": "魔力草",
+    "rareDrop": "魔法布",
+    "gold": 369,
+    "exp": 1090,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "全体をNo*2回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 87,
+    "name": "血濡れナイト",
+    "hp": 672,
+    "atk": 181,
+    "def": 115,
+    "drop": "鉄インゴット",
+    "rareDrop": "鋼板",
+    "gold": 375,
+    "exp": 1110,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 88,
+    "name": "影歩きの獣",
+    "hp": 681,
+    "atk": 184,
+    "def": 117,
+    "drop": "獣の皮",
+    "rareDrop": "魔獣の爪",
+    "gold": 381,
+    "exp": 1130,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 89,
+    "name": "鉄槌アンデッド",
+    "hp": 691,
+    "atk": 187,
+    "def": 118,
+    "drop": "魔物の骨",
+    "rareDrop": "黒鉄鉱石",
+    "gold": 387,
+    "exp": 1140,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "name": "古城の主",
+    "hp": 701,
+    "atk": 190,
+    "def": 120,
+    "drop": "亡霊の残滓",
+    "rareDrop": "闇の結晶",
+    "gold": 394,
+    "exp": 1250,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "name": "壁抜けゴースト",
+    "hp": 711,
+    "atk": 192,
+    "def": 122,
+    "drop": "亡霊の残滓",
+    "rareDrop": "闇の結晶",
+    "gold": 400,
+    "exp": 1180,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "name": "錆びた槍兵",
+    "hp": 722,
+    "atk": 195,
+    "def": 124,
+    "drop": "錆びた金属片",
+    "rareDrop": "銀インゴット",
+    "gold": 406,
+    "exp": 1195,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 93,
+    "name": "泣き女の亡霊",
+    "hp": 732,
+    "atk": 198,
+    "def": 125,
+    "drop": "亡霊の残滓",
+    "rareDrop": "闇の結晶",
+    "gold": 413,
+    "exp": 1210,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 94,
+    "name": "封印の石像",
+    "hp": 742,
+    "atk": 201,
+    "def": 127,
+    "drop": "石材",
+    "rareDrop": "硬石",
+    "gold": 419,
+    "exp": 1225,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 95,
+    "name": "夜警の騎士",
+    "hp": 752,
+    "atk": 204,
+    "def": 129,
+    "drop": "錆びた金属片",
+    "rareDrop": "銀インゴット",
+    "gold": 426,
+    "exp": 1245,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 96,
+    "name": "月影の吸血鬼",
+    "hp": 762,
+    "atk": 206,
+    "def": 131,
+    "drop": "吸血牙",
+    "rareDrop": "魔獣の血",
+    "gold": 432,
+    "exp": 1265,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 97,
+    "name": "呪印の司祭",
+    "hp": 773,
+    "atk": 209,
+    "def": 133,
+    "drop": "魔力草",
+    "rareDrop": "魔法布",
+    "gold": 439,
+    "exp": 1285,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "全体をNo*2回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 98,
+    "name": "黒薔薇の魔女",
+    "hp": 783,
+    "atk": 212,
+    "def": 135,
+    "drop": "月光草",
+    "rareDrop": "影布",
+    "gold": 445,
+    "exp": 1295,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "全体をNo*2回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 99,
+    "name": "亡国の将軍",
+    "hp": 793,
+    "atk": 215,
+    "def": 136,
+    "drop": "錆びた金属片",
+    "rareDrop": "銀インゴット",
+    "gold": 452,
+    "exp": 1315,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 100,
+    "name": "古城の大公",
+    "hp": 804,
+    "atk": 218,
+    "def": 138,
+    "drop": "亡霊の残滓",
+    "rareDrop": "闇の結晶",
+    "gold": 459,
+    "exp": 1535,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 101,
+    "name": "深海クラブ",
+    "hp": 814,
+    "atk": 221,
+    "def": 140,
+    "drop": "硬い甲殻",
+    "rareDrop": "黒い甲殻",
+    "gold": 465,
+    "exp": 1520,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "name": "毒潮クラゲ",
+    "hp": 825,
+    "atk": 224,
+    "def": 142,
+    "drop": "霊水",
+    "rareDrop": "毒袋",
+    "gold": 472,
+    "exp": 1545,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 103,
+    "name": "海底の槍兵",
+    "hp": 835,
+    "atk": 227,
+    "def": 144,
+    "drop": "鉄インゴット",
+    "rareDrop": "深海の鱗",
+    "gold": 479,
+    "exp": 1565,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 104,
+    "name": "黒真珠スライム",
+    "hp": 846,
+    "atk": 230,
+    "def": 146,
+    "drop": "スライムゼリー",
+    "rareDrop": "真珠",
+    "gold": 486,
+    "exp": 1585,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 105,
+    "name": "鋼殻タートル",
+    "hp": 856,
+    "atk": 233,
+    "def": 148,
+    "drop": "硬い甲殻",
+    "rareDrop": "真珠",
+    "gold": 493,
+    "exp": 1610,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 106,
+    "name": "深海の魔女",
+    "hp": 867,
+    "atk": 235,
+    "def": 149,
+    "drop": "魔力草",
+    "rareDrop": "霊水",
+    "gold": 500,
+    "exp": 1630,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "全体をNo*2回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 107,
+    "name": "鮫人ウォリアー",
+    "hp": 877,
+    "atk": 238,
+    "def": 151,
+    "drop": "深海の鱗",
+    "rareDrop": "鋭い牙",
+    "gold": 507,
+    "exp": 1655,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 108,
+    "name": "海溝の亡霊",
+    "hp": 888,
+    "atk": 241,
+    "def": 153,
+    "drop": "亡霊の残滓",
+    "rareDrop": "闇の結晶",
+    "gold": 514,
+    "exp": 1670,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 109,
+    "name": "大渦リヴァイアサン幼体",
+    "hp": 899,
+    "atk": 244,
+    "def": 155,
+    "drop": "深海の鱗",
+    "rareDrop": "竜の牙",
+    "gold": 521,
+    "exp": 1690,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 110,
+    "name": "深海の守護獣",
+    "hp": 910,
+    "atk": 247,
+    "def": 157,
+    "drop": "厚い獣皮",
+    "rareDrop": "巨獣の牙",
+    "gold": 528,
+    "exp": 1850,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 111,
+    "name": "潮騒のゴースト",
+    "hp": 920,
+    "atk": 250,
+    "def": 159,
+    "drop": "亡霊の残滓",
+    "rareDrop": "闇の結晶",
+    "gold": 535,
+    "exp": 1735,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 112,
+    "name": "青鱗リザード",
+    "hp": 931,
+    "atk": 253,
+    "def": 161,
+    "drop": "深海の鱗",
+    "rareDrop": "鋭い牙",
+    "gold": 543,
+    "exp": 1755,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 113,
+    "name": "沈没船の骸骨",
+    "hp": 942,
+    "atk": 256,
+    "def": 163,
+    "drop": "魔物の骨",
+    "rareDrop": "巨獣の骨",
+    "gold": 550,
+    "exp": 1780,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 114,
+    "name": "珊瑚の魔導士",
+    "hp": 953,
+    "atk": 259,
+    "def": 165,
+    "drop": "魔力草",
+    "rareDrop": "霊水",
+    "gold": 557,
+    "exp": 1800,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 115,
+    "name": "大貝の番人",
+    "hp": 964,
+    "atk": 262,
+    "def": 167,
+    "drop": "硬い甲殻",
+    "rareDrop": "真珠",
+    "gold": 565,
+    "exp": 1820,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 116,
+    "name": "暗潮の暗殺者",
+    "hp": 975,
+    "atk": 265,
+    "def": 169,
+    "drop": "深海の鱗",
+    "rareDrop": "霊水",
+    "gold": 572,
+    "exp": 1845,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 117,
+    "name": "海蛇ナーガ",
+    "hp": 986,
+    "atk": 269,
+    "def": 170,
+    "drop": "深海の鱗",
+    "rareDrop": "鋭い牙",
+    "gold": 579,
+    "exp": 1865,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 118,
+    "name": "水圧ゴーレム",
+    "hp": 997,
+    "atk": 272,
+    "def": 172,
+    "drop": "硬石",
+    "rareDrop": "深海の鱗",
+    "gold": 587,
+    "exp": 1885,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 119,
+    "name": "海底神殿の騎士",
+    "hp": 1008,
+    "atk": 275,
+    "def": 174,
+    "drop": "鉄インゴット",
+    "rareDrop": "深海の鱗",
+    "gold": 594,
+    "exp": 1910,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 120,
+    "name": "大海の王獣",
+    "hp": 1019,
+    "atk": 278,
+    "def": 176,
+    "drop": "厚い獣皮",
+    "rareDrop": "巨獣の牙",
+    "gold": 602,
+    "exp": 2225,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 121,
+    "name": "天空の小竜",
+    "hp": 1030,
+    "atk": 281,
+    "def": 178,
+    "drop": "竜の鱗",
+    "rareDrop": "雷の羽根",
+    "gold": 610,
+    "exp": 2225,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 122,
+    "name": "雲上の弓兵",
+    "hp": 1041,
+    "atk": 284,
+    "def": 180,
+    "drop": "鋼板",
+    "rareDrop": "雷の羽根",
+    "gold": 617,
+    "exp": 2250,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 123,
+    "name": "雷鳥",
+    "hp": 1052,
+    "atk": 287,
+    "def": 182,
+    "drop": "雷の羽根",
+    "rareDrop": "天使の羽",
+    "gold": 625,
+    "exp": 2285,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 124,
+    "name": "空駆けグリフォン",
+    "hp": 1064,
+    "atk": 290,
+    "def": 184,
+    "drop": "風切り羽",
+    "rareDrop": "鋭い爪",
+    "gold": 633,
+    "exp": 2310,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 125,
+    "name": "雷鳴の魔導士",
+    "hp": 1075,
+    "atk": 293,
+    "def": 186,
+    "drop": "魔力草",
+    "rareDrop": "雷の羽根",
+    "gold": 641,
+    "exp": 2335,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 126,
+    "name": "天空ゴーレム",
+    "hp": 1086,
+    "atk": 296,
+    "def": 188,
+    "drop": "硬石",
+    "rareDrop": "魔導コア",
+    "gold": 648,
+    "exp": 2360,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 127,
+    "name": "嵐の騎士",
+    "hp": 1098,
+    "atk": 300,
+    "def": 190,
+    "drop": "鋼板",
+    "rareDrop": "雷の羽根",
+    "gold": 656,
+    "exp": 2385,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 128,
+    "name": "蒼雷ドラゴン",
+    "hp": 1109,
+    "atk": 303,
+    "def": 192,
+    "drop": "竜の鱗",
+    "rareDrop": "雷の羽根",
+    "gold": 664,
+    "exp": 2410,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 129,
+    "name": "天空要塞の番兵",
+    "hp": 1120,
+    "atk": 306,
+    "def": 194,
+    "drop": "鋼板",
+    "rareDrop": "雷の羽根",
+    "gold": 672,
+    "exp": 2435,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 130,
+    "name": "雲海の王獣",
+    "hp": 1132,
+    "atk": 309,
+    "def": 196,
+    "drop": "厚い獣皮",
+    "rareDrop": "巨獣の牙",
+    "gold": 680,
+    "exp": 2660,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 131,
+    "name": "浮遊スライム",
+    "hp": 1143,
+    "atk": 312,
+    "def": 198,
+    "drop": "スライムゼリー",
+    "rareDrop": "雲糸",
+    "gold": 688,
+    "exp": 2490,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 132,
+    "name": "風切りハーピー",
+    "hp": 1155,
+    "atk": 315,
+    "def": 200,
+    "drop": "風切り羽",
+    "rareDrop": "鋭い爪",
+    "gold": 696,
+    "exp": 2515,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 133,
+    "name": "白雲の槍兵",
+    "hp": 1166,
+    "atk": 319,
+    "def": 202,
+    "drop": "鉄インゴット",
+    "rareDrop": "氷の結晶",
+    "gold": 704,
+    "exp": 2540,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 134,
+    "name": "旋風インプ",
+    "hp": 1178,
+    "atk": 322,
+    "def": 204,
+    "drop": "悪魔の翼膜",
+    "rareDrop": "闇の結晶",
+    "gold": 713,
+    "exp": 2565,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 135,
+    "name": "雷雲の精霊",
+    "hp": 1189,
+    "atk": 325,
+    "def": 206,
+    "drop": "雷の羽根",
+    "rareDrop": "天使の羽",
+    "gold": 721,
+    "exp": 2600,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 136,
+    "name": "空賊リーダー",
+    "hp": 1201,
+    "atk": 328,
+    "def": 209,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "影布",
+    "gold": 729,
+    "exp": 2625,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 137,
+    "name": "天翼の守護者",
+    "hp": 1212,
+    "atk": 331,
+    "def": 211,
+    "drop": "羽毛",
+    "rareDrop": "風切り羽",
+    "gold": 738,
+    "exp": 2660,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 138,
+    "name": "暴風の魔女",
+    "hp": 1224,
+    "atk": 335,
+    "def": 213,
+    "drop": "魔力草",
+    "rareDrop": "魔法布",
+    "gold": 746,
+    "exp": 2685,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 139,
+    "name": "雷槍の将軍",
+    "hp": 1236,
+    "atk": 338,
+    "def": 215,
+    "drop": "鋼板",
+    "rareDrop": "雷の羽根",
+    "gold": 754,
+    "exp": 2710,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 140,
+    "name": "天空竜",
+    "hp": 1247,
+    "atk": 341,
+    "def": 217,
+    "drop": "竜の鱗",
+    "rareDrop": "雷の羽根",
+    "gold": 763,
+    "exp": 3150,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 141,
+    "name": "魔界インプ",
+    "hp": 1259,
+    "atk": 344,
+    "def": 219,
+    "drop": "悪魔の翼膜",
+    "rareDrop": "魔獣の角",
+    "gold": 771,
+    "exp": 3165,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 142,
+    "name": "黒角デーモン",
+    "hp": 1271,
+    "atk": 348,
+    "def": 221,
+    "drop": "闇の結晶",
+    "rareDrop": "魔獣の角",
+    "gold": 780,
+    "exp": 3195,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 143,
+    "name": "奈落の番犬",
+    "hp": 1283,
+    "atk": 351,
+    "def": 223,
+    "drop": "魔獣の皮",
+    "rareDrop": "魔獣の血",
+    "gold": 788,
+    "exp": 3225,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "残りHPに応じて1.2～2.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 144,
+    "name": "闇炎の魔術師",
+    "hp": 1295,
+    "atk": 354,
+    "def": 225,
+    "drop": "魔力草",
+    "rareDrop": "炎の欠片",
+    "gold": 797,
+    "exp": 3260,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 145,
+    "name": "魔鎧ナイト",
+    "hp": 1306,
+    "atk": 358,
+    "def": 227,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 806,
+    "exp": 3290,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 146,
+    "name": "混沌の巨人",
+    "hp": 1318,
+    "atk": 361,
+    "def": 229,
+    "drop": "厚い獣皮",
+    "rareDrop": "大きな角",
+    "gold": 814,
+    "exp": 3320,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 147,
+    "name": "黒翼の処刑人",
+    "hp": 1330,
+    "atk": 364,
+    "def": 231,
+    "drop": "羽毛",
+    "rareDrop": "風切り羽",
+    "gold": 823,
+    "exp": 3355,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "1.5倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 148,
+    "name": "奈落ゴーレム",
+    "hp": 1342,
+    "atk": 367,
+    "def": 234,
+    "drop": "黒曜石",
+    "rareDrop": "闇の結晶",
+    "gold": 832,
+    "exp": 3395,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 149,
+    "name": "魔界竜",
+    "hp": 1354,
+    "atk": 371,
+    "def": 236,
+    "drop": "竜の牙",
+    "rareDrop": "竜の心臓",
+    "gold": 841,
+    "exp": 3425,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 150,
+    "name": "魔王軍大将",
+    "hp": 1366,
+    "atk": 374,
+    "def": 238,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 850,
+    "exp": 3740,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "N",
+        "maxUses": 1,
+        "effect": "0.8倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 151,
+    "name": "小悪魔の斥候",
+    "hp": 1378,
+    "atk": 377,
+    "def": 240,
+    "drop": "悪魔の翼膜",
+    "rareDrop": "闇の結晶",
+    "gold": 859,
+    "exp": 3500,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 152,
+    "name": "血爪の獣",
+    "hp": 1390,
+    "atk": 381,
+    "def": 242,
+    "drop": "魔獣の皮",
+    "rareDrop": "魔獣の血",
+    "gold": 868,
+    "exp": 3530,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 153,
+    "name": "呪炎スライム",
+    "hp": 1402,
+    "atk": 384,
+    "def": 244,
+    "drop": "スライムゼリー",
+    "rareDrop": "溶岩の核",
+    "gold": 877,
+    "exp": 3555,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 154,
+    "name": "魔界の槍兵",
+    "hp": 1414,
+    "atk": 387,
+    "def": 246,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 886,
+    "exp": 3595,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 155,
+    "name": "暗黒司祭",
+    "hp": 1427,
+    "atk": 391,
+    "def": 248,
+    "drop": "魔銀鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 895,
+    "exp": 3625,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 156,
+    "name": "黒霧の暗殺者",
+    "hp": 1439,
+    "atk": 394,
+    "def": 251,
+    "drop": "盗賊の布切れ",
+    "rareDrop": "影布",
+    "gold": 904,
+    "exp": 3660,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 157,
+    "name": "深淵の騎士",
+    "hp": 1451,
+    "atk": 398,
+    "def": 253,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 913,
+    "exp": 3690,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 158,
+    "name": "魔眼の魔導士",
+    "hp": 1463,
+    "atk": 401,
+    "def": 255,
+    "drop": "魔銀鉱石",
+    "rareDrop": "魔導コア",
+    "gold": 922,
+    "exp": 3730,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 159,
+    "name": "奈落の巨将",
+    "hp": 1475,
+    "atk": 404,
+    "def": 257,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 932,
+    "exp": 3765,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 160,
+    "name": "魔界の門番",
+    "hp": 1488,
+    "atk": 408,
+    "def": 259,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 941,
+    "exp": 4370,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 161,
+    "name": "星喰いスライム",
+    "hp": 1500,
+    "atk": 411,
+    "def": 261,
+    "drop": "スライムゼリー",
+    "rareDrop": "星鋼石",
+    "gold": 950,
+    "exp": 4390,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 162,
+    "name": "次元の番人",
+    "hp": 1512,
+    "atk": 415,
+    "def": 264,
+    "drop": "次元の欠片",
+    "rareDrop": "虚無の結晶",
+    "gold": 960,
+    "exp": 4435,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 163,
+    "name": "虚無の騎士",
+    "hp": 1525,
+    "atk": 418,
+    "def": 266,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 969,
+    "exp": 4470,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 164,
+    "name": "終末の魔導士",
+    "hp": 1537,
+    "atk": 422,
+    "def": 268,
+    "drop": "魔銀鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 979,
+    "exp": 4510,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 165,
+    "name": "神殿の破壊者",
+    "hp": 1550,
+    "atk": 425,
+    "def": 270,
+    "drop": "大理石",
+    "rareDrop": "古代合金",
+    "gold": 988,
+    "exp": 4555,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 166,
+    "name": "黒竜王",
+    "hp": 1562,
+    "atk": 428,
+    "def": 272,
+    "drop": "竜の牙",
+    "rareDrop": "竜の心臓",
+    "gold": 998,
+    "exp": 4600,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 167,
+    "name": "古代兵器ゴーレム",
+    "hp": 1574,
+    "atk": 432,
+    "def": 275,
+    "drop": "古代合金",
+    "rareDrop": "魔導コア",
+    "gold": 1008,
+    "exp": 4635,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 168,
+    "name": "時喰らいの獣",
+    "hp": 1587,
+    "atk": 435,
+    "def": 277,
+    "drop": "魔獣の皮",
+    "rareDrop": "次元の欠片",
+    "gold": 1017,
+    "exp": 4675,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 169,
+    "name": "終焉の巨神",
+    "hp": 1599,
+    "atk": 439,
+    "def": 279,
+    "drop": "巨獣の骨",
+    "rareDrop": "古代合金",
+    "gold": 1027,
+    "exp": 4720,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 170,
+    "name": "破滅の使徒",
+    "hp": 1612,
+    "atk": 442,
+    "def": 281,
+    "drop": "闇の結晶",
+    "rareDrop": "虚無の結晶",
+    "gold": 1037,
+    "exp": 5135,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 171,
+    "name": "星屑の亡霊",
+    "hp": 1625,
+    "atk": 446,
+    "def": 284,
+    "drop": "亡霊の残滓",
+    "rareDrop": "闇の結晶",
+    "gold": 1046,
+    "exp": 4795,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 172,
+    "name": "虚空の猟犬",
+    "hp": 1637,
+    "atk": 449,
+    "def": 286,
+    "drop": "魔獣の皮",
+    "rareDrop": "魔獣の血",
+    "gold": 1056,
+    "exp": 4840,
+    "skills": [
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 173,
+    "name": "時空ワーム",
+    "hp": 1650,
+    "atk": 453,
+    "def": 288,
+    "drop": "次元の欠片",
+    "rareDrop": "虚無の結晶",
+    "gold": 1066,
+    "exp": 4885,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 174,
+    "name": "忘却の魔女",
+    "hp": 1662,
+    "atk": 456,
+    "def": 290,
+    "drop": "魔銀鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 1076,
+    "exp": 4930,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 175,
+    "name": "終末の騎士",
+    "hp": 1675,
+    "atk": 460,
+    "def": 292,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 1086,
+    "exp": 4960,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 176,
+    "name": "滅びの竜兵",
+    "hp": 1688,
+    "atk": 463,
+    "def": 295,
+    "drop": "竜の鱗",
+    "rareDrop": "竜鉄鉱石",
+    "gold": 1096,
+    "exp": 5005,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 177,
+    "name": "神罰の執行者",
+    "hp": 1701,
+    "atk": 467,
+    "def": 297,
+    "drop": "聖布",
+    "rareDrop": "天使の羽",
+    "gold": 1106,
+    "exp": 5050,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 178,
+    "name": "次元竜",
+    "hp": 1713,
+    "atk": 470,
+    "def": 299,
+    "drop": "竜の牙",
+    "rareDrop": "竜の心臓",
+    "gold": 1116,
+    "exp": 5090,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 179,
+    "name": "虚無の王",
+    "hp": 1726,
+    "atk": 474,
+    "def": 302,
+    "drop": "虚無の結晶",
+    "rareDrop": "賢者の石片",
+    "gold": 1127,
+    "exp": 5135,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 180,
+    "name": "終焉の門番",
+    "hp": 1739,
+    "atk": 478,
+    "def": 304,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 1137,
+    "exp": 5955,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 181,
+    "name": "魔王軍親衛兵",
+    "hp": 1752,
+    "atk": 481,
+    "def": 306,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 1147,
+    "exp": 5975,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 182,
+    "name": "魔王軍親衛隊長",
+    "hp": 1765,
+    "atk": 485,
+    "def": 308,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 1157,
+    "exp": 6025,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 183,
+    "name": "冥府の黒騎士",
+    "hp": 1777,
+    "atk": 488,
+    "def": 311,
+    "drop": "黒鉄鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 1168,
+    "exp": 6075,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 184,
+    "name": "奈落の大司祭",
+    "hp": 1790,
+    "atk": 492,
+    "def": 313,
+    "drop": "魔銀鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 1178,
+    "exp": 6125,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 185,
+    "name": "混沌竜",
+    "hp": 1803,
+    "atk": 495,
+    "def": 315,
+    "drop": "竜の牙",
+    "rareDrop": "竜の心臓",
+    "gold": 1188,
+    "exp": 6175,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 186,
+    "name": "闇星の魔導王",
+    "hp": 1816,
+    "atk": 499,
+    "def": 317,
+    "drop": "魔銀鉱石",
+    "rareDrop": "闇の結晶",
+    "gold": 1199,
+    "exp": 6225,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 187,
+    "name": "世界樹を枯らす者",
+    "hp": 1829,
+    "atk": 503,
+    "def": 320,
+    "drop": "古木材",
+    "rareDrop": "闇の結晶",
+    "gold": 1209,
+    "exp": 6275,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 188,
+    "name": "星界の審判者",
+    "hp": 1842,
+    "atk": 506,
+    "def": 322,
+    "drop": "星鋼石",
+    "rareDrop": "賢者の石片",
+    "gold": 1220,
+    "exp": 6325,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 189,
+    "name": "災厄の魔神",
+    "hp": 1855,
+    "atk": 510,
+    "def": 324,
+    "drop": "闇の結晶",
+    "rareDrop": "虚無の結晶",
+    "gold": 1231,
+    "exp": 6375,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 190,
+    "name": "終焉竜アポカリプス",
+    "hp": 1868,
+    "atk": 513,
+    "def": 327,
+    "drop": "竜の牙",
+    "rareDrop": "竜の心臓",
+    "gold": 1241,
+    "exp": 6940,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 191,
+    "name": "虚無神の影",
+    "hp": 1881,
+    "atk": 517,
+    "def": 329,
+    "drop": "虚無の結晶",
+    "rareDrop": "賢者の石片",
+    "gold": 1252,
+    "exp": 6475,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 192,
+    "name": "破界の巨神",
+    "hp": 1894,
+    "atk": 521,
+    "def": 331,
+    "drop": "巨獣の骨",
+    "rareDrop": "古代合金",
+    "gold": 1263,
+    "exp": 6540,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 193,
+    "name": "深淵の覇者",
+    "hp": 1908,
+    "atk": 524,
+    "def": 334,
+    "drop": "闇の結晶",
+    "rareDrop": "虚無の結晶",
+    "gold": 1273,
+    "exp": 6590,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 194,
+    "name": "滅亡の預言者",
+    "hp": 1921,
+    "atk": 528,
+    "def": 336,
+    "drop": "魔銀鉱石",
+    "rareDrop": "虚無の結晶",
+    "gold": 1284,
+    "exp": 6640,
+    "skills": [
+      {
+        "name": "グループヒール",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "全体をNo*4回復"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 195,
+    "name": "黒月の竜王",
+    "hp": 1934,
+    "atk": 532,
+    "def": 338,
+    "drop": "竜の牙",
+    "rareDrop": "竜の心臓",
+    "gold": 1295,
+    "exp": 6690,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 196,
+    "name": "無限回廊の番人",
+    "hp": 1947,
+    "atk": 535,
+    "def": 341,
+    "drop": "次元の欠片",
+    "rareDrop": "虚無の結晶",
+    "gold": 1306,
+    "exp": 6740,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 197,
+    "name": "創世を拒む者",
+    "hp": 1960,
+    "atk": 539,
+    "def": 343,
+    "drop": "闇の結晶",
+    "rareDrop": "虚無の結晶",
+    "gold": 1317,
+    "exp": 6790,
+    "skills": [
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      },
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      }
+    ]
+  },
+  {
+    "id": 198,
+    "name": "終極の魔神",
+    "hp": 1973,
+    "atk": 543,
+    "def": 345,
+    "drop": "闇の結晶",
+    "rareDrop": "虚無の結晶",
+    "gold": 1328,
+    "exp": 6840,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 199,
+    "name": "魔王の影",
+    "hp": 1987,
+    "atk": 546,
+    "def": 348,
+    "drop": "闇の結晶",
+    "rareDrop": "魔王の角",
+    "gold": 1339,
+    "exp": 6890,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  },
+  {
+    "id": 200,
+    "name": "魔王",
+    "hp": 1600,
+    "atk": 550,
+    "def": 350,
+    "drop": "魔王の角",
+    "rareDrop": "魔王の心臓",
+    "gold": 1350,
+    "exp": 10000,
+    "skills": [
+      {
+        "name": "なぎ払い",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "1.2倍のATKで全体攻撃"
+      },
+      {
+        "name": "強撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "2倍のATKで単体攻撃"
+      },
+      {
+        "name": "怒りの一撃",
+        "rarity": "R",
+        "maxUses": 2,
+        "effect": "残りHPに応じて1.5～3.0倍攻撃"
+      }
+    ]
+  }
+]

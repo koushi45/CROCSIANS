@@ -1,0 +1,692 @@
+{
+  "greenDungeon": {
+    "id": 501,
+      "imgId": 40,
+      "name": "★砂漠の守護獣",
+      "30": {
+        "hp": 4500,
+        "atk": 170,
+        "def": 110,
+        "drop": "緑のバッジ",
+        "rareDrop": "緑のバッジ",
+        "gold": 338,
+        "exp": 1045,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで単体攻撃"
+          },
+          {
+            "name": "大地の怒り",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1倍のATKでランダム4回攻撃"
+          }
+        ]
+      },
+      "60": {
+        "hp": 9000,
+        "atk": 343,
+        "def": 219,
+        "drop": "緑のバッジ",
+        "rareDrop": "緑のバッジ",
+        "gold": 766,
+        "exp": 3132,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "大地の怒り",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1.2倍のATKでランダム4回攻撃"
+          }
+        ]
+      },
+      "90": {
+        "hp": 13500,
+        "atk": 547,
+        "def": 348,
+        "drop": "緑のバッジ",
+        "rareDrop": "緑のバッジ",
+        "gold": 1342,
+        "exp": 9947,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "大地の怒り",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1.7倍のATKでランダム4回攻撃"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "120": {
+        "hp": 18000,
+        "atk": 795,
+        "def": 547,
+        "drop": "緑のバッジ",
+        "rareDrop": "緑のバッジ",
+        "gold": 1989,
+        "exp": 19895,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "大地の怒り",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1.7倍のATKでランダム4回攻撃"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "150": {
+        "hp": 22500,
+        "atk": 1189,
+        "def": 795,
+        "drop": "緑のバッジ",
+        "rareDrop": "緑のバッジ",
+        "gold": 3974,
+        "exp": 29737,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "大地の怒り",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1.7倍のATKでランダム4回攻撃"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      }
+  },
+  "redDungeon": {
+    "id": 502,
+      "imgId": 80,
+      "name": "★火山の守護竜",
+      "30": {
+        "hp": 4500,
+        "atk": 170,
+        "def": 110,
+        "drop": "赤のバッジ",
+        "rareDrop": "赤のバッジ",
+        "gold": 338,
+        "exp": 1045,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで単体攻撃"
+          },
+          {
+            "name": "ドラゴンブレス",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1倍のATKで全体攻撃,2人を火傷状態にする"
+          }
+        ]
+      },
+      "60": {
+        "hp": 9000,
+        "atk": 343,
+        "def": 219,
+        "drop": "赤のバッジ",
+        "rareDrop": "赤のバッジ",
+        "gold": 766,
+        "exp": 3132,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "ドラゴンブレス",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1倍のATKで全体攻撃,火傷状態にする"
+          }
+        ]
+      },
+      "90": {
+        "hp": 13500,
+        "atk": 547,
+        "def": 348,
+        "drop": "赤のバッジ",
+        "rareDrop": "赤のバッジ",
+        "gold": 1342,
+        "exp": 9947,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "ドラゴンブレス",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで全体攻撃,火傷状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "120": {
+        "hp": 18000,
+        "atk": 795,
+        "def": 547,
+        "drop": "赤のバッジ",
+        "rareDrop": "赤のバッジ",
+        "gold": 1989,
+        "exp": 19895,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "ドラゴンブレス",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで全体攻撃,火傷状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "150": {
+        "hp": 22500,
+        "atk": 1189,
+        "def": 795,
+        "drop": "赤のバッジ",
+        "rareDrop": "赤のバッジ",
+        "gold": 3974,
+        "exp": 29737,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "ドラゴンブレス",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで全体攻撃,火傷状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      }
+  },
+  "yellowDungeon": {
+    "id": 502,
+      "imgId": 138,
+      "name": "★暴風の魔女",
+      "30": {
+        "hp": 4500,
+        "atk": 170,
+        "def": 110,
+        "drop": "黄のバッジ",
+        "rareDrop": "黄のバッジ",
+        "gold": 338,
+        "exp": 1045,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで単体攻撃"
+          },
+          {
+            "name": "落雷",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1.8倍のATKで2人に攻撃,2人を麻痺状態にする"
+          }
+        ]
+      },
+      "60": {
+        "hp": 9000,
+        "atk": 343,
+        "def": 219,
+        "drop": "黄のバッジ",
+        "rareDrop": "黄のバッジ",
+        "gold": 766,
+        "exp": 3132,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "落雷",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1.8倍のATKで2人に攻撃,2人を麻痺状態にする"
+          }
+        ]
+      },
+      "90": {
+        "hp": 13500,
+        "atk": 547,
+        "def": 348,
+        "drop": "黄のバッジ",
+        "rareDrop": "黄のバッジ",
+        "gold": 1342,
+        "exp": 9947,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "落雷",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2.6倍のATKで2人に攻撃,2人を麻痺状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "120": {
+        "hp": 18000,
+        "atk": 795,
+        "def": 547,
+        "drop": "黄のバッジ",
+        "rareDrop": "黄のバッジ",
+        "gold": 1989,
+        "exp": 19895,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "落雷",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2.6倍のATKで2人に攻撃,2人を麻痺状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "150": {
+        "hp": 22500,
+        "atk": 1189,
+        "def": 795,
+        "drop": "黄のバッジ",
+        "rareDrop": "黄のバッジ",
+        "gold": 3974,
+        "exp": 29737,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "落雷",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2.6倍のATKで2人に攻撃,2人を麻痺状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      }
+  },
+  "blueDungeon": {
+    "id": 502,
+      "imgId": 56,
+      "name": "★凍土の番犬",
+      "30": {
+        "hp": 4500,
+        "atk": 170,
+        "def": 110,
+        "drop": "青のバッジ",
+        "rareDrop": "青のバッジ",
+        "gold": 338,
+        "exp": 1045,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで単体攻撃"
+          },
+          {
+            "name": "ブリザード",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1倍のATKで全体に攻撃,2人を凍結状態にする"
+          }
+        ]
+      },
+      "60": {
+        "hp": 9000,
+        "atk": 343,
+        "def": 219,
+        "drop": "青のバッジ",
+        "rareDrop": "青のバッジ",
+        "gold": 766,
+        "exp": 3132,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "ブリザード",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1倍のATKで全体に攻撃,2人を凍結状態にする"
+          }
+        ]
+      },
+      "90": {
+        "hp": 13500,
+        "atk": 547,
+        "def": 348,
+        "drop": "青のバッジ",
+        "rareDrop": "青のバッジ",
+        "gold": 1342,
+        "exp": 9947,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "ブリザード",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで全体に攻撃,2人を凍結状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "120": {
+        "hp": 18000,
+        "atk": 795,
+        "def": 547,
+        "drop": "青のバッジ",
+        "rareDrop": "青のバッジ",
+        "gold": 1989,
+        "exp": 19895,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "ブリザード",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで全体に攻撃,2人を凍結状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "150": {
+        "hp": 22500,
+        "atk": 1189,
+        "def": 795,
+        "drop": "青のバッジ",
+        "rareDrop": "青のバッジ",
+        "gold": 3974,
+        "exp": 29737,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "ブリザード",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで全体に攻撃,2人を凍結状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      }
+  },
+  "violetDungeon": {
+    "id": 502,
+      "imgId": 98,
+      "name": "★黒薔薇の魔女",
+      "30": {
+        "hp": 4500,
+        "atk": 170,
+        "def": 110,
+        "drop": "紫のバッジ",
+        "rareDrop": "紫のバッジ",
+        "gold": 338,
+        "exp": 1045,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "1.5倍のATKで単体攻撃"
+          },
+          {
+            "name": "チャーム",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "0.5倍のATKで全体に攻撃,全体を魅了状態にする"
+          }
+        ]
+      },
+      "60": {
+        "hp": 9000,
+        "atk": 343,
+        "def": 219,
+        "drop": "紫のバッジ",
+        "rareDrop": "紫のバッジ",
+        "gold": 766,
+        "exp": 3132,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "チャーム",
+            "rarity": "N",
+            "maxUses": 999,
+            "effect": "0.5倍のATKで全体に攻撃,全体を魅了状態にする"
+          }
+        ]
+      },
+      "90": {
+        "hp": 13500,
+        "atk": 547,
+        "def": 348,
+        "drop": "紫のバッジ",
+        "rareDrop": "紫のバッジ",
+        "gold": 1342,
+        "exp": 9947,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "チャーム",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1倍のATKで全体に攻撃,全体を魅了状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "120": {
+        "hp": 18000,
+        "atk": 795,
+        "def": 547,
+        "drop": "紫のバッジ",
+        "rareDrop": "紫のバッジ",
+        "gold": 1989,
+        "exp": 19895,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "チャーム",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1倍のATKで全体に攻撃,全体を魅了状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      },
+      "150": {
+        "hp": 22500,
+        "atk": 1189,
+        "def": 795,
+        "drop": "紫のバッジ",
+        "rareDrop": "紫のバッジ",
+        "gold": 3974,
+        "exp": 29737,
+        "skills": [
+          {
+            "name": "強撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "2倍のATKで単体攻撃"
+          },
+          {
+            "name": "チャーム",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "1倍のATKで全体に攻撃,全体を魅了状態にする"
+          },
+          {
+            "name": "怒りの一撃",
+            "rarity": "R",
+            "maxUses": 999,
+            "effect": "残りHPに応じて1.5～3.0倍攻撃"
+          }
+        ]
+      }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "crocsians",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "db:start": "powershell -ExecutionPolicy Bypass -File scripts/start-local-db.ps1",
+    "db:stop": "powershell -ExecutionPolicy Bypass -File scripts/stop-local-db.ps1",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f app db",
+    "db:migrate": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "next": "16.2.7",
+    "pg": "^8.21.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.7",
+    "prisma": "^7.8.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "@hono/node-server": "1.19.14",
+    "hono": "4.12.26",
+    "postcss": "8.5.15"
+  }
+}
