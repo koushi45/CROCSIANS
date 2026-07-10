@@ -204,6 +204,15 @@ const TILES: Record<TileKind, TileDefinition> = {
 };
 
 const TILE_KINDS = Object.keys(TILES) as TileKind[];
+const DECORATIVE_BUILDING_IMAGES: Partial<Record<BuildingKind, string>> = {
+  fountain: "1-Photoroom_256px.png", garden: "2-Photoroom_256px.png", gazebo: "3-Photoroom_256px.png", clockTower: "4-Photoroom_256px.png",
+  monument: "5-Photoroom_256px.png", pond: "6-Photoroom_256px.png", marketStall: "7-Photoroom_256px.png", campfire: "8-Photoroom_256px.png",
+  flowerArch: "9-Photoroom_256px.png", streetLamp: "10-Photoroom_256px.png", storageShed: "11-Photoroom_256px.png", courtyard: "12-Photoroom_256px.png",
+};
+const TILE_IMAGE_OVERRIDES: Partial<Record<TileKind, string>> = {
+  brick: "8_128px.png", woodPlank: "9_128px.png", marble: "10_128px.png", slate: "11_128px.png", sand: "12_128px.png", gravel: "13_128px.png", checker: "14_128px.png", terracotta: "15_128px.png",
+  flowerGrass: "16_128px.png", cobblestone: "17_128px.png", goldTrim: "18_128px.png", blueCarpet: "19_128px.png", redCarpet: "20_128px.png", blackTile: "21_128px.png", shallowWater: "22_128px.png", hedge: "23_128px.png",
+};
 
 function createInitialTiles(): TileKind[] {
   return Array.from({ length: MAP_CELL_COUNT }, () => "soil" as const);
@@ -211,7 +220,8 @@ function createInitialTiles(): TileKind[] {
 
 function tileVisualStyle(kind: TileKind): React.CSSProperties {
   const tile = TILES[kind];
-  return tile.image ? { backgroundImage: `url("/crocsians/base/tile/${tile.image}")` } : { background: tile.background ?? "#657050" };
+  const image = tile.image ?? TILE_IMAGE_OVERRIDES[kind];
+  return image ? { backgroundImage: `url("/crocsians/base/tile/${image}")` } : { background: tile.background ?? "#657050" };
 }
 
 function tileRectangleCells(start: number, end: number) {
@@ -231,6 +241,7 @@ function tileRectangleCells(start: number, end: number) {
 }
 
 function buildingImagePath(kind: BuildingKind, level: number): string | null {
+  if (DECORATIVE_BUILDING_IMAGES[kind]) return `/crocsians/base/building/view/${DECORATIVE_BUILDING_IMAGES[kind]}`;
   if (BUILDINGS[kind].decorative) return null;
   const safeLevel = Math.max(1, Math.min(MAX_BUILDING_LEVEL, Math.floor(level)));
   if (kind === "furnace") return "/crocsians/base/building/furnace.png";
@@ -595,6 +606,14 @@ type ReleaseNote = {
 
 
 const RELEASE_NOTES: ReleaseNote[] = [
+  {
+    version: "ver 0.3.12",
+    items: [
+      { title: "教皇のバッジとジョブSPボーナスを追加しました", details: ["レベル100到達後は、累計経験値を500,000獲得するごとに「教皇のバッジ」を1個獲得できます", "教皇庁の専用タブでバッジを使い、好きなジョブのSPを1獲得できます", "SPボーナスは各ジョブにつき最大5回まで受け取れます"] },
+      { title: "拠点交流を追加しました", details: ["他プレイヤーの拠点を訪問し、いいね・お気に入り登録・足跡を利用できるようにしました", "1日1回、訪問先の生産施設を手伝えます", "拠点レイアウトの共有リンクと、拠点を歩くオーナー・訪問者の簡易アニメーションを追加しました"] },
+      { title: "拠点の景観建築を拡張しました", details: ["噴水、庭園、時計塔など12種類の景観施設と、16種類の床・タイルを追加しました", "景観施設と追加タイルには専用画像を適用しました", "PC・スマホとも、空きマスから開く建設メニューで生産施設・工房・景観施設・床・タイルをカテゴリ別に選択できます"] },
+    ],
+  },
   {
     version: "ver 0.3.11",
     items: [
@@ -1022,6 +1041,7 @@ export function CrocsiansGame() {
   const [basePanelTab, setBasePanelTab] = useState<BasePanelTab>("building");
   const [buildMode, setBuildMode] = useState<BuildingKind | null>(null);
   const [mobileBuildCell, setMobileBuildCell] = useState<number | null>(null);
+  const [mobileFacilityOpen, setMobileFacilityOpen] = useState(false);
   const [constructionCategory, setConstructionCategory] = useState<ConstructionCategory>("production");
   const [baseSocialOpen, setBaseSocialOpen] = useState(false);
   const [baseSocialLoading, setBaseSocialLoading] = useState(false);
@@ -3063,6 +3083,7 @@ export function CrocsiansGame() {
     });
     setWeaponWorkshopOpen(false);
     setArmorWorkshopOpen(false);
+    setMobileFacilityOpen(false);
     const summary = refund.length > 0 ? refund.map((material) => `${material.name}×${material.quantity}`).join("、") : "返却素材なし";
     setSystemMessage(`${BUILDINGS[selectedBuilding.kind].name}を解体しました（${summary}）`);
     playSe("building");
@@ -3479,8 +3500,8 @@ export function CrocsiansGame() {
     const owner: SocialPerson = visitedBase;
     const viewer: SocialPerson = { ownerId: baseSocialData?.viewerId ?? "viewer", name: characterName, job, level: playerProgress.level, icon: characterIcon };
     const walkers = [owner, viewer, ...visitedBase.visitors.filter((person) => person.ownerId !== owner.ownerId && person.ownerId !== viewer.ownerId)].slice(0, 6);
-    return <div ref={mapViewportRef} className={`${styles.mapViewport} ${styles.socialMapViewport}`} onTouchStart={beginMapTouch} onTouchMove={moveMapTouch} onTouchEnd={finishMapTouch} onTouchCancel={finishMapTouch}>
-      <div className={styles.mapCanvas} style={{ width: MAP_PIXEL_SIZE * zoom, height: MAP_PIXEL_SIZE * zoom }}>
+    return <div ref={isMobileLayout ? undefined : mapViewportRef} className={`${styles.mapViewport} ${styles.socialMapViewport}`} onTouchStart={beginMapTouch} onTouchMove={moveMapTouch} onTouchEnd={finishMapTouch} onTouchCancel={finishMapTouch}>
+      <div ref={isMobileLayout ? mapViewportRef : undefined} className={styles.mapCanvas} style={{ width: MAP_PIXEL_SIZE * zoom, height: MAP_PIXEL_SIZE * zoom }}>
         <div className={styles.mapGrid} style={{ zoom, gridTemplateColumns: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridTemplateRows: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridAutoColumns: `${MAP_CELL_SIZE}px`, gridAutoRows: `${MAP_CELL_SIZE}px` } as React.CSSProperties}>
           {visitedBase.baseTiles.map((tile, cell) => <span key={`social-floor-${cell}`} className={styles.floorTile} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1, ...tileVisualStyle(tile) }} />)}
           {Array.from({ length: MAP_CELL_COUNT }, (_, cell) => {
@@ -4146,7 +4167,7 @@ export function CrocsiansGame() {
 
       <div className={`${styles.workspace} ${expeditionPanelSide === "left" || chatPanelSide === "left" ? styles.workspaceHasLeft : ""} ${view === "base" || expeditionPanelSide === "right" || chatPanelSide === "right" ? styles.workspaceHasRight : ""} ${view !== "base" && expeditionPanelSide === "left" && chatPanelSide === "right" ? styles.compactLeftPanel : ""} ${view !== "base" && expeditionPanelSide === "right" && chatPanelSide === "left" ? styles.compactRightPanel : ""}`}>
         {(expeditionPanelSide === "left" || chatPanelSide === "left") && <aside className={`${styles.sidePanel} ${styles.leftSidePanel} ${(view === "base" || expeditionPanelSide === "right" || chatPanelSide === "right") ? styles.singleSidePanel : ""}`}>{view !== "base" && expeditionPanelSide === "left" && renderDesktopStatusPanel()}{!isMobileLayout && chatPanelSide === "left" && renderDesktopChatPanel()}</aside>}
-        <section className={`${styles.mainStage} ${view === "explore" ? styles.exploringStage : ""}`}>
+        <section className={`${styles.mainStage} ${view === "base" ? styles.baseStage : ""} ${view === "explore" ? styles.exploringStage : ""}`}>
           <div className={styles.stageTitle}>
             <div><p>{view === "base" ? visitedBase ? "VISITING FRONTIER" : "MY FRONTIER" : view === "town" ? "COMMON DISTRICT" : `EXPEDITION · ${currentMap.code}`}</p><h2>{view === "base" ? visitedBase ? `${visitedBase.name}の拠点` : `${characterName}の拠点` : view === "town" ? "イーストヘイヴン" : currentMap.name}</h2></div>
             <div className={styles.stageMeta}>
@@ -4156,8 +4177,8 @@ export function CrocsiansGame() {
           </div>
 
           {view === "base" && (visitedBase ? renderVisitedBaseMap() : (
-            <div ref={mapViewportRef} className={styles.mapViewport} onTouchStart={beginMapTouch} onTouchMove={moveMapTouch} onTouchEnd={finishMapTouch} onTouchCancel={finishMapTouch}>
-              <div className={styles.mapCanvas} style={{ width: MAP_PIXEL_SIZE * zoom, height: MAP_PIXEL_SIZE * zoom }}>
+            <div ref={isMobileLayout ? undefined : mapViewportRef} className={styles.mapViewport} onTouchStart={beginMapTouch} onTouchMove={moveMapTouch} onTouchEnd={finishMapTouch} onTouchCancel={finishMapTouch}>
+              <div ref={isMobileLayout ? mapViewportRef : undefined} className={styles.mapCanvas} style={{ width: MAP_PIXEL_SIZE * zoom, height: MAP_PIXEL_SIZE * zoom }}>
                 <div className={`${styles.mapGrid} ${basePanelTab === "tile" ? styles.tileEditing : ""}`} style={{ zoom, gridTemplateColumns: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridTemplateRows: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridAutoColumns: `${MAP_CELL_SIZE}px`, gridAutoRows: `${MAP_CELL_SIZE}px` } as React.CSSProperties} onPointerDown={beginTileDrag} onPointerMove={moveTileDrag} onPointerUp={finishTileDrag} onPointerCancel={cancelTileDrag} onContextMenu={(event) => { if (basePanelTab === "tile") event.preventDefault(); }}>
                   {baseTiles.map((tile, cell) => <span key={`floor-${cell}`} className={styles.floorTile} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1, ...tileVisualStyle(tile) }} />)}
                   {Array.from({ length: MAP_CELL_COUNT }, (_, cell) => {
@@ -4167,7 +4188,7 @@ export function CrocsiansGame() {
                     const placeable = basePanelTab === "building" && buildMode ? canPlaceFacility(buildings, cell) : false;
                     const column = cell % MAP_SIZE + 1;
                     const row = Math.floor(cell / MAP_SIZE) + 1;
-                    return <button key={cell} data-se="none" style={{ gridColumn: `${column} / span ${building ? FACILITY_SIZE : 1}`, gridRow: `${row} / span ${building ? FACILITY_SIZE : 1}` }} aria-label={building ? `${BUILDINGS[building.kind].name}（2×2）` : `空きマス ${column},${row}`} className={`${styles.mapCell} ${building ? styles.facilityCell : ""} ${basePanelTab === "building" && selectedCell === cell ? styles.selectedCell : ""} ${placeable ? styles.buildable : ""}`} onClick={() => { if (building && building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind)) { setSelectedCell(cell); collect(cell); } else placeBuilding(cell); }}>
+                    return <button key={cell} data-se="none" style={{ gridColumn: `${column} / span ${building ? FACILITY_SIZE : 1}`, gridRow: `${row} / span ${building ? FACILITY_SIZE : 1}` }} aria-label={building ? `${BUILDINGS[building.kind].name}（2×2）` : `空きマス ${column},${row}`} className={`${styles.mapCell} ${building ? styles.facilityCell : ""} ${basePanelTab === "building" && selectedCell === cell ? styles.selectedCell : ""} ${placeable ? styles.buildable : ""}`} onClick={() => { if (building && isMobileLayout) { setSelectedCell(cell); setMobileFacilityOpen(true); playSe("click"); } else if (building && building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind)) { setSelectedCell(cell); collect(cell); } else placeBuilding(cell); }}>
                       {building ? <><span className={styles.buildingIcon}><BuildingArtwork kind={building.kind} level={building.level} /></span><small>Lv.{building.level}</small>{!DECORATIVE_KINDS.has(building.kind) && (building.ready && (building.kind === "furnace" || !CRAFTING_KINDS.has(building.kind)) ? <i className={styles.ready}>!</i> : !CRAFTING_KINDS.has(building.kind) ? <i className={styles.progress} style={{ "--progress": `${stockProgress(building)}%` } as React.CSSProperties} /> : null)}</> : null}
                     </button>;
                   })}
@@ -4239,7 +4260,8 @@ export function CrocsiansGame() {
           )}
         </section>
 
-        <aside className={`${styles.sidePanel} ${view !== "base" && expeditionPanelSide !== chatPanelSide ? styles.singleSidePanel : ""}`}>
+        <aside className={`${styles.sidePanel} ${view === "base" && !visitedBase ? styles.ownBaseSidePanel : ""} ${mobileFacilityOpen ? styles.mobileBaseFacilityOpen : ""} ${view !== "base" && expeditionPanelSide !== chatPanelSide ? styles.singleSidePanel : ""}`} onMouseDown={(event) => { if (isMobileLayout && view === "base" && !visitedBase && event.target === event.currentTarget) setMobileFacilityOpen(false); }}>
+          {isMobileLayout && view === "base" && !visitedBase && mobileFacilityOpen && <button type="button" className={styles.mobileFacilityClose} aria-label="施設メニューを閉じる" onClick={() => setMobileFacilityOpen(false)}>×</button>}
           {view === "base" ? visitedBase ? renderVisitedBasePanel() : (
             <>
               <section className={styles.panelSection}>
