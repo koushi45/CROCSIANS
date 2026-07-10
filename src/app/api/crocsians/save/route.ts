@@ -3,7 +3,7 @@ import { prisma } from "@/server/db/prisma";
 import { decodeCharacterIconDataUrl } from "@/server/services/crocsians-icon";
 import type { Prisma } from "@/generated/prisma/client";
 import materialCatalog from "@/features/crocsians/materials.json";
-import { getPlayerProgress, PLAYER_PROGRESSION_VERSION } from "@/features/crocsians/progression";
+import { getPlayerProgress, papalBadgesEarnedFromExperience, PLAYER_PROGRESSION_VERSION } from "@/features/crocsians/progression";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -78,6 +78,27 @@ function normalizeAccountData(value: unknown, serverTime = Date.now()) {
     data.merchantStockRestockKey = restockKey;
     changed = true;
   }
+
+  const savedJobProgress = data.jobProgress && typeof data.jobProgress === "object" && !Array.isArray(data.jobProgress) ? data.jobProgress as Record<string, unknown> : {};
+  const savedPapalBonuses = data.papalSpBonuses && typeof data.papalSpBonuses === "object" && !Array.isArray(data.papalSpBonuses) ? data.papalSpBonuses as Record<string, unknown> : {};
+  let remainingPapalBadges = JOBS.reduce((total, job) => {
+    const progress = savedJobProgress[job];
+    const progressData = progress && typeof progress === "object" && !Array.isArray(progress) ? progress as Record<string, unknown> : {};
+    const experience = typeof progressData.experience === "number" && Number.isFinite(progressData.experience) ? Math.max(0, Math.floor(progressData.experience)) : 0;
+    return total + papalBadgesEarnedFromExperience(experience);
+  }, 0);
+  const normalizedPapalBonuses = Object.fromEntries(JOBS.map((job) => {
+    const requested = typeof savedPapalBonuses[job] === "number" && Number.isFinite(savedPapalBonuses[job]) ? Math.max(0, Math.min(5, Math.floor(savedPapalBonuses[job] as number))) : 0;
+    const accepted = Math.min(requested, remainingPapalBadges);
+    remainingPapalBadges -= accepted;
+    return [job, accepted];
+  }));
+  if (JSON.stringify(data.papalSpBonuses ?? {}) !== JSON.stringify(normalizedPapalBonuses)) changed = true;
+  data.papalSpBonuses = normalizedPapalBonuses;
+  const craftedItems = data.craftedItems && typeof data.craftedItems === "object" && !Array.isArray(data.craftedItems) ? data.craftedItems as Record<string, unknown> : {};
+  if (craftedItems.papalBadge !== remainingPapalBadges) changed = true;
+  craftedItems.papalBadge = remainingPapalBadges;
+  data.craftedItems = craftedItems;
 
   if (data.merchantStock && typeof data.merchantStock === "object" && !Array.isArray(data.merchantStock)) {
     const stock = data.merchantStock as Record<string, unknown>;

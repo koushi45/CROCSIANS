@@ -8,7 +8,7 @@ import materialCatalog from "./materials.json";
 import weaponCatalog from "./weapons.json";
 import armorCatalog from "./armors.json";
 import buildingUpgradeCatalog from "./building-upgrades.json";
-import { getPlayerProgress, PLAYER_PROGRESSION_VERSION } from "./progression";
+import { getPlayerProgress, MAX_LEVEL_TOTAL_EXPERIENCE, PAPAL_BADGE_EXPERIENCE_INTERVAL, papalBadgesEarnedFromExperience, PLAYER_PROGRESSION_VERSION } from "./progression";
 
 type View = "base" | "town" | "explore";
 type TextSize = "small" | "medium" | "large";
@@ -21,6 +21,7 @@ type BasePanelTab = "building" | "tile";
 type TileKind = "stone" | "water" | "grassland" | "stoneTile" | "carpet" | "soil" | "mosaic";
 type StartScreenMode = "menu" | "create" | "delete";
 type JobName = "戦士" | "商人" | "職人" | "盗賊" | "僧侶";
+type HolySeeTab = "cardinals" | "papalBadge";
 type BuildingKind = "farm" | "mine" | "forestry" | "weapon" | "armor" | "apothecary" | "inn" | "furnace";
 type MaterialProductionKind = "farm" | "mine" | "forestry";
 type SmeltingJob = { oreName: string; ingotName: string; quantity: number; startedAt: number; completedAt: number };
@@ -28,7 +29,7 @@ type Building = { id: number; kind: BuildingKind; level: number; stockCount: num
 type SavedBuilding = Partial<Building> & Pick<Building, "id" | "kind" | "level"> & { progress?: number; stockHours?: number };
 type Resources = { gold: number };
 type LegacyResources = Resources & Partial<Record<"wood" | "stone" | "herb", number>>;
-type CraftedItems = { potion: number; indulgence: number };
+type CraftedItems = { potion: number; indulgence: number; papalBadge: number };
 type MapDefinition = { name: string; code: string; level: number; enemyFrom: number; enemyTo: number; dungeon?: { color: PortalColor; storageLevel: PortalLevel } };
 type PortalColor = "blue" | "red" | "yellow" | "green" | "purple";
 type PortalLevel = 20 | 40 | 60 | 80 | 100;
@@ -59,6 +60,7 @@ type SkillId = "powerStrike" | "sweepingBlow" | "defensiveStance" | "strongDuty"
 type SkillLevels = Partial<Record<SkillId, number>>;
 type SkillDefinition = { id: SkillId; job: JobName; name: string; description: string; maxLevel: number; spCost?: number; active?: boolean; advanced?: boolean; automatic?: boolean };
 type JobProgress = Record<JobName, { experience: number; skillPoints: number }>;
+type PapalSpBonuses = Record<JobName, number>;
 type MerchantTab = "materials" | "weapons" | "armor" | "supplies";
 type ItemTextureKind = "materials" | "weapons" | "armors";
 type MarketItemType = "MATERIAL" | "WEAPON" | "ARMOR" | "SUPPLY";
@@ -130,6 +132,7 @@ type CrocsiansSaveData = {
   equippedArmorHighQuality?: boolean;
   experience?: number;
   jobProgress?: JobProgress;
+  papalSpBonuses?: PapalSpBonuses;
   bgmVolume?: number;
   seVolume?: number;
   textSize?: TextSize;
@@ -524,8 +527,9 @@ const INITIAL_SKILL_LEVELS: SkillLevels = {};
 const INITIAL_JOB_PROGRESS: JobProgress = {
   戦士: { experience: 0, skillPoints: 0 }, 商人: { experience: 0, skillPoints: 0 }, 職人: { experience: 0, skillPoints: 0 }, 盗賊: { experience: 0, skillPoints: 0 }, 僧侶: { experience: 0, skillPoints: 0 },
 };
+const INITIAL_PAPAL_SP_BONUSES: PapalSpBonuses = { 戦士: 0, 商人: 0, 職人: 0, 盗賊: 0, 僧侶: 0 };
 const INITIAL_RESOURCES: Resources = { gold: 1919 };
-const INITIAL_CRAFTED_ITEMS: CraftedItems = { potion: 0, indulgence: 0 };
+const INITIAL_CRAFTED_ITEMS: CraftedItems = { potion: 0, indulgence: 0, papalBadge: 0 };
 const INITIAL_MATERIAL_INVENTORY: MaterialInventory = {};
 const INDULGENCE_GOLD = 1_000_000;
 type ReleaseNote = {
@@ -974,6 +978,7 @@ export function CrocsiansGame() {
   const [hp, setHp] = useState(() => Math.floor(getLevelStats(1).hp * JOB_MODIFIERS["戦士"].hp));
   const hpRef = useRef(hp);
   const [jobProgress, setJobProgress] = useState<JobProgress>(() => createInitialJobProgress());
+  const [papalSpBonuses, setPapalSpBonuses] = useState<PapalSpBonuses>({ ...INITIAL_PAPAL_SP_BONUSES });
   const [missingEnemyArt, setMissingEnemyArt] = useState<Set<number>>(() => new Set());
   const [currentMap, setCurrentMap] = useState(EXPLORATION_MAPS[0]);
   const [mapPopulations, setMapPopulations] = useState<Record<string, number>>({});
@@ -986,6 +991,7 @@ export function CrocsiansGame() {
   const [templeTab, setTempleTab] = useState<TempleTab>("exploration");
   const [churchOpen, setChurchOpen] = useState(false);
   const [holySeeOpen, setHolySeeOpen] = useState(false);
+  const [holySeeTab, setHolySeeTab] = useState<HolySeeTab>("cardinals");
   const [portalRates, setPortalRates] = useState<PortalRates>({ ...INITIAL_PORTAL_RATES });
   const [portalKeyInventory, setPortalKeyInventory] = useState<PortalKeyInventory>({ ...INITIAL_PORTAL_KEY_INVENTORY });
   const [portalKeyNotice, setPortalKeyNotice] = useState<string | null>(null);
@@ -1078,6 +1084,9 @@ export function CrocsiansGame() {
   const activeJobProgress = jobProgress[job];
   const playerProgress = getPlayerProgress(activeJobProgress.experience);
   const skillPoints = activeJobProgress.skillPoints;
+  const totalPapalBadgesEarned = JOBS.reduce((total, jobName) => total + papalBadgesEarnedFromExperience(jobProgress[jobName].experience), 0);
+  const totalPapalBadgesUsed = JOBS.reduce((total, jobName) => total + papalSpBonuses[jobName], 0);
+  const papalBadgeCount = Math.max(0, totalPapalBadgesEarned - totalPapalBadgesUsed);
   const equippedWeaponDefinition = equippedWeapon ? WEAPONS.find((weapon) => weapon.name === equippedWeapon) : undefined;
   const offhandInventory = equippedOffhandWeaponHighQuality ? highQualityWeaponInventory : weaponInventory;
   const offhandConflictsWithMain = equippedOffhandWeapon === equippedWeapon && equippedOffhandWeaponHighQuality === equippedWeaponHighQuality;
@@ -1204,6 +1213,7 @@ export function CrocsiansGame() {
         const migratedJob = data.job && JOBS.includes(data.job) ? data.job : "戦士";
         setJobProgress((current) => ({ ...current, [migratedJob]: { experience: Math.max(0, data.experience ?? 0), skillPoints: Math.max(0, data.skillPoints ?? 0) } }));
       }
+      if (data.papalSpBonuses) setPapalSpBonuses({ ...INITIAL_PAPAL_SP_BONUSES, ...data.papalSpBonuses });
       if (data.skillLevels) setSkillLevels({ ...data.skillLevels, marketResearch: Math.min(1, data.skillLevels.marketResearch ?? 0) });
       if (data.cardinalLevels) setCardinalLevels(Object.fromEntries(CARDINAL_IDS.flatMap((id) => {
         const level = data.cardinalLevels?.[id] ?? 0;
@@ -1634,6 +1644,8 @@ export function CrocsiansGame() {
               const previousLevel = getPlayerProgress(progress.experience).level;
               const experience = progress.experience + result.exp!;
               const gainedLevels = Math.max(0, getPlayerProgress(experience).level - previousLevel);
+              const gainedPapalBadges = papalBadgesEarnedFromExperience(experience) - papalBadgesEarnedFromExperience(progress.experience);
+              if (gainedPapalBadges > 0) setSystemMessage(`追加EXPが${formatNumber(PAPAL_BADGE_EXPERIENCE_INTERVAL)}に達し、教皇のバッジを${gainedPapalBadges}個獲得しました`);
               return { ...current, [job]: { experience, skillPoints: progress.skillPoints + gainedLevels } };
             });
           }
@@ -1857,7 +1869,7 @@ export function CrocsiansGame() {
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       try {
-        const data: CrocsiansSaveData = { playerProgressionVersion: PLAYER_PROGRESSION_VERSION, merchantSkillResetVersion: MERCHANT_SKILL_RESET_VERSION, resources, buildings, baseTiles, mapLayoutVersion: MAP_LAYOUT_VERSION, craftedItems, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockVersion: MERCHANT_STOCK_VERSION, merchantStockRestockKey, characterName, characterIcon, jobProgress, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, expeditionPanelSide, chatPanelSide, portalRates, portalKeyInventory };
+        const data: CrocsiansSaveData = { playerProgressionVersion: PLAYER_PROGRESSION_VERSION, merchantSkillResetVersion: MERCHANT_SKILL_RESET_VERSION, resources, buildings, baseTiles, mapLayoutVersion: MAP_LAYOUT_VERSION, craftedItems: { ...craftedItems, papalBadge: papalBadgeCount }, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockVersion: MERCHANT_STOCK_VERSION, merchantStockRestockKey, characterName, characterIcon, jobProgress, papalSpBonuses, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, expeditionPanelSide, chatPanelSide, portalRates, portalKeyInventory };
         const response = await fetch("/api/crocsians/save", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify({ data }), signal: controller.signal });
         if (response.status === 401) window.location.assign(`/login?next=${encodeURIComponent("/crocsians")}`);
         else if (!response.ok) setSystemMessage("サーバーへのセーブに失敗しました。通信状態を確認してください");
@@ -1878,7 +1890,7 @@ export function CrocsiansGame() {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [gameStarted, resources, buildings, baseTiles, craftedItems, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockRestockKey, characterName, characterIcon, jobProgress, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, expeditionPanelSide, chatPanelSide, portalRates, portalKeyInventory]);
+  }, [gameStarted, resources, buildings, baseTiles, craftedItems, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockRestockKey, characterName, characterIcon, jobProgress, papalSpBonuses, papalBadgeCount, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, expeditionPanelSide, chatPanelSide, portalRates, portalKeyInventory]);
 
   useEffect(() => {
     if (!saveLoadedRef.current) return;
@@ -1948,6 +1960,7 @@ export function CrocsiansGame() {
     const supplies: SupplyCatalogItem[] = [
       { id: 1, name: "回復薬", owned: craftedItems.potion, price: 60, rarity: "N", description: `探索中に使用するとHPを${POTION_HEAL_AMOUNT}回復します。`, action: "" },
       { id: 2, name: "免罪符", owned: craftedItems.indulgence, price: INDULGENCE_GOLD, rarity: "SSR", description: `商人街で売却すると${formatNumber(INDULGENCE_GOLD)}Gを入手できます。`, action: "" },
+      { id: 3, name: "教皇のバッジ", owned: papalBadgeCount, price: 0, rarity: "SSR", description: "教皇庁で使用すると、好きなジョブのSPを1獲得できます。", action: "locked", kindLabel: "バッジ" },
       ...PORTAL_COLORS.flatMap((color, colorIndex) => DUNGEON_STORAGE_LEVELS.map<SupplyCatalogItem>((level, levelIndex) => ({ id: 100 + colorIndex * 10 + levelIndex, name: `${color.name} Lv${DISPLAY_PORTAL_LEVELS[level]}`, owned: portalKeyInventory[color.id]?.[level] ?? 0, price: 0, rarity: "SR", description: "ダンジョン転移に使う鍵です。売却不可。", action: "locked" }))),
       ...PORTAL_COLORS.map<SupplyCatalogItem>((color, colorIndex) => {
         const name = DUNGEON_BADGES[color.id];
@@ -1956,7 +1969,7 @@ export function CrocsiansGame() {
     ];
     const filtered = supplies.filter((item) => (!inventoryQuery || `${item.name} 道具 消耗品 転移キー ${item.kindLabel ?? ""}`.toLocaleLowerCase("ja-JP").includes(inventoryQuery)) && (!ownedMaterialsOnly || item.owned > 0));
     return sortItemList(filtered, inventorySort, (item) => item.owned);
-  }, [craftedItems.indulgence, craftedItems.potion, inventoryQuery, inventorySort, materialInventory, ownedMaterialsOnly, portalKeyInventory]);
+  }, [craftedItems.indulgence, craftedItems.potion, inventoryQuery, inventorySort, materialInventory, ownedMaterialsOnly, papalBadgeCount, portalKeyInventory]);
   const merchantSupplies = useMemo<SupplyCatalogItem[]>(() => {
     const filtered = [
       { id: 1, name: "回復薬", owned: craftedItems.potion, price: 60, rarity: "N", description: "探索中にHPを28回復", action: "sell" },
@@ -2842,6 +2855,21 @@ export function CrocsiansGame() {
     setSystemMessage(currentLevel === 0 ? `${cardinal.name}を獲得しました` : `${cardinal.name}をLv.${nextLevel}にしました`);
   }
 
+  function exchangePapalBadgeForSp(jobName: JobName) {
+    if (view !== "town" || !holySeeOpen) return;
+    if (papalBadgeCount < 1) {
+      setSystemMessage("教皇のバッジを所持していません");
+      return;
+    }
+    if (papalSpBonuses[jobName] >= 5) {
+      setSystemMessage(`${jobName}は教皇のバッジによるSPボーナスを5回受け取っています`);
+      return;
+    }
+    setPapalSpBonuses((current) => ({ ...current, [jobName]: current[jobName] + 1 }));
+    setJobProgress((current) => ({ ...current, [jobName]: { ...current[jobName], skillPoints: current[jobName].skillPoints + 1 } }));
+    setSystemMessage(`教皇のバッジを捧げ、${jobName}のSPを1獲得しました`);
+  }
+
   function getRemainingSkillUses(skillId: SkillId) {
     return Math.max(0, getSkillUseLimit(skillId) - (skillUses[skillId] ?? 0));
   }
@@ -3155,12 +3183,13 @@ export function CrocsiansGame() {
     const previousLevel = getPlayerProgress(activeJobProgress.experience).level;
     const experience = activeJobProgress.experience + amount;
     const gainedLevels = Math.max(0, getPlayerProgress(experience).level - previousLevel);
+    const gainedPapalBadges = papalBadgesEarnedFromExperience(experience) - papalBadgesEarnedFromExperience(activeJobProgress.experience);
     setResources((current) => ({ gold: current.gold - amount }));
     setJobProgress((current) => {
       const progress = current[job];
       return { ...current, [job]: { experience: progress.experience + amount, skillPoints: progress.skillPoints + gainedLevels } };
     });
-    setSystemMessage(`訓練所で${formatNumber(amount)}Gを${formatNumber(amount)}EXPに交換しました${gainedLevels > 0 ? `。Lvが${gainedLevels}上がりました` : ""}`);
+    setSystemMessage(gainedPapalBadges > 0 ? `訓練で追加EXPが${formatNumber(PAPAL_BADGE_EXPERIENCE_INTERVAL)}に達し、教皇のバッジを${gainedPapalBadges}個獲得しました` : `訓練所で${formatNumber(amount)}Gを${formatNumber(amount)}EXPに交換しました${gainedLevels > 0 ? `。Lvが${gainedLevels}上がりました` : ""}`);
   }
 
   async function activateDivineDevotion() {
@@ -3296,6 +3325,7 @@ export function CrocsiansGame() {
     setSelectedCell(0);
     setCraftedItems({ ...INITIAL_CRAFTED_ITEMS });
     setJobProgress(createInitialJobProgress());
+    setPapalSpBonuses({ ...INITIAL_PAPAL_SP_BONUSES });
     setJob(initialJob);
     setCharacterName(name);
     setNameDraft(name);
@@ -3367,7 +3397,7 @@ export function CrocsiansGame() {
       resources: { ...INITIAL_RESOURCES }, buildings: createInitialBuildings(), baseTiles: createInitialTiles(), mapLayoutVersion: MAP_LAYOUT_VERSION, craftedItems: { ...INITIAL_CRAFTED_ITEMS },
       job: newCharacterJob, materialInventory: { ...INITIAL_MATERIAL_INVENTORY }, materialFavorites: [], weaponInventory: {}, armorInventory: {}, highQualityWeaponInventory: {}, highQualityArmorInventory: {},
       playerProgressionVersion: PLAYER_PROGRESSION_VERSION, merchantSkillResetVersion: MERCHANT_SKILL_RESET_VERSION, merchantStock: { ...INITIAL_MERCHANT_STOCK }, merchantStockVersion: MERCHANT_STOCK_VERSION, merchantStockRestockKey: getMerchantRestockKey(Date.now() + serverTimeOffsetRef.current), characterName: characterNameToSave,
-      characterIcon: newCharacterIcon ? "/api/crocsians/icon" : null, jobProgress: createInitialJobProgress(), skillLevels: { ...INITIAL_SKILL_LEVELS }, cardinalLevels: {}, equippedCardinal: null, equippedWeapon: null, equippedOffhandWeapon: null, equippedArmor: null, equippedWeaponHighQuality: false, equippedOffhandWeaponHighQuality: false, equippedArmorHighQuality: false, bgmVolume, seVolume, textSize, portalRates: { ...INITIAL_PORTAL_RATES }, portalKeyInventory: { ...INITIAL_PORTAL_KEY_INVENTORY },
+      characterIcon: newCharacterIcon ? "/api/crocsians/icon" : null, jobProgress: createInitialJobProgress(), papalSpBonuses: { ...INITIAL_PAPAL_SP_BONUSES }, skillLevels: { ...INITIAL_SKILL_LEVELS }, cardinalLevels: {}, equippedCardinal: null, equippedWeapon: null, equippedOffhandWeapon: null, equippedArmor: null, equippedWeaponHighQuality: false, equippedOffhandWeaponHighQuality: false, equippedArmorHighQuality: false, bgmVolume, seVolume, textSize, portalRates: { ...INITIAL_PORTAL_RATES }, portalKeyInventory: { ...INITIAL_PORTAL_KEY_INVENTORY },
     };
     setSaveReady(false);
     setStartScreenMessage("アカウントへキャラクターを登録しています…");
@@ -3960,7 +3990,7 @@ export function CrocsiansGame() {
                 {templeTab === "exploration" ? EXPLORATION_MAPS.map((map) => <button key={map.code} onClick={() => warpToMap(map)}><span>推奨 Lv.{map.level} · 接続 {mapPopulations[map.code] === undefined ? "確認中" : `${mapPopulations[map.code]}人`}</span><strong>{map.name}</strong><small>{map.code} · 敵No.{map.enemyFrom}〜{map.enemyTo} · キーLv{DISPLAY_PORTAL_LEVELS[MAP_PORTAL_LEVELS[map.code]]} · ポータル {portalRates[map.code]?.toFixed(1) ?? PORTAL_BASE_RATE.toFixed(1)}%</small><b>ワープ</b></button>) : templeTab === "dungeon" ? <div className={styles.dungeonPortalList}>{PORTAL_COLORS.map((color) => <article key={color.id} className={`${styles.dungeonPortalCard} ${styles[`portal${color.tone}`]}`}><span>{color.name.replace("の転移キー", "")}</span><h4>{color.name.replace("キー", "ダンジョン")}</h4><dl>{DUNGEON_STORAGE_LEVELS.map((storageLevel, index) => { const level = DUNGEON_LEVELS[index]; const owned = portalKeyInventory[color.id]?.[storageLevel] ?? 0; return <div key={storageLevel}><dt>Lv{level}</dt><dd>×{owned}</dd><button type="button" disabled={owned < 4} onClick={() => beginDungeonLobby(color.id, level, storageLevel, true)}>募集</button></div>; })}</dl></article>)}</div> : <div className={styles.dungeonPortalList}>{dungeonParties.map((party) => { const color = PORTAL_COLORS.find((entry) => entry.id === party.color); const storageLevel = DUNGEON_STORAGE_LEVELS[DUNGEON_LEVELS.indexOf(party.level)]; return <article key={party.map} className={`${styles.dungeonPortalCard} ${color ? styles[`portal${color.tone}`] : ""}`}><span>{party.hostName}</span><h4>{color?.name.replace("キー", "ダンジョン") ?? "ダンジョン"} Lv.{party.level}</h4><dl><div><dt>PT</dt><dd>{party.memberCount}/{party.maxMembers}</dd></div></dl><button type="button" disabled={party.memberCount >= party.maxMembers} onClick={() => beginDungeonLobby(party.color, party.level, storageLevel, false, party.map)}>参加</button></article>; })}{dungeonParties.length === 0 && <p className={styles.catalogEmpty}>募集中のPTはありません。</p>}</div>}
                 <button className={styles.templeClose} onClick={() => setTempleOpen(false)}>閉じる</button>
               </div>}
-              {holySeeOpen && <div className={styles.holySeeDialog}><div><p>THE HOLY SEE · CARDINAL ARMORY</p><h3>教皇庁</h3><small>色バッジで枢機卿を獲得・育成し、装備を変更できます</small></div><div className={styles.cardinalList}>{CARDINAL_IDS.map((id) => { const cardinal = CARDINALS[id]; const level = cardinalLevels[id] ?? 0; const owned = materialInventory[cardinal.badge] ?? 0; const cost = level === 0 ? CARDINAL_ACQUIRE_COST : cardinalLevelUpCost(level); const maxed = level >= CARDINAL_MAX_LEVEL; return <article key={id} className={equippedCardinal === id ? styles.cardinalEquipped : ""}><NextImage src={cardinal.image} alt="" width={160} height={160} unoptimized /><span>{cardinal.badge} · 所持 {formatNumber(owned)}</span><h4>{cardinal.name}</h4><p>{cardinal.skillName}: {cardinal.description}</p><dl><div><dt>Lv</dt><dd>{level || "未獲得"}</dd></div><div><dt>HP</dt><dd>+{Math.round(cardinal.hp * level * 100)}%</dd></div><div><dt>ATK</dt><dd>+{Math.round(cardinal.atk * level * 100)}%</dd></div><div><dt>DEF</dt><dd>+{Math.round(cardinal.def * level * 100)}%</dd></div>{cardinal.luck > 0 && <div><dt>LUC</dt><dd>+{Math.round(cardinal.luck * level * 100)}%</dd></div>}{cardinal.statusResist > 0 && <div><dt>異常無効</dt><dd>+{Math.round(cardinal.statusResist * level * 100)}%</dd></div>}{cardinal.accuracy > 0 && <div><dt>命中</dt><dd>+{Math.round(cardinal.accuracy * level * 100)}%</dd></div>}</dl><button type="button" disabled={maxed || owned < cost} onClick={() => acquireOrLevelCardinal(cardinal)}>{maxed ? "最大レベル" : level === 0 ? `獲得する（${formatNumber(cost)}）` : `Lv.${level + 1}へ強化（${formatNumber(cost)}）`}</button>{level > 0 && <button type="button" className={styles.cardinalEquipButton} onClick={() => setEquippedCardinal(equippedCardinal === id ? null : id)}>{equippedCardinal === id ? "装備を解除" : "装備する"}</button>}</article>; })}</div><button type="button" className={styles.holySeeClose} onClick={() => setHolySeeOpen(false)}>閉じる</button></div>}
+              {holySeeOpen && <div className={styles.holySeeDialog}><div><p>THE HOLY SEE · CARDINAL ARMORY</p><h3>教皇庁</h3><small>枢機卿の管理と教皇のバッジによるSP授与を行えます</small></div><div className={styles.holySeeTabs}><button type="button" className={holySeeTab === "cardinals" ? styles.holySeeTabActive : ""} onClick={() => setHolySeeTab("cardinals")}>枢機卿</button><button type="button" className={holySeeTab === "papalBadge" ? styles.holySeeTabActive : ""} onClick={() => setHolySeeTab("papalBadge")}>教皇のバッジ <b>×{papalBadgeCount}</b></button></div>{holySeeTab === "cardinals" ? <div className={styles.cardinalList}>{CARDINAL_IDS.map((id) => { const cardinal = CARDINALS[id]; const level = cardinalLevels[id] ?? 0; const owned = materialInventory[cardinal.badge] ?? 0; const cost = level === 0 ? CARDINAL_ACQUIRE_COST : cardinalLevelUpCost(level); const maxed = level >= CARDINAL_MAX_LEVEL; return <article key={id} className={equippedCardinal === id ? styles.cardinalEquipped : ""}><NextImage src={cardinal.image} alt="" width={160} height={160} unoptimized /><span>{cardinal.badge} · 所持 {formatNumber(owned)}</span><h4>{cardinal.name}</h4><p>{cardinal.skillName}: {cardinal.description}</p><dl><div><dt>Lv</dt><dd>{level || "未獲得"}</dd></div><div><dt>HP</dt><dd>+{Math.round(cardinal.hp * level * 100)}%</dd></div><div><dt>ATK</dt><dd>+{Math.round(cardinal.atk * level * 100)}%</dd></div><div><dt>DEF</dt><dd>+{Math.round(cardinal.def * level * 100)}%</dd></div>{cardinal.luck > 0 && <div><dt>LUC</dt><dd>+{Math.round(cardinal.luck * level * 100)}%</dd></div>}{cardinal.statusResist > 0 && <div><dt>異常無効</dt><dd>+{Math.round(cardinal.statusResist * level * 100)}%</dd></div>}{cardinal.accuracy > 0 && <div><dt>命中</dt><dd>+{Math.round(cardinal.accuracy * level * 100)}%</dd></div>}</dl><button type="button" disabled={maxed || owned < cost} onClick={() => acquireOrLevelCardinal(cardinal)}>{maxed ? "最大レベル" : level === 0 ? `獲得する（${formatNumber(cost)}）` : `Lv.${level + 1}へ強化（${formatNumber(cost)}）`}</button>{level > 0 && <button type="button" className={styles.cardinalEquipButton} onClick={() => setEquippedCardinal(equippedCardinal === id ? null : id)}>{equippedCardinal === id ? "装備を解除" : "装備する"}</button>}</article>; })}</div> : <div className={styles.papalBadgePanel}><header><span>SUPREME PONTIFF REWARD</span><h4>教皇のバッジ</h4><p>いずれかのジョブがLv.100に到達後、追加EXPを{formatNumber(PAPAL_BADGE_EXPERIENCE_INTERVAL)}獲得するごとに1個授与されます。</p><strong>所持 ×{papalBadgeCount}</strong></header><div className={styles.papalJobList}>{JOBS.map((jobName) => { const bonus = papalSpBonuses[jobName]; const experience = jobProgress[jobName].experience; const isMaxLevel = experience >= MAX_LEVEL_TOTAL_EXPERIENCE; const extraExperience = Math.max(0, experience - MAX_LEVEL_TOTAL_EXPERIENCE); const nextBadgeProgress = extraExperience % PAPAL_BADGE_EXPERIENCE_INTERVAL; return <article key={jobName}><div><span>{jobName}</span><strong>SP {jobProgress[jobName].skillPoints}</strong></div><p>{isMaxLevel ? `次のバッジまで ${formatNumber(nextBadgeProgress)} / ${formatNumber(PAPAL_BADGE_EXPERIENCE_INTERVAL)} EXP` : `Lv.100到達後にバッジ獲得EXPが蓄積されます`}</p><small>SPボーナス {bonus} / 5</small><button type="button" disabled={papalBadgeCount < 1 || bonus >= 5} onClick={() => exchangePapalBadgeForSp(jobName)}>{bonus >= 5 ? "このジョブは受取上限です" : papalBadgeCount < 1 ? "教皇のバッジが必要です" : "バッジ1個でSP +1"}</button></article>; })}</div></div>}<button type="button" className={styles.holySeeClose} onClick={() => setHolySeeOpen(false)}>閉じる</button></div>}
               {churchOpen && <div className={styles.churchDialog}><div><p>CHURCH · JOB SANCTUARY</p><h3>ジョブを変更</h3><small>各ジョブのLv・EXP・SPは個別に保持されます</small></div><div className={styles.churchJobs}>{JOBS.map((jobName) => { const progress = getPlayerProgress(jobProgress[jobName].experience); const base = getLevelStats(progress.level); const modifier = JOB_MODIFIERS[jobName]; const previewHp = Math.floor(base.hp * modifier.hp); const previewAtk = Math.floor(base.atk * modifier.atk + equippedWeaponAttack); const previewDef = Math.floor(base.def * modifier.def + equippedArmorDefense + (jobName === "戦士" ? (skillLevels.defensiveStance ?? 0) * 3 : 0)); const previewLuck = Math.floor(base.luck * modifier.luck); return <article key={jobName} className={jobName === job ? styles.churchCurrent : ""}><span>{jobName === job ? "CURRENT" : "JOB"}</span><h4>{jobName}</h4><p>Lv.{progress.level} · EXP {progress.required > 0 ? `${formatNumber(progress.current)}/${formatNumber(progress.required)}` : "MAX"} · SP {jobProgress[jobName].skillPoints}</p><dl><div><dt>HP</dt><dd>{previewHp}</dd></div><div><dt>ATK</dt><dd>{previewAtk}</dd></div><div><dt>DEF</dt><dd>{previewDef}</dd></div><div><dt>LUC</dt><dd>{previewLuck}</dd></div></dl><button type="button" disabled={jobName === job} onClick={() => changeJob(jobName)}>{jobName === job ? "現在のジョブ" : "このジョブに変更"}</button></article>; })}</div><button type="button" className={styles.churchClose} onClick={() => setChurchOpen(false)}>閉じる</button></div>}
               {trainingOpen && <div className={styles.trainingDialog}><div><p>TRAINING HALL · EXP EXCHANGE</p><h3>訓練所</h3><small>GOLDとEXPを1:1で交換します。獲得EXPは現在のジョブに加算されます</small></div><div className={styles.trainingStatus}><span>現在のジョブ <b>{job}</b></span><span>Lv.{playerProgress.level} · EXP {playerProgress.required > 0 ? `${formatNumber(playerProgress.current)}/${formatNumber(playerProgress.required)}` : "MAX"}</span><span>所持金 <b>{formatNumber(resources.gold)}G</b></span></div><div className={styles.trainingOptions}>{TRAINING_GOLD_OPTIONS.map((amount) => { const preview = getPlayerProgress(activeJobProgress.experience + amount); const gainedLevels = Math.max(0, preview.level - playerProgress.level); return <button key={amount} type="button" disabled={resources.gold < amount} onClick={() => buyTrainingExperience(amount)}><span>{formatNumber(amount)}G</span><strong>{formatNumber(amount)}EXP</strong><small>{resources.gold < amount ? "GOLD不足" : gainedLevels > 0 ? `Lv.${preview.level}へ上昇 · SP +${gainedLevels}` : "現在のLv内で成長"}</small></button>; })}</div><button type="button" className={styles.trainingClose} onClick={() => setTrainingOpen(false)}>閉じる</button></div>}
             </div>
