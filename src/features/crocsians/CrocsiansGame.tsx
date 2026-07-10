@@ -11,6 +11,7 @@ import { getPlayerProgress, PLAYER_PROGRESSION_VERSION } from "./progression";
 
 type View = "base" | "town" | "explore";
 type TextSize = "small" | "medium" | "large";
+type DesktopPanelSide = "left" | "right";
 type InventoryTab = "materials" | "favorites" | "weapons" | "armors" | "supplies";
 type ItemSort = "number" | "owned" | "rarity";
 type ItemRarity = "N" | "R" | "SR" | "SSR";
@@ -127,6 +128,8 @@ type CrocsiansSaveData = {
   bgmVolume?: number;
   seVolume?: number;
   textSize?: TextSize;
+  expeditionPanelSide?: DesktopPanelSide;
+  chatPanelSide?: DesktopPanelSide;
   baseTiles?: TileKind[];
   portalRates?: PortalRates;
   portalKeyInventory?: PortalKeyInventory;
@@ -896,6 +899,8 @@ export function CrocsiansGame() {
   const [bgmVolume, setBgmVolume] = useState(0.35);
   const [seVolume, setSeVolume] = useState(0.5);
   const [textSize, setTextSize] = useState<TextSize>("small");
+  const [expeditionPanelSide, setExpeditionPanelSide] = useState<DesktopPanelSide>("right");
+  const [chatPanelSide, setChatPanelSide] = useState<DesktopPanelSide>("right");
   const [view, setView] = useState<View>("base");
   const [resources, setResources] = useState<Resources>(INITIAL_RESOURCES);
   const [buildings, setBuildings] = useState<Record<number, Building>>(() => createInitialBuildings());
@@ -1194,6 +1199,8 @@ export function CrocsiansGame() {
       if (typeof data.bgmVolume === "number" && Number.isFinite(data.bgmVolume)) setBgmVolume(Math.max(0, Math.min(1, data.bgmVolume)));
       if (typeof data.seVolume === "number" && Number.isFinite(data.seVolume)) setSeVolume(Math.max(0, Math.min(1, data.seVolume)));
       if (data.textSize === "small" || data.textSize === "medium" || data.textSize === "large") setTextSize(data.textSize);
+      if (data.expeditionPanelSide === "left" || data.expeditionPanelSide === "right") setExpeditionPanelSide(data.expeditionPanelSide);
+      if (data.chatPanelSide === "left" || data.chatPanelSide === "right") setChatPanelSide(data.chatPanelSide);
       if (data.portalRates) setPortalRates({ ...INITIAL_PORTAL_RATES, ...data.portalRates });
       if (data.portalKeyInventory) setPortalKeyInventory({ ...INITIAL_PORTAL_KEY_INVENTORY, ...data.portalKeyInventory });
     };
@@ -1736,7 +1743,7 @@ export function CrocsiansGame() {
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       try {
-        const data: CrocsiansSaveData = { playerProgressionVersion: PLAYER_PROGRESSION_VERSION, merchantSkillResetVersion: MERCHANT_SKILL_RESET_VERSION, resources, buildings, baseTiles, mapLayoutVersion: MAP_LAYOUT_VERSION, craftedItems, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockVersion: MERCHANT_STOCK_VERSION, merchantStockRestockKey, characterName, characterIcon, jobProgress, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, portalRates, portalKeyInventory };
+        const data: CrocsiansSaveData = { playerProgressionVersion: PLAYER_PROGRESSION_VERSION, merchantSkillResetVersion: MERCHANT_SKILL_RESET_VERSION, resources, buildings, baseTiles, mapLayoutVersion: MAP_LAYOUT_VERSION, craftedItems, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockVersion: MERCHANT_STOCK_VERSION, merchantStockRestockKey, characterName, characterIcon, jobProgress, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, expeditionPanelSide, chatPanelSide, portalRates, portalKeyInventory };
         const response = await fetch("/api/crocsians/save", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify({ data }), signal: controller.signal });
         if (response.status === 401) window.location.assign(`/login?next=${encodeURIComponent("/crocsians")}`);
         else if (!response.ok) setSystemMessage("サーバーへのセーブに失敗しました。通信状態を確認してください");
@@ -1757,7 +1764,7 @@ export function CrocsiansGame() {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [gameStarted, resources, buildings, baseTiles, craftedItems, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockRestockKey, characterName, characterIcon, jobProgress, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, portalRates, portalKeyInventory]);
+  }, [gameStarted, resources, buildings, baseTiles, craftedItems, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockRestockKey, characterName, characterIcon, jobProgress, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, expeditionPanelSide, chatPanelSide, portalRates, portalKeyInventory]);
 
   const selectedBuilding = buildings[selectedCell];
   const selectedTileCells = useMemo(() => new Set(tileDragSelection ? tileRectangleCells(tileDragSelection.start, tileDragSelection.end).cells : []), [tileDragSelection]);
@@ -3059,8 +3066,24 @@ export function CrocsiansGame() {
     setChatImage(file);
   }
 
+  function pasteChatImage(event: React.ClipboardEvent<HTMLInputElement>) {
+    const image = [...event.clipboardData.items].find((item) => item.kind === "file" && item.type.startsWith("image/"))?.getAsFile();
+    if (!image) return;
+    event.preventDefault();
+    if (image.size > 15 * 1024 * 1024) return setSystemMessage("画像は15MB以下にしてください");
+    setChatImage(image);
+  }
+
   function renderChatMessage(message: ChatMessage) {
     return <div key={message.id} className={styles.message}><span className={styles.miniAvatar}>{message.icon ? <NextImage src={message.icon} alt="" width={256} height={256} unoptimized /> : message.name.charAt(0)}</span><div><p><strong>{message.name}</strong><small>{message.job} · {new Date(message.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</small></p>{message.text && <span>{message.text}</span>}{message.imageUrl ? <button type="button" className={styles.chatImageButton} onClick={() => setExpandedChatImage(message.imageUrl)}><NextImage src={message.imageUrl} alt={`${message.name}が送信した画像`} width={1024} height={1024} unoptimized /></button> : message.imageExpired ? <span className={styles.chatImageExpired}>アップロードから72時間経過したので画像を削除しました</span> : null}</div></div>;
+  }
+
+  function renderDesktopStatusPanel() {
+    return <section className={styles.panelSection}><div className={styles.sectionHeading}><div><p>{view === "town" ? "TOWN STATUS" : "EXPEDITION"}</p><h3>{view === "town" ? "街の賑わい" : "探索状況"}</h3></div></div>{view === "explore" && <div className={styles.expeditionTabs}><button type="button" className={expeditionPanelTab === "status" ? styles.expeditionTabActive : ""} onClick={() => setExpeditionPanelTab("status")}>状況</button><button type="button" className={expeditionPanelTab === "logs" ? styles.expeditionTabActive : ""} onClick={() => setExpeditionPanelTab("logs")}>ログ</button></div>}{view === "explore" && expeditionPanelTab === "status" && <div className={styles.explorationSummary}><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>スキル回復まで</span><b>{skillUsesResetAt === null ? "--:--" : formatRecoveryTime(skillRecoveryRemaining)}</b></div></div>}{view === "town" || expeditionPanelTab === "status" ? <div className={styles.activityList}>{view === "town" ? <><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>現在地</span><b>イーストヘイヴン</b></div><div><span>NPC商店 更新</span><b>毎日 04:00</b></div><div><span>街施設レベル</span><b>Lv.6</b></div></> : <><div><span>現在HP</span><b>{hp} / {maxHp}</b></div><div><span>状態異常</span><b>{statusEffect ?? "なし"}</b></div><div><span>次のイベント</span><b>{battleActive ? "戦闘終了後" : explorationEvent?.id === "sealedChest" ? `自動解錠まで${eventCountdown}秒` : explorationEvent ? "選択待ち" : `${eventCountdown}秒`}</b></div><div><span>発生イベント</span><b>{eventCount}</b></div><div><span>ポータル出現率</span><b>{portalRates[currentMap.code]?.toFixed(1) ?? PORTAL_BASE_RATE.toFixed(1)}%</b></div><div><span>探索状態</span><b>{battleActive ? `交戦中 · 残り${enemies.filter((enemy) => enemy.currentHp > 0).length}体` : explorationEvent ? explorationEvent.title : "探索中"}</b></div></>}</div> : <div className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : explorationLogs.map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}{view === "explore" && expeditionPanelTab === "status" && <button disabled={battleActive} className={styles.secondaryAction} onClick={leaveExploration}>{battleActive ? "戦闘中は離脱できません" : "探索を離脱して街へ戻る"}</button>}</section>;
+  }
+
+  function renderDesktopChatPanel() {
+    return <section className={`${styles.panelSection} ${styles.chatPanel} ${styles.desktopChatPanel}`}><div className={styles.chatTabs}><button className={styles.chatActive}>全体チャット</button></div><div ref={desktopChatMessagesRef} className={styles.messages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></section>;
   }
 
   async function consumePotion() {
@@ -3412,6 +3435,11 @@ export function CrocsiansGame() {
                     <label><span>SE</span><input aria-label="SE音量" type="range" min="0" max="100" value={Math.round(seVolume * 100)} onChange={(event) => setSeVolume(Number(event.target.value) / 100)} /><b>{Math.round(seVolume * 100)}%</b></label>
                   </div>
                 </section>
+                <section className={styles.desktopLayoutSettings}>
+                  <h3>PC版 UI配置</h3>
+                  <div className={styles.desktopLayoutSettingRow}><span>探索・ログ</span><label><input type="radio" name="expedition-panel-side" checked={expeditionPanelSide === "right"} onChange={() => setExpeditionPanelSide("right")} />右側に表示</label><label><input type="radio" name="expedition-panel-side" checked={expeditionPanelSide === "left"} onChange={() => setExpeditionPanelSide("left")} />左側に表示</label></div>
+                  <div className={styles.desktopLayoutSettingRow}><span>全体チャット</span><label><input type="radio" name="chat-panel-side" checked={chatPanelSide === "right"} onChange={() => setChatPanelSide("right")} />右側に表示</label><label><input type="radio" name="chat-panel-side" checked={chatPanelSide === "left"} onChange={() => setChatPanelSide("left")} />左側に表示</label></div>
+                </section>
                 <section>
                   <h3>装備変更</h3>
                   <div className={styles.equipmentGrid}>
@@ -3677,7 +3705,8 @@ export function CrocsiansGame() {
         </div>
       )}
 
-      <div className={styles.workspace}>
+      <div className={`${styles.workspace} ${expeditionPanelSide === "left" || chatPanelSide === "left" ? styles.workspaceHasLeft : ""} ${view === "base" || expeditionPanelSide === "right" || chatPanelSide === "right" ? styles.workspaceHasRight : ""}`}>
+        {(expeditionPanelSide === "left" || chatPanelSide === "left") && <aside className={`${styles.sidePanel} ${styles.leftSidePanel}`}>{view !== "base" && expeditionPanelSide === "left" && renderDesktopStatusPanel()}{chatPanelSide === "left" && renderDesktopChatPanel()}</aside>}
         <section className={`${styles.mainStage} ${view === "explore" ? styles.exploringStage : ""}`}>
           <div className={styles.stageTitle}>
             <div><p>{view === "base" ? "MY FRONTIER" : view === "town" ? "COMMON DISTRICT" : `EXPEDITION · ${currentMap.code}`}</p><h2>{view === "base" ? `${characterName}の拠点` : view === "town" ? "イーストヘイヴン" : currentMap.name}</h2></div>
@@ -3796,7 +3825,7 @@ export function CrocsiansGame() {
                 </div> : <p className={styles.emptyDetail}>マップの建物を選択すると、稼働状況を確認できます。</p>}</>}
               </section>
             </>
-          ) : (
+          ) : expeditionPanelSide === "right" ? (
             <section className={styles.panelSection}>
               <div className={styles.sectionHeading}><div><p>{view === "town" ? "TOWN STATUS" : "EXPEDITION"}</p><h3>{view === "town" ? "街の賑わい" : "探索状況"}</h3></div></div>
               {view === "explore" && <div className={styles.expeditionTabs}><button type="button" className={expeditionPanelTab === "status" ? styles.expeditionTabActive : ""} onClick={() => setExpeditionPanelTab("status")}>状況</button><button type="button" className={expeditionPanelTab === "logs" ? styles.expeditionTabActive : ""} onClick={() => setExpeditionPanelTab("logs")}>ログ</button></div>}
@@ -3804,12 +3833,12 @@ export function CrocsiansGame() {
               {view === "town" || expeditionPanelTab === "status" ? <div className={styles.activityList}>{view === "town" ? <><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>現在地</span><b>イーストヘイヴン</b></div><div><span>NPC商店 更新</span><b>毎日 04:00</b></div><div><span>街施設レベル</span><b>Lv.6</b></div></> : <><div><span>現在HP</span><b>{hp} / {maxHp}</b></div><div><span>状態異常</span><b>{statusEffect ?? "なし"}</b></div><div><span>次のイベント</span><b>{battleActive ? "戦闘終了後" : explorationEvent?.id === "sealedChest" ? `自動解錠まで${eventCountdown}秒` : explorationEvent ? "選択待ち" : `${eventCountdown}秒`}</b></div><div><span>発生イベント</span><b>{eventCount}</b></div><div><span>ポータル出現率</span><b>{portalRates[currentMap.code]?.toFixed(1) ?? PORTAL_BASE_RATE.toFixed(1)}%</b></div><div><span>探索状態</span><b>{battleActive ? `交戦中 · 残り${enemies.filter((enemy) => enemy.currentHp > 0).length}体` : explorationEvent ? explorationEvent.title : "探索中"}</b></div></>}</div> : <div className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : explorationLogs.map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}
               {view === "explore" && expeditionPanelTab === "status" && <button disabled={battleActive} className={styles.secondaryAction} onClick={leaveExploration}>{battleActive ? "戦闘中は離脱できません" : "探索を離脱して街へ戻る"}</button>}
             </section>
-          )}
-          <section className={`${styles.panelSection} ${styles.chatPanel} ${styles.desktopChatPanel}`}>
+          ) : null}
+          {chatPanelSide === "right" && <section className={`${styles.panelSection} ${styles.chatPanel} ${styles.desktopChatPanel}`}>
             <div className={styles.chatTabs}><button className={styles.chatActive}>全体チャット</button></div>
             <div ref={desktopChatMessagesRef} className={styles.messages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div>
-            <form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form>
-          </section>
+            <form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form>
+          </section>}
         </aside>
       </div>
 
@@ -3818,7 +3847,7 @@ export function CrocsiansGame() {
         <section className={styles.mobileChatModal} role="dialog" aria-modal="true" aria-labelledby="mobile-chat-title">
           <header><div><p>GLOBAL CHANNEL</p><h2 id="mobile-chat-title">全体チャット</h2></div><button type="button" aria-label="全体チャットを閉じる" onClick={() => setMobileChatOpen(false)}>×</button></header>
           <div ref={mobileChatMessagesRef} className={styles.mobileChatMessages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div>
-          <form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form>
+          <form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form>
         </section>
       </div>}
       {expandedChatImage && <div className={styles.chatImageModal} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setExpandedChatImage(null); }}><section role="dialog" aria-modal="true" aria-label="チャット画像の拡大表示"><button type="button" aria-label="拡大画像を閉じる" onClick={() => setExpandedChatImage(null)}>×</button><NextImage src={expandedChatImage} alt="チャット画像の拡大表示" width={1024} height={1024} unoptimized /></section></div>}
