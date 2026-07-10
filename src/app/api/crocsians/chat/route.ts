@@ -98,19 +98,21 @@ export async function POST(request: Request) {
   const save = await prisma.crocsiansSave.findUnique({ where: { userId: user.id }, select: { data: true } });
   const identity = characterIdentity(save?.data, user.accountName);
   let imageData: Uint8Array<ArrayBuffer> | undefined;
+  let imageContentType: "image/webp" | "image/gif" | undefined;
   if (image) {
     try {
-      const processedImage = await sharp(new Uint8Array(await image.arrayBuffer()), { limitInputPixels: 40_000_000 })
-        .rotate()
-        .resize({ width: 1024, height: 1024, fit: "inside", withoutEnlargement: true })
-        .webp({ quality: 82, effort: 4 })
-        .toBuffer();
+      const source = new Uint8Array(await image.arrayBuffer());
+      const metadata = await sharp(source, { limitInputPixels: 40_000_000, animated: true }).metadata();
+      const isAnimatedGif = metadata.format === "gif";
+      const pipeline = sharp(source, { limitInputPixels: 40_000_000, animated: isAnimatedGif }).rotate().resize({ width: isAnimatedGif ? 256 : 1024, height: isAnimatedGif ? 256 : 1024, fit: "inside", withoutEnlargement: true });
+      const processedImage = isAnimatedGif ? await pipeline.gif({ effort: 7, colours: 128 }).toBuffer() : await pipeline.webp({ quality: 82, effort: 4 }).toBuffer();
       imageData = new Uint8Array(processedImage);
+      imageContentType = isAnimatedGif ? "image/gif" : "image/webp";
     } catch {
       return Response.json({ error: "画像を処理できませんでした" }, { status: 400 });
     }
   }
-  const message = await prisma.crocsiansChatMessage.create({ data: { userId: user.id, map: GLOBAL_CHAT_MAP, characterName: identity.name, job: identity.job, level: identity.level, text, imageData, imageContentType: imageData ? "image/webp" : undefined, imageExpiresAt: imageData ? new Date(Date.now() + IMAGE_LIFETIME_MS) : undefined }, select: messageSelection });
+  const message = await prisma.crocsiansChatMessage.create({ data: { userId: user.id, map: GLOBAL_CHAT_MAP, characterName: identity.name, job: identity.job, level: identity.level, text, imageData, imageContentType, imageExpiresAt: imageData ? new Date(Date.now() + IMAGE_LIFETIME_MS) : undefined }, select: messageSelection });
   void pruneOldMessages().catch(() => {});
   return Response.json({ message: serializeMessage(message) });
 }
