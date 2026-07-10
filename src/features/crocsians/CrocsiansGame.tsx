@@ -535,6 +535,14 @@ type ReleaseNote = {
 
 const RELEASE_NOTES: ReleaseNote[] = [
   {
+    version: "ver 0.3.6",
+    items: [
+      { title: "全体チャットの画像機能を追加しました", details: ["ファイル選択とクリップボード貼り付けから画像を送信できるようにしました", "画像は縦横比を保ったまま最大1024pxへ圧縮し、アップロードから72時間後に削除されます", "チャット内の画像をクリックすると拡大表示できます"] },
+      { title: "PC版のサイドUIを調整できるようにしました", details: ["全体チャットの高さを変更し、探索状況・ログとの表示領域を調整できるようにしました", "探索・ログと全体チャットを、それぞれ画面の左側または右側へ配置できます", "配置設定はキャラクター画面のPC版 UI配置から変更できます"] },
+      { title: "枢機卿の表示を改善しました", details: ["装備中の枢機卿をプレイヤーの装備品欄へ表示するようにしました", "枢機卿の装備変更は、従来どおり教皇庁でのみ行えます", "教皇庁の枢機卿カードを対応するバッジの色に合わせて調整しました"] },
+    ],
+  },
+  {
     version: "ver 0.3.5",
     items: [
       {
@@ -3446,6 +3454,7 @@ export function CrocsiansGame() {
                     {job === "職人" && (skillLevels.dualWield ?? 0) > 0 && <label><span>逆手武器</span>{equippedOffhandWeaponDefinition && <ItemTexture kind="weapons" id={equippedOffhandWeaponDefinition.id} name={equippedOffhandWeaponDefinition.name} />}<select value={equippedOffhandWeapon ? `${equippedOffhandWeaponHighQuality ? "high" : "normal"}:${equippedOffhandWeapon}` : ""} onChange={(event) => { const [quality, ...nameParts] = event.target.value.split(":"); setEquippedOffhandWeapon(nameParts.join(":") || null); setEquippedOffhandWeaponHighQuality(quality === "high"); }}><option value="">装備なし</option>{WEAPONS.filter((weapon) => (weaponInventory[weapon.name] ?? 0) > (equippedWeapon === weapon.name && !equippedWeaponHighQuality ? 1 : 0)).map((weapon) => <option key={`offhand-normal-${weapon.id}`} value={`normal:${weapon.name}`}>{weapon.name}（ATK {weapon.atk}）</option>)}{WEAPONS.filter((weapon) => (highQualityWeaponInventory[weapon.name] ?? 0) > (equippedWeapon === weapon.name && equippedWeaponHighQuality ? 1 : 0)).map((weapon) => <option key={`offhand-high-${weapon.id}`} value={`high:${weapon.name}`}>★ {weapon.name}【高品質】（ATK {Math.floor(weapon.atk * 1.25)}）</option>)}</select></label>}
                     <label><span>武器</span>{equippedWeaponDefinition && <ItemTexture kind="weapons" id={equippedWeaponDefinition.id} name={equippedWeaponDefinition.name} />}<select value={equippedWeapon ? `${equippedWeaponHighQuality ? "high" : "normal"}:${equippedWeapon}` : ""} onChange={(event) => { const [quality, ...nameParts] = event.target.value.split(":"); setEquippedWeapon(nameParts.join(":") || null); setEquippedWeaponHighQuality(quality === "high"); }}><option value="">装備なし</option>{WEAPONS.filter((weapon) => (weaponInventory[weapon.name] ?? 0) > 0).map((weapon) => <option key={`normal-${weapon.id}`} value={`normal:${weapon.name}`}>{weapon.name}（ATK {weapon.atk}）</option>)}{WEAPONS.filter((weapon) => (highQualityWeaponInventory[weapon.name] ?? 0) > 0).map((weapon) => <option key={`high-${weapon.id}`} value={`high:${weapon.name}`}>★ {weapon.name}【高品質】（ATK {Math.floor(weapon.atk * 1.25)}）</option>)}</select></label>
                     <label><span>防具</span>{equippedArmorDefinition && <ItemTexture kind="armors" id={equippedArmorDefinition.id} name={equippedArmorDefinition.name} />}<select value={equippedArmor ? `${equippedArmorHighQuality ? "high" : "normal"}:${equippedArmor}` : ""} onChange={(event) => { const [quality, ...nameParts] = event.target.value.split(":"); setEquippedArmor(nameParts.join(":") || null); setEquippedArmorHighQuality(quality === "high"); }}><option value="">装備なし</option>{ARMORS.filter((armor) => (armorInventory[armor.name] ?? 0) > 0).map((armor) => <option key={`normal-${armor.id}`} value={`normal:${armor.name}`}>{armor.name}（DEF {armor.def}）</option>)}{ARMORS.filter((armor) => (highQualityArmorInventory[armor.name] ?? 0) > 0).map((armor) => <option key={`high-${armor.id}`} value={`high:${armor.name}`}>★ {armor.name}【高品質】（DEF {Math.floor(armor.def * 1.25)}）</option>)}</select></label>
+                    <article className={styles.cardinalEquipmentSummary}>{equippedCardinalDefinition && equippedCardinalLevel > 0 ? <NextImage src={equippedCardinalDefinition.image} alt="" width={72} height={72} unoptimized /> : <span>—</span>}<div><small>枢機卿</small><strong>{equippedCardinalDefinition && equippedCardinalLevel > 0 ? equippedCardinalDefinition.name : "装備なし"}</strong>{equippedCardinalDefinition && equippedCardinalLevel > 0 && <em>Lv.{equippedCardinalLevel}</em>}<small>変更は教皇庁で行えます</small></div></article>
                   </div>
                 </section>
                 <section className={styles.skillSection}>
