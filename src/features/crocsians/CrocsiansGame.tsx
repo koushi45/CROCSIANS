@@ -536,6 +536,13 @@ type ReleaseNote = {
 
 const RELEASE_NOTES: ReleaseNote[] = [
   {
+    version: "ver 0.3.8",
+    items: [
+      { title: "探索状況のステータス表示を拡張しました", details: ["不要になった「次のイベント」表示を削除しました", "現在HPに加えて現在ATKと現在DEFを表示するようにしました", "二刀流が有効な場合は現在ATKをmain / subで表示します"] },
+      { title: "有効スキル一覧を追加しました", details: ["習得済みのパッシブスキルと自動スキルを探索状況で確認できるようにしました", "発動中の補助スキルと、装備中の枢機卿スキルも一覧へ表示します"] },
+    ],
+  },
+  {
     version: "ver 0.3.7",
     items: [
       { title: "全体チャットでGIFアニメーションに対応しました", details: ["GIFファイルと、メッセージ内に投稿されたGIF URLをチャット上で再生できるようにしました", "アップロードされたGIFはアニメーションと縦横比を維持し、最大256×256pxへ圧縮して保存します", "GIFも通常画像と同様、アップロードから72時間後にサーバーから削除されます"] },
@@ -3112,7 +3119,9 @@ export function CrocsiansGame() {
   }
 
   function renderDesktopStatusPanel() {
-    return <section className={styles.panelSection}><div className={styles.sectionHeading}><div><p>{view === "town" ? "TOWN STATUS" : "EXPEDITION"}</p><h3>{view === "town" ? "街の賑わい" : "探索状況"}</h3></div></div><div className={styles.activityList}>{view === "town" ? <><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>現在地</span><b>イーストヘイヴン</b></div><div><span>NPC商店 更新</span><b>毎日 04:00</b></div><div><span>街施設レベル</span><b>Lv.6</b></div></> : <><div><span>現在HP</span><b>{hp} / {maxHp}</b></div><div><span>状態異常</span><b>{statusEffect ?? "なし"}</b></div><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>スキル回復まで</span><b>{skillUsesResetAt === null ? "--:--" : formatRecoveryTime(skillRecoveryRemaining)}</b></div><div><span>次のイベント</span><b>{battleActive ? "戦闘終了後" : explorationEvent?.id === "sealedChest" ? `自動解錠まで${eventCountdown}秒` : explorationEvent ? "選択待ち" : `${eventCountdown}秒`}</b></div><div><span>発生イベント</span><b>{eventCount}</b></div><div><span>ポータル出現率</span><b>{portalRates[currentMap.code]?.toFixed(1) ?? PORTAL_BASE_RATE.toFixed(1)}%</b></div><div><span>探索状態</span><b>{battleActive ? `交戦中 · 残り${enemies.filter((enemy) => enemy.currentHp > 0).length}体` : explorationEvent ? explorationEvent.title : "探索中"}</b></div></>}</div>{view === "explore" && <button disabled={battleActive} className={styles.secondaryAction} onClick={leaveExploration}>{battleActive ? "戦闘中は離脱できません" : "離脱"}</button>}</section>;
+    const currentSessionPlayer = healingTargets.find((player) => player.id === presenceClientIdRef.current || player.id === "local");
+    const effectiveStatusSkills = [...SKILLS.filter((skill) => (skillLevels[skill.id] ?? 0) > 0 && (!skill.active || skill.automatic)).map((skill) => `${skill.name} Lv.${skillLevels[skill.id]}`), ...(currentSessionPlayer?.strongDutyDamageReduction ? ["強者の務め（発動中）"] : []), ...(currentSessionPlayer?.divineDevotionAtkBonus ? ["御心による献身（発動中）"] : []), ...(equippedCardinalDefinition && equippedCardinalLevel > 0 ? [`枢機卿: ${equippedCardinalDefinition.skillName} Lv.${equippedCardinalLevel}`] : [])];
+    return <section className={styles.panelSection}><div className={styles.sectionHeading}><div><p>{view === "town" ? "TOWN STATUS" : "EXPEDITION"}</p><h3>{view === "town" ? "街の賑わい" : "探索状況"}</h3></div></div><div className={styles.activityList}>{view === "town" ? <><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>現在地</span><b>イーストヘイヴン</b></div><div><span>NPC商店 更新</span><b>毎日 04:00</b></div><div><span>街施設レベル</span><b>Lv.6</b></div></> : <><div><span>現在HP</span><b>{hp} / {maxHp}</b></div><div><span>現在ATK</span><b>{job === "職人" && (skillLevels.dualWield ?? 0) > 0 ? `main ${totalAttack} / sub ${offhandAttack}` : totalAttack}</b></div><div><span>現在DEF</span><b>{totalDefense}</b></div><div><span>状態異常</span><b>{statusEffect ?? "なし"}</b></div><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>スキル回復まで</span><b>{skillUsesResetAt === null ? "--:--" : formatRecoveryTime(skillRecoveryRemaining)}</b></div><div><span>発生イベント</span><b>{eventCount}</b></div><div><span>ポータル出現率</span><b>{portalRates[currentMap.code]?.toFixed(1) ?? PORTAL_BASE_RATE.toFixed(1)}%</b></div><div><span>探索状態</span><b>{battleActive ? `交戦中 · 残り${enemies.filter((enemy) => enemy.currentHp > 0).length}体` : explorationEvent ? explorationEvent.title : "探索中"}</b></div></>}</div>{view === "explore" && <section className={styles.activeSkillStatus}><h4>有効スキル</h4>{effectiveStatusSkills.length > 0 ? <ul>{effectiveStatusSkills.map((skill) => <li key={skill}>{skill}</li>)}</ul> : <p>有効なスキルはありません</p>}</section>}{view === "explore" && <button disabled={battleActive} className={styles.secondaryAction} onClick={leaveExploration}>{battleActive ? "戦闘中は離脱できません" : "離脱"}</button>}</section>;
   }
 
   function renderDesktopChatPanel() {
