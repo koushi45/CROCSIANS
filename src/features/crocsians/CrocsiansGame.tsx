@@ -540,6 +540,14 @@ type ReleaseNote = {
 
 const RELEASE_NOTES: ReleaseNote[] = [
   {
+    version: "ver 0.3.10",
+    items: [
+      { title: "チャットとログの自動スクロールを調整しました", details: ["チャットやログを開いた時と、既に最下部を表示している時だけ最新メッセージへ追従するようにしました", "過去メッセージを読んでいる最中に表示位置が移動しないようにしました"] },
+      { title: "転移キー獲得通知を追加しました", details: ["転移キー獲得時、キーの色とレベルを画面中央へ大きく表示するようにしました"] },
+      { title: "探索状況の表示を整理しました", details: ["接続プレイヤー数、発生イベント数、ポータル出現率は探索状況に維持し、不要な探索状態表示を削除しました"] },
+    ],
+  },
+  {
     version: "ver 0.3.9",
     items: [
       { title: "スマホ版のゲームヘッダーを整理しました", details: ["スマホ版ではCROCSIANSの文字を非表示にし、ブランドアイコンのみ表示するようにしました", "ブランドアイコン、画面タブ、所持品ボタンを一行にまとめました"] },
@@ -919,6 +927,7 @@ export function CrocsiansGame() {
   const mobileLogMessagesRef = useRef<HTMLDivElement | null>(null);
   const partyStripRef = useRef<HTMLDivElement | null>(null);
   const chatWasAtBottomRef = useRef(true);
+  const logWasAtBottomRef = useRef(true);
   const chatReadInitializedRef = useRef(false);
   const lastReadChatMessageIdRef = useRef<string | null>(null);
   const mapInitialFitDoneRef = useRef(false);
@@ -967,6 +976,8 @@ export function CrocsiansGame() {
   const [holySeeOpen, setHolySeeOpen] = useState(false);
   const [portalRates, setPortalRates] = useState<PortalRates>({ ...INITIAL_PORTAL_RATES });
   const [portalKeyInventory, setPortalKeyInventory] = useState<PortalKeyInventory>({ ...INITIAL_PORTAL_KEY_INVENTORY });
+  const [portalKeyNotice, setPortalKeyNotice] = useState<string | null>(null);
+  const previousPortalKeyInventoryRef = useRef<PortalKeyInventory | null>(null);
   const [eventCountdown, setEventCountdown] = useState(8);
   const [battleActive, setBattleActive] = useState(false);
   const [enemies, setEnemies] = useState<EnemyInstance[]>([]);
@@ -1467,7 +1478,7 @@ export function CrocsiansGame() {
       if (messagesElement) messagesElement.scrollTop = messagesElement.scrollHeight;
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [mobileChatOpen, latestChatMessageId]);
+  }, [mobileChatOpen]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -1477,9 +1488,21 @@ export function CrocsiansGame() {
       for (const element of targets) {
         if (element) element.scrollTop = element.scrollHeight;
       }
+      if (desktopChatTab === "chat") chatWasAtBottomRef.current = true;
+      else logWasAtBottomRef.current = true;
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [desktopChatTab, explorationLogs, mobileChatOpen]);
+  }, [desktopChatTab, mobileChatOpen]);
+
+  useEffect(() => {
+    if (!logWasAtBottomRef.current) return;
+    const frame = window.requestAnimationFrame(() => {
+      for (const element of [desktopLogMessagesRef.current, mobileLogMessagesRef.current]) {
+        if (element) element.scrollTop = element.scrollHeight;
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [explorationLogs]);
 
   useEffect(() => {
     if (view !== "explore") return;
@@ -1814,6 +1837,28 @@ export function CrocsiansGame() {
       controller.abort();
     };
   }, [gameStarted, resources, buildings, baseTiles, craftedItems, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockRestockKey, characterName, characterIcon, jobProgress, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, expeditionPanelSide, chatPanelSide, portalRates, portalKeyInventory]);
+
+  useEffect(() => {
+    if (!saveLoadedRef.current) return;
+    const previous = previousPortalKeyInventoryRef.current;
+    const snapshot = Object.fromEntries(PORTAL_COLORS.map((color) => [color.id, { ...(portalKeyInventory[color.id] ?? {}) }])) as PortalKeyInventory;
+    previousPortalKeyInventoryRef.current = snapshot;
+    if (!previous) return;
+    for (const color of PORTAL_COLORS) {
+      for (const level of DUNGEON_STORAGE_LEVELS) {
+        if ((portalKeyInventory[color.id]?.[level] ?? 0) > (previous[color.id]?.[level] ?? 0)) {
+          setPortalKeyNotice(`${color.name} Lv.${DISPLAY_PORTAL_LEVELS[level]}を獲得！`);
+          return;
+        }
+      }
+    }
+  }, [portalKeyInventory]);
+
+  useEffect(() => {
+    if (!portalKeyNotice) return;
+    const timer = window.setTimeout(() => setPortalKeyNotice(null), 3_500);
+    return () => window.clearTimeout(timer);
+  }, [portalKeyNotice]);
 
   const selectedBuilding = buildings[selectedCell];
   const selectedTileCells = useMemo(() => new Set(tileDragSelection ? tileRectangleCells(tileDragSelection.start, tileDragSelection.end).cells : []), [tileDragSelection]);
@@ -3132,11 +3177,11 @@ export function CrocsiansGame() {
   function renderDesktopStatusPanel() {
     const currentSessionPlayer = healingTargets.find((player) => player.id === presenceClientIdRef.current || player.id === "local");
     const effectiveStatusSkills = [...SKILLS.filter((skill) => (skill.job === job || skill.id === "extortion" || skill.id === "dismantler") && (skillLevels[skill.id] ?? 0) > 0 && (!skill.active || skill.automatic)).map((skill) => `${skill.name} Lv.${skillLevels[skill.id]}`), ...(currentSessionPlayer?.strongDutyDamageReduction ? ["強者の務め（発動中）"] : []), ...(currentSessionPlayer?.divineDevotionAtkBonus ? ["御心による献身（発動中）"] : []), ...(equippedCardinalDefinition && equippedCardinalLevel > 0 ? [`枢機卿: ${equippedCardinalDefinition.skillName} Lv.${equippedCardinalLevel}`] : [])];
-    return <section className={styles.panelSection}><div className={styles.sectionHeading}><div><p>{view === "town" ? "TOWN STATUS" : "EXPEDITION"}</p><h3>{view === "town" ? "街の賑わい" : "探索状況"}</h3></div></div><div className={styles.activityList}>{view === "town" ? <><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>現在地</span><b>イーストヘイヴン</b></div><div><span>NPC商店 更新</span><b>毎日 04:00</b></div><div><span>街施設レベル</span><b>Lv.6</b></div></> : <><div><span>現在HP</span><b>{hp} / {maxHp}</b></div><div><span>現在ATK</span><b>{job === "職人" && (skillLevels.dualWield ?? 0) > 0 ? `main ${totalAttack} / sub ${offhandAttack}` : totalAttack}</b></div><div><span>現在DEF</span><b>{totalDefense}</b></div><div><span>状態異常</span><b>{statusEffect ?? "なし"}</b></div><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>発生イベント</span><b>{eventCount}</b></div><div><span>ポータル出現率</span><b>{portalRates[currentMap.code]?.toFixed(1) ?? PORTAL_BASE_RATE.toFixed(1)}%</b></div><div><span>探索状態</span><b>{battleActive ? `交戦中 · 残り${enemies.filter((enemy) => enemy.currentHp > 0).length}体` : explorationEvent ? explorationEvent.title : "探索中"}</b></div></>}</div>{view === "explore" && <section className={styles.activeSkillStatus}><h4>有効スキル</h4>{effectiveStatusSkills.length > 0 ? <ul>{effectiveStatusSkills.map((skill) => <li key={skill}>{skill}</li>)}</ul> : <p>有効なスキルはありません</p>}</section>}{view === "explore" && <button disabled={battleActive} className={styles.secondaryAction} onClick={leaveExploration}>{battleActive ? "戦闘中は離脱できません" : "離脱"}</button>}</section>;
+    return <section className={styles.panelSection}><div className={styles.sectionHeading}><div><p>{view === "town" ? "TOWN STATUS" : "EXPEDITION"}</p><h3>{view === "town" ? "街の賑わい" : "探索状況"}</h3></div></div><div className={styles.activityList}>{view === "town" ? <><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>現在地</span><b>イーストヘイヴン</b></div><div><span>NPC商店 更新</span><b>毎日 04:00</b></div><div><span>街施設レベル</span><b>Lv.6</b></div></> : <><div><span>現在HP</span><b>{hp} / {maxHp}</b></div><div><span>現在ATK</span><b>{job === "職人" && (skillLevels.dualWield ?? 0) > 0 ? `main ${totalAttack} / sub ${offhandAttack}` : totalAttack}</b></div><div><span>現在DEF</span><b>{totalDefense}</b></div><div><span>状態異常</span><b>{statusEffect ?? "なし"}</b></div><div><span>接続プレイヤー</span><b>{mapPlayers.length}人</b></div><div><span>発生イベント</span><b>{eventCount}</b></div><div><span>ポータル出現率</span><b>{portalRates[currentMap.code]?.toFixed(1) ?? PORTAL_BASE_RATE.toFixed(1)}%</b></div></>}</div>{view === "explore" && <section className={styles.activeSkillStatus}><h4>有効スキル</h4>{effectiveStatusSkills.length > 0 ? <ul>{effectiveStatusSkills.map((skill) => <li key={skill}>{skill}</li>)}</ul> : <p>有効なスキルはありません</p>}</section>}{view === "explore" && <button disabled={battleActive} className={styles.secondaryAction} onClick={leaveExploration}>{battleActive ? "戦闘中は離脱できません" : "離脱"}</button>}</section>;
   }
 
   function renderDesktopChatPanel() {
-    return <section className={`${styles.panelSection} ${styles.chatPanel} ${styles.desktopChatPanel}`}><div className={styles.chatTabs}><button type="button" className={desktopChatTab === "chat" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("chat")}>全体チャット</button><button type="button" className={desktopChatTab === "logs" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("logs")}>ログ</button></div>{desktopChatTab === "chat" ? <><div ref={desktopChatMessagesRef} className={styles.messages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></> : <div ref={desktopLogMessagesRef} className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : [...explorationLogs].reverse().map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}</section>;
+    return <section className={`${styles.panelSection} ${styles.chatPanel} ${styles.desktopChatPanel}`}><div className={styles.chatTabs}><button type="button" className={desktopChatTab === "chat" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("chat")}>全体チャット</button><button type="button" className={desktopChatTab === "logs" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("logs")}>ログ</button></div>{desktopChatTab === "chat" ? <><div ref={desktopChatMessagesRef} className={styles.messages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></> : <div ref={desktopLogMessagesRef} onScroll={(event) => { const element = event.currentTarget; logWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 4; }} className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : [...explorationLogs].reverse().map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}</section>;
   }
 
   async function consumePotion() {
@@ -3430,6 +3475,7 @@ export function CrocsiansGame() {
       </div>
 
       {craftOutcome && <div className={`${styles.craftOutcome} ${craftOutcome.success ? styles.craftOutcomeSuccess : styles.craftOutcomeFailure}`} role="status" aria-live="assertive"><strong>{craftOutcome.success ? "制作成功" : "制作失敗"}</strong><span>{craftOutcome.message}</span></div>}
+      {portalKeyNotice && <div className={styles.portalKeyNotice} role="status" aria-live="assertive"><small>PORTAL KEY ACQUIRED</small><strong>{portalKeyNotice}</strong></div>}
 
       {inspectedPlayer && (
         <div className={styles.catalogBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setInspectedPlayer(null); }}>
@@ -3889,7 +3935,7 @@ export function CrocsiansGame() {
         <section className={styles.mobileChatModal} role="dialog" aria-modal="true" aria-labelledby="mobile-chat-title">
           <header><div><p>GLOBAL CHANNEL</p><h2 id="mobile-chat-title">全体チャット</h2></div><button type="button" aria-label="全体チャットを閉じる" onClick={() => setMobileChatOpen(false)}>×</button></header>
           <div className={styles.chatTabs}><button type="button" className={desktopChatTab === "chat" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("chat")}>全体チャット</button><button type="button" className={desktopChatTab === "logs" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("logs")}>ログ</button></div>
-          {desktopChatTab === "chat" ? <><div ref={mobileChatMessagesRef} className={styles.mobileChatMessages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></> : <div ref={mobileLogMessagesRef} className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : [...explorationLogs].reverse().map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}
+          {desktopChatTab === "chat" ? <><div ref={mobileChatMessagesRef} className={styles.mobileChatMessages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></> : <div ref={mobileLogMessagesRef} onScroll={(event) => { const element = event.currentTarget; logWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 4; }} className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : [...explorationLogs].reverse().map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}
         </section>
       </div>}
       {expandedChatImage && <div className={styles.chatImageModal} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setExpandedChatImage(null); }}><section role="dialog" aria-modal="true" aria-label="チャット画像の拡大表示"><button type="button" aria-label="拡大画像を閉じる" onClick={() => setExpandedChatImage(null)}>×</button><img src={expandedChatImage} alt="チャット画像の拡大表示" /></section></div>}
