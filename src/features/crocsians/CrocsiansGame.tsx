@@ -897,6 +897,8 @@ export function CrocsiansGame() {
   const merchantStockRestockKeyRef = useRef("");
   const desktopChatMessagesRef = useRef<HTMLDivElement | null>(null);
   const mobileChatMessagesRef = useRef<HTMLDivElement | null>(null);
+  const desktopLogMessagesRef = useRef<HTMLDivElement | null>(null);
+  const mobileLogMessagesRef = useRef<HTMLDivElement | null>(null);
   const partyStripRef = useRef<HTMLDivElement | null>(null);
   const chatWasAtBottomRef = useRef(true);
   const chatReadInitializedRef = useRef(false);
@@ -1448,6 +1450,18 @@ export function CrocsiansGame() {
     });
     return () => window.cancelAnimationFrame(frame);
   }, [mobileChatOpen, latestChatMessageId]);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const targets = desktopChatTab === "chat"
+        ? [desktopChatMessagesRef.current, mobileChatMessagesRef.current]
+        : [desktopLogMessagesRef.current, mobileLogMessagesRef.current];
+      for (const element of targets) {
+        if (element) element.scrollTop = element.scrollHeight;
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [desktopChatTab, explorationLogs, mobileChatOpen]);
 
   useEffect(() => {
     if (view !== "explore") return;
@@ -3102,7 +3116,7 @@ export function CrocsiansGame() {
   }
 
   function renderDesktopChatPanel() {
-    return <section className={`${styles.panelSection} ${styles.chatPanel} ${styles.desktopChatPanel}`}><div className={styles.chatTabs}><button type="button" className={desktopChatTab === "chat" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("chat")}>全体チャット</button><button type="button" className={desktopChatTab === "logs" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("logs")}>ログ</button></div>{desktopChatTab === "chat" ? <><div ref={desktopChatMessagesRef} className={styles.messages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></> : <div className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : explorationLogs.map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}</section>;
+    return <section className={`${styles.panelSection} ${styles.chatPanel} ${styles.desktopChatPanel}`}><div className={styles.chatTabs}><button type="button" className={desktopChatTab === "chat" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("chat")}>全体チャット</button><button type="button" className={desktopChatTab === "logs" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("logs")}>ログ</button></div>{desktopChatTab === "chat" ? <><div ref={desktopChatMessagesRef} className={styles.messages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></> : <div ref={desktopLogMessagesRef} className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : [...explorationLogs].reverse().map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}</section>;
   }
 
   async function consumePotion() {
@@ -3855,7 +3869,7 @@ export function CrocsiansGame() {
         <section className={styles.mobileChatModal} role="dialog" aria-modal="true" aria-labelledby="mobile-chat-title">
           <header><div><p>GLOBAL CHANNEL</p><h2 id="mobile-chat-title">全体チャット</h2></div><button type="button" aria-label="全体チャットを閉じる" onClick={() => setMobileChatOpen(false)}>×</button></header>
           <div className={styles.chatTabs}><button type="button" className={desktopChatTab === "chat" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("chat")}>全体チャット</button><button type="button" className={desktopChatTab === "logs" ? styles.chatActive : ""} onClick={() => setDesktopChatTab("logs")}>ログ</button></div>
-          {desktopChatTab === "chat" ? <><div ref={mobileChatMessagesRef} className={styles.mobileChatMessages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></> : <div className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : explorationLogs.map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}
+          {desktopChatTab === "chat" ? <><div ref={mobileChatMessagesRef} className={styles.mobileChatMessages} onScroll={(event) => { const element = event.currentTarget; chatWasAtBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 1; }}>{visibleMessages.length === 0 ? <p className={styles.chatEmpty}>まだメッセージがありません</p> : visibleMessages.map(renderChatMessage)}</div><form className={styles.chatForm} onSubmit={sendChat}><label className={styles.chatImagePicker} title="画像を添付">▧<input type="file" accept="image/*" onChange={selectChatImage} /></label><input value={chat} maxLength={300} onPaste={pasteChatImage} onChange={(event) => setChat(event.target.value)} placeholder={chatImage ? `画像: ${chatImage.name}` : "メッセージを入力"} aria-label="チャットメッセージ"/><button title="送信" type="submit">➤</button></form></> : <div ref={mobileLogMessagesRef} className={styles.expeditionLogList}>{explorationLogs.length === 0 ? <p className={styles.chatEmpty}>まだログがありません</p> : [...explorationLogs].reverse().map((entry) => <article key={entry.id}><time>{new Date(entry.createdAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</time><span>{entry.message}</span></article>)}</div>}
         </section>
       </div>}
       {expandedChatImage && <div className={styles.chatImageModal} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setExpandedChatImage(null); }}><section role="dialog" aria-modal="true" aria-label="チャット画像の拡大表示"><button type="button" aria-label="拡大画像を閉じる" onClick={() => setExpandedChatImage(null)}>×</button><img src={expandedChatImage} alt="チャット画像の拡大表示" /></section></div>}
