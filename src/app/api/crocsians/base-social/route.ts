@@ -83,7 +83,7 @@ export async function GET(request: Request) {
   const ownerIds = saves.map((save) => save.userId);
   const [interactions, socialRows, learnedWords, conversationRows] = await Promise.all([
     ownerIds.length ? prisma.crocsiansBaseInteraction.findMany({ where: { ownerId: { in: ownerIds } }, select: { ownerId: true, visitorId: true, liked: true, favorited: true } }) : [],
-    prisma.crocsiansSocialRelationship.findMany({ where: { OR: [{ fromUserId: user.id }, { toUserId: user.id }] }, orderBy: { updatedAt: "desc" }, take: 40 }),
+    prisma.crocsiansSocialRelationship.findMany({ orderBy: { updatedAt: "desc" }, take: 200 }),
     prisma.crocsiansCharacterWord.findMany({ where: { userId: user.id }, orderBy: { learnedAt: "desc" } }),
     prisma.crocsiansConversationLog.findMany({ orderBy: { createdAt: "desc" }, take: 100 }),
   ]);
@@ -130,6 +130,8 @@ export async function GET(request: Request) {
     viewerId: user.id,
     directory,
     relationships: socialRows.map((row) => ({
+      fromUserId: row.fromUserId,
+      toUserId: row.toUserId,
       userId: row.fromUserId === user.id ? row.toUserId : row.fromUserId,
       friendship: row.friendship,
       rivalry: row.rivalry,
