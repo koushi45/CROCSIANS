@@ -20,6 +20,11 @@ model User {
   crocsiansChatMessages  CrocsiansChatMessage[]
   crocsiansBaseOwnedInteractions   CrocsiansBaseInteraction[] @relation("CrocsiansBaseOwner")
   crocsiansBaseVisitorInteractions CrocsiansBaseInteraction[] @relation("CrocsiansBaseVisitor")
+  crocsiansSocialFrom              CrocsiansSocialRelationship[] @relation("CrocsiansSocialFrom")
+  crocsiansSocialTo                CrocsiansSocialRelationship[] @relation("CrocsiansSocialTo")
+  crocsiansLearnedWords            CrocsiansCharacterWord[]
+  crocsiansSpokenConversations     CrocsiansConversationLog[] @relation("CrocsiansConversationSpeaker")
+  crocsiansHeardConversations      CrocsiansConversationLog[] @relation("CrocsiansConversationListener")
 }
 
 model Session {
@@ -137,6 +142,67 @@ model CrocsiansBaseInteraction {
   @@unique([ownerId, visitorId])
   @@index([ownerId, lastVisitedAt])
   @@index([visitorId, favorited])
+}
+
+model CrocsiansSocialRelationship {
+  id                String   @id @default(cuid())
+  fromUserId        String
+  toUserId          String
+  friendship        Int      @default(0)
+  rivalry           Int      @default(0)
+  romance           Int      @default(0)
+  friendshipStage   Int      @default(0)
+  rivalryStage      Int      @default(0)
+  romanceStage      Int      @default(0)
+  romanceActive     Boolean  @default(false)
+  femaleRoleUserId  String?
+  maleRoleUserId    String?
+  breakupCount      Int      @default(0)
+  married           Boolean  @default(false)
+  marriedAt         DateTime?
+  interactionCount  Int      @default(0)
+  lastActivity      String?
+  lastInteractionAt DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  fromUser          User     @relation("CrocsiansSocialFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser            User     @relation("CrocsiansSocialTo", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId])
+  @@index([fromUserId, updatedAt])
+  @@index([toUserId, updatedAt])
+}
+
+model CrocsiansCharacterWord {
+  id                String   @id @default(cuid())
+  userId            String
+  category          String
+  word              String
+  learnedFromUserId String?
+  favorite          Boolean  @default(false)
+  learnedAt         DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category, word])
+  @@index([userId, category, learnedAt])
+}
+
+model CrocsiansConversationLog {
+  id                String   @id @default(cuid())
+  speakerId         String
+  listenerId        String
+  category          String
+  word              String
+  message           String
+  eventType         String   @default("conversation")
+  relationshipKind  String?
+  relationshipStage Int?
+  createdAt         DateTime @default(now())
+  speaker           User     @relation("CrocsiansConversationSpeaker", fields: [speakerId], references: [id], onDelete: Cascade)
+  listener          User     @relation("CrocsiansConversationListener", fields: [listenerId], references: [id], onDelete: Cascade)
+
+  @@index([speakerId, createdAt])
+  @@index([listenerId, createdAt])
 }
 
 model CrocsiansSkillUsage {
