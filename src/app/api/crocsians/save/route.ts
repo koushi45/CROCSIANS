@@ -16,6 +16,7 @@ const CRAFTING_BUILDINGS = new Set(["weapon", "armor", "apothecary", "furnace", 
 const JOBS = ["戦士", "商人", "職人", "盗賊", "僧侶"] as const;
 const DELETE_CONFIRMATION_PHRASE = "らすたーしょくぱんまん";
 const MERCHANT_SKILL_RESET_VERSION = 1;
+const PC_UI_LAYOUT_VERSION = 1;
 const MERCHANT_SKILL_IDS = ["bargain", "negotiation", "regularCustomer", "marketResearch", "extortion"] as const;
 function createMerchantStock(data: Record<string, unknown>) {
   const skillLevels = data.skillLevels && typeof data.skillLevels === "object" && !Array.isArray(data.skillLevels) ? data.skillLevels as Record<string, unknown> : {};
@@ -71,6 +72,13 @@ function normalizeAccountData(value: unknown, serverTime = Date.now()) {
     }
     data.merchantStock = merchantStock;
     data.merchantSkillResetVersion = MERCHANT_SKILL_RESET_VERSION;
+    changed = true;
+  }
+  // 全アカウントへ一度だけ標準配置をDB側から適用する。適用後はクライアントの選択を保持する。
+  if (data.pcUiLayoutVersion !== PC_UI_LAYOUT_VERSION) {
+    data.expeditionPanelSide = "right";
+    data.chatPanelSide = "left";
+    data.pcUiLayoutVersion = PC_UI_LAYOUT_VERSION;
     changed = true;
   }
   if (data.merchantStockRestockKey !== restockKey) {

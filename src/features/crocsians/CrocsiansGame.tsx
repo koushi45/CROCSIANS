@@ -9,6 +9,7 @@ import weaponCatalog from "./weapons.json";
 import armorCatalog from "./armors.json";
 import buildingUpgradeCatalog from "./building-upgrades.json";
 import { getPlayerProgress, MAX_LEVEL_TOTAL_EXPERIENCE, PAPAL_BADGE_EXPERIENCE_INTERVAL, papalBadgesEarnedFromExperience, PLAYER_PROGRESSION_VERSION } from "./progression";
+import { SOCIAL_WORD_CATEGORY_MAP, type SocialWordCategoryId } from "./social-vocabulary";
 
 type View = "base" | "town" | "explore";
 type TextSize = "small" | "medium" | "large";
@@ -40,21 +41,28 @@ type PortalRates = Record<string, number>;
 type PortalKeyInventory = Partial<Record<PortalColor, Partial<Record<PortalLevel, number>>>>;
 type CardinalId = "bread" | "batrump" | "interstellar" | "elizabeth" | "mushroom";
 type CardinalLevels = Partial<Record<CardinalId, number>>;
-type ConnectedPlayer = { id: string; name: string; job: string; level: number; hp: number; maxHp?: number; statusEffect?: string | null; icon: string | null; atk?: number; def?: number; luck?: number; skillLevels?: Record<string, number>; cardinalLevels?: CardinalLevels; equippedCardinal?: CardinalId | null; equippedWeapon?: string | null; equippedArmor?: string | null; equippedWeaponHighQuality?: boolean; equippedArmorHighQuality?: boolean; treasureHunt?: number; autoHealLevel?: number; autoHealRecovery?: number; autoResurrectLevel?: number; autoResurrectUses?: number; divineDevotionLevel?: number; divineDevotionAtkBonus?: number; strongDutyLevel?: number; strongDutyThreatMultiplier?: number; strongDutyDamageReduction?: number; counterAttackRate?: number; evasionRate?: number; safeFleeLevel?: number; falsePraiseLevel?: number; falsePraiseUses?: number; rareDropBonus?: number; joinedAt?: number; waiting?: boolean };
+type ConnectedPlayer = { id: string; name: string; job: string; level: number; hp: number; maxHp?: number; statusEffect?: string | null; icon: string | null; atk?: number; offhandAtk?: number; def?: number; luck?: number; skillLevels?: Record<string, number>; cardinalLevels?: CardinalLevels; equippedCardinal?: CardinalId | null; equippedWeapon?: string | null; equippedOffhandWeapon?: string | null; equippedArmor?: string | null; equippedWeaponHighQuality?: boolean; equippedOffhandWeaponHighQuality?: boolean; equippedArmorHighQuality?: boolean; treasureHunt?: number; autoHealLevel?: number; autoHealRecovery?: number; autoResurrectLevel?: number; autoResurrectUses?: number; divineDevotionLevel?: number; divineDevotionAtkBonus?: number; strongDutyLevel?: number; strongDutyThreatMultiplier?: number; strongDutyDamageReduction?: number; counterAttackRate?: number; evasionRate?: number; safeFleeLevel?: number; falsePraiseLevel?: number; falsePraiseUses?: number; rareDropBonus?: number; joinedAt?: number; waiting?: boolean };
 type ChatMessage = { id: string; name: string; job: string; text: string; imageUrl: string | null; imageExpired: boolean; createdAt: string; icon: string | null };
 type SocialPerson = { ownerId: string; name: string; job: string; level: number; icon: string | null };
 type SocialBaseSummary = SocialPerson & { likes: number; liked: boolean; favorited: boolean; updatedAt: string };
 type SocialVisitor = SocialPerson & { visitedAt: string | null };
+type SocialActivity = "dance" | "sing" | "listenSong" | "speech" | "listenSpeech" | "nap" | "workout" | "talk" | "friendTalk" | "rivalTalk" | "romanceTalk" | "wedding";
+type SocialRelationship = { userId: string; friendship: number; rivalry: number; romance: number; friendshipStage: number; rivalryStage: number; romanceStage: number; romanceActive: boolean; femaleRoleUserId: string | null; maleRoleUserId: string | null; breakupCount: number; married: boolean; marriedAt: string | null; interactionCount: number; lastActivity: SocialActivity | null; lastInteractionAt: string | null };
+type SocialConversation = { id: string; speaker: string; listener: string; speakerId: string; listenerId: string; category: SocialWordCategoryId; categoryLabel?: string; word: string; message: string; eventType?: "conversation" | "relationship" | "breakup" | "wedding"; relationshipKind?: "friendship" | "rivalry" | "romance" | null; relationshipStage?: number | null; createdAt: string };
+type LearnedWord = { id: string; category: SocialWordCategoryId; word: string; favorite: boolean; learnedFromUserId: string | null; learnedAt: string };
+type TeachPrompt = { character: SocialPerson; category: SocialWordCategoryId; categoryLabel: string; question: string };
 type SocialBaseApi = SocialPerson & { buildings: Record<string, SavedBuilding>; baseTiles: TileKind[]; likes: number; liked: boolean; favorited: boolean; helpedToday: boolean; visitors: SocialVisitor[]; updatedAt: string };
 type SocialBase = Omit<SocialBaseApi, "buildings"> & { buildings: Record<number, Building> };
-type BaseSocialResponse = { viewerId: string; directory: SocialBaseSummary[]; base: SocialBaseApi; error?: string };
+type BaseSocialResponse = { viewerId: string; directory: SocialBaseSummary[]; base: SocialBaseApi; relationships: SocialRelationship[]; learnedWords: LearnedWord[]; conversationLogs: SocialConversation[]; error?: string };
+
+const SOCIAL_ACTIVITY_LABELS: Record<SocialActivity, string> = { dance: "一緒にダンス", sing: "歌を歌う", listenSong: "歌を聴く", speech: "演説をする", listenSpeech: "演説を聞く", nap: "昼寝をする", workout: "筋トレをする", talk: "一緒に話をする", friendTalk: "友情を深める", rivalTalk: "好敵手と語る", romanceTalk: "恋人と語る", wedding: "結婚式" };
 
 function InventoryIcon() {
   return <svg viewBox="0 0 1000 1000" aria-hidden="true"><path d="M758 107q-12-4-148-10-129-5-227-5-43 0-83 16t-71 47q-45 45-82 107-9 13-2 26 4 8 12 15l144 113-154 80q-12 6-18 15-8 14-5 38 9 56 39 275 2 19 15 32 18 20 53 23l388 28q20 3 40-2 16-4 31-12 11-6 20-14l115-109q20-21 28-40 5-14 7-40 2-47 6-156l3-101q24-174-29-261-28-45-78-63zM529 638l-58 46-6 2q-6 3-11 0l-33 22 76 46q10 6 10 17t-9.5 16.5-19.5.5l-79-42-2 41h12q7 0 11 4t4 10-4 10.5-11 4.5h-12v18q0 8-6 14t-14 6-13.5-6-5.5-14v-18h-14q-6 0-10.5-4.5T329 801t4.5-10 10.5-4h14l-2-41-79 42q-7 4-14.5 2t-11.5-9-2-15 9-12l76-47-42-26-8 22-73-49 45-37q9-7 18.5-9.5t17.5 3 10 12.5-1 18l55 29 2-90q0-8 5.5-13.5t14-5.5 14 5.5T397 580l2 90 35-18q1-5 6-10l5-3 69-27q15-6 24-1 3 2 3 6 1 11-12 21zm133-110l-490-18 163-83 470 13z" /></svg>;
 }
 
-function BaseWalker({ person, index, visitor = false }: { person: SocialPerson; index: number; visitor?: boolean }) {
-  return <div className={`${styles.baseWalker} ${visitor ? styles.baseWalkerVisitor : ""}`} style={{ "--walker-x": `${10 + index * 17 % 72}%`, "--walker-y": `${14 + index * 23 % 67}%`, "--walker-delay": `${-index * 1.7}s` } as React.CSSProperties} title={`${person.name} · ${person.job} Lv.${person.level}`}><span>{person.icon ? <NextImage src={person.icon} alt="" width={128} height={128} unoptimized /> : person.name.charAt(0)}</span><i /><b /><small>{person.name}</small></div>;
+function BaseWalker({ person, index, visitor = false, activity, speech, pairSide, onSelect }: { person: SocialPerson; index: number; visitor?: boolean; activity?: SocialActivity; speech?: string; pairSide?: "left" | "right"; onSelect?: () => void }) {
+  return <div className={`${styles.baseWalker} ${onSelect ? styles.baseWalkerSelectable : ""} ${visitor ? styles.baseWalkerVisitor : ""} ${pairSide ? styles.baseWalkerConversationPair : ""} ${activity ? styles[`baseWalker_${activity}`] : ""}`} role={onSelect ? "button" : undefined} tabIndex={onSelect ? 0 : undefined} onClick={onSelect} onKeyDown={onSelect ? (event) => { if (event.key === "Enter" || event.key === " ") onSelect(); } : undefined} style={{ "--walker-x": pairSide === "left" ? "43%" : pairSide === "right" ? "51%" : `${10 + index * 17 % 72}%`, "--walker-y": pairSide ? "45%" : `${14 + index * 23 % 67}%`, "--walker-delay": `${-index * 1.7}s` } as React.CSSProperties} title={`${person.name} · ${person.job} Lv.${person.level} · ${onSelect ? "会話ログを表示" : ""}`}><span>{person.icon ? <NextImage src={person.icon} alt="" width={128} height={128} unoptimized /> : person.name.charAt(0)}</span><i /><b /><small>{person.name}</small>{(speech || activity) && <em className={speech ? styles.baseWalkerSpeechBubble : ""}>{speech ?? SOCIAL_ACTIVITY_LABELS[activity!]}</em>}</div>;
 }
 type EnemySkill = { name: string; rarity: "N" | "R"; maxUses: number; effect: string };
 type EnemyDefinition = { id: number; name: string; hp: number; atk: number; def: number; exp: number; drop: string; rareDrop: string; gold: number; skills?: EnemySkill[] };
@@ -111,11 +119,12 @@ type SharedExplorationSnapshot = {
 };
 type DungeonPartyListing = { map: string; color: PortalColor; level: DungeonLevel; hostName: string; memberCount: number; maxMembers: number };
 type BuildingUpgradeCatalog = Partial<Record<BuildingKind, Record<string, MaterialCost[]>>>;
-type BuildingDefinition = { name: string; icon: string; cost: { gold: number; materials: MaterialCost[] }; product: string; color: string; decorative?: boolean };
+type BuildingDefinition = { name: string; icon: string; cost: { gold: number; materials: MaterialCost[] }; product: string; color: string; decorative?: boolean; image?: string };
 type TileDefinition = { name: string; image?: string; background?: string; materials: MaterialCost[] };
 type CrocsiansSaveData = {
   playerProgressionVersion?: number;
   merchantSkillResetVersion?: number;
+  pcUiLayoutVersion?: number;
   resources?: LegacyResources;
   buildings?: Record<number, SavedBuilding>;
   mapLayoutVersion?: number;
@@ -164,18 +173,18 @@ const BUILDINGS: Record<BuildingKind, BuildingDefinition> = {
   apothecary: { name: "調合所", icon: "✚", cost: { gold: 140, materials: [{ name: "木材", quantity: 60 }, { name: "薬草", quantity: 15 }] }, product: "回復薬", color: "violet" },
   inn: { name: "宿屋", icon: "⌂", cost: { gold: 220, materials: [{ name: "木材", quantity: 80 }, { name: "石材", quantity: 20 }] }, product: "旅人の訪問", color: "gold" },
   furnace: { name: "溶鉱炉", icon: "♨", cost: { gold: 0, materials: [{ name: "石材", quantity: 200 }] }, product: "インゴット", color: "rust" },
-  fountain: { name: "星雫の噴水", icon: "♒", cost: { gold: 350, materials: [{ name: "石材", quantity: 90 }, { name: "清水", quantity: 40 }] }, product: "景観", color: "aqua", decorative: true },
-  garden: { name: "花咲く庭園", icon: "✿", cost: { gold: 180, materials: [{ name: "木材", quantity: 35 }, { name: "薬草", quantity: 45 }] }, product: "景観", color: "leaf", decorative: true },
-  gazebo: { name: "白木の東屋", icon: "⌂", cost: { gold: 260, materials: [{ name: "木材", quantity: 100 }, { name: "石材", quantity: 30 }] }, product: "景観", color: "ivory", decorative: true },
-  clockTower: { name: "時計塔", icon: "◷", cost: { gold: 700, materials: [{ name: "石材", quantity: 180 }, { name: "鉄インゴット", quantity: 25 }] }, product: "景観", color: "bronze", decorative: true },
-  monument: { name: "英雄の記念碑", icon: "♜", cost: { gold: 500, materials: [{ name: "石材", quantity: 160 }] }, product: "景観", color: "slate", decorative: true },
-  pond: { name: "睡蓮の池", icon: "◉", cost: { gold: 150, materials: [{ name: "石材", quantity: 40 }, { name: "清水", quantity: 60 }] }, product: "景観", color: "water", decorative: true },
-  marketStall: { name: "彩り屋台", icon: "▱", cost: { gold: 220, materials: [{ name: "木材", quantity: 70 }, { name: "布", quantity: 20 }] }, product: "景観", color: "festival", decorative: true },
-  campfire: { name: "旅人の焚き火", icon: "♨", cost: { gold: 60, materials: [{ name: "木材", quantity: 35 }, { name: "石材", quantity: 12 }] }, product: "景観", color: "ember", decorative: true },
-  flowerArch: { name: "花のアーチ", icon: "❀", cost: { gold: 120, materials: [{ name: "木材", quantity: 45 }, { name: "薬草", quantity: 30 }] }, product: "景観", color: "rose", decorative: true },
-  streetLamp: { name: "街路灯広場", icon: "✦", cost: { gold: 200, materials: [{ name: "石材", quantity: 45 }, { name: "鉄インゴット", quantity: 12 }] }, product: "景観", color: "lamp", decorative: true },
-  storageShed: { name: "木組みの物置", icon: "▣", cost: { gold: 140, materials: [{ name: "木材", quantity: 85 }] }, product: "景観", color: "wood", decorative: true },
-  courtyard: { name: "王家の中庭", icon: "♔", cost: { gold: 900, materials: [{ name: "石材", quantity: 220 }, { name: "レンガ", quantity: 80 }] }, product: "景観", color: "royal", decorative: true },
+  fountain: { name: "星雫の噴水", icon: "♒", cost: { gold: 350, materials: [{ name: "石材", quantity: 90 }, { name: "清水", quantity: 40 }] }, product: "景観", color: "aqua", decorative: true, image: "1-Photoroom_256px.png" },
+  garden: { name: "花咲く庭園", icon: "✿", cost: { gold: 180, materials: [{ name: "木材", quantity: 35 }, { name: "薬草", quantity: 45 }] }, product: "景観", color: "leaf", decorative: true, image: "2-Photoroom_256px.png" },
+  gazebo: { name: "白木の東屋", icon: "⌂", cost: { gold: 260, materials: [{ name: "木材", quantity: 100 }, { name: "石材", quantity: 30 }] }, product: "景観", color: "ivory", decorative: true, image: "3-Photoroom_256px.png" },
+  clockTower: { name: "時計塔", icon: "◷", cost: { gold: 700, materials: [{ name: "石材", quantity: 180 }, { name: "鉄インゴット", quantity: 25 }] }, product: "景観", color: "bronze", decorative: true, image: "4-Photoroom_256px.png" },
+  monument: { name: "英雄の記念碑", icon: "♜", cost: { gold: 500, materials: [{ name: "石材", quantity: 160 }] }, product: "景観", color: "slate", decorative: true, image: "5-Photoroom_256px.png" },
+  pond: { name: "睡蓮の池", icon: "◉", cost: { gold: 150, materials: [{ name: "石材", quantity: 40 }, { name: "清水", quantity: 60 }] }, product: "景観", color: "water", decorative: true, image: "6-Photoroom_256px.png" },
+  marketStall: { name: "彩り屋台", icon: "▱", cost: { gold: 220, materials: [{ name: "木材", quantity: 70 }, { name: "布", quantity: 20 }] }, product: "景観", color: "festival", decorative: true, image: "7-Photoroom_256px.png" },
+  campfire: { name: "旅人の焚き火", icon: "♨", cost: { gold: 60, materials: [{ name: "木材", quantity: 35 }, { name: "石材", quantity: 12 }] }, product: "景観", color: "ember", decorative: true, image: "8-Photoroom_256px.png" },
+  flowerArch: { name: "花のアーチ", icon: "❀", cost: { gold: 120, materials: [{ name: "木材", quantity: 45 }, { name: "薬草", quantity: 30 }] }, product: "景観", color: "rose", decorative: true, image: "9-Photoroom_256px.png" },
+  streetLamp: { name: "街路灯広場", icon: "✦", cost: { gold: 200, materials: [{ name: "石材", quantity: 45 }, { name: "鉄インゴット", quantity: 12 }] }, product: "景観", color: "lamp", decorative: true, image: "10-Photoroom_256px.png" },
+  storageShed: { name: "木組みの物置", icon: "▣", cost: { gold: 140, materials: [{ name: "木材", quantity: 85 }] }, product: "景観", color: "wood", decorative: true, image: "11-Photoroom_256px.png" },
+  courtyard: { name: "王家の中庭", icon: "♔", cost: { gold: 900, materials: [{ name: "石材", quantity: 220 }, { name: "レンガ", quantity: 80 }] }, product: "景観", color: "royal", decorative: true, image: "12-Photoroom_256px.png" },
 };
 
 const TILES: Record<TileKind, TileDefinition> = {
@@ -186,34 +195,25 @@ const TILES: Record<TileKind, TileDefinition> = {
   carpet: { name: "絨毯", image: "carpet.png", materials: [{ name: "糸", quantity: 1 }, { name: "布", quantity: 2 }] },
   soil: { name: "土", image: "soil.png", materials: [] },
   mosaic: { name: "モザイクタイル", image: "mosic-tile.png", materials: [{ name: "石材", quantity: 2 }, { name: "レンガ", quantity: 2 }] },
-  brick: { name: "赤レンガ", background: "repeating-linear-gradient(0deg,#8f4937 0 20px,#552d26 21px 23px),repeating-linear-gradient(90deg,transparent 0 42px,#4b2923 43px 45px)", materials: [{ name: "レンガ", quantity: 2 }] },
-  woodPlank: { name: "木板フロア", background: "repeating-linear-gradient(90deg,#9a7047 0 31px,#5e402b 32px 34px),linear-gradient(#b18457,#755033)", materials: [{ name: "木材", quantity: 2 }] },
-  marble: { name: "白大理石", background: "linear-gradient(135deg,#e2e0d4 0 35%,#aeb2aa 36% 38%,#f0eee4 39% 70%,#babdb6 71% 73%,#dddcd4 74%)", materials: [{ name: "石材", quantity: 4 }] },
-  slate: { name: "黒い石板", background: "linear-gradient(135deg,#343b40 25%,#252b30 25% 50%,#3d4448 50% 75%,#292f34 75%)", materials: [{ name: "石材", quantity: 3 }] },
-  sand: { name: "白砂", background: "radial-gradient(circle at 25% 35%,#e1ce99 0 2px,transparent 3px),radial-gradient(circle at 70% 65%,#b99f68 0 1px,transparent 2px),#d4bd83", materials: [] },
-  gravel: { name: "砂利道", background: "radial-gradient(circle,#77796f 0 3px,#4f554d 4px 6px,transparent 7px),radial-gradient(circle at 70% 30%,#a0a092 0 2px,transparent 3px),#555b52", materials: [{ name: "石材", quantity: 1 }] },
-  checker: { name: "市松タイル", background: "conic-gradient(#e5dfce 25%,#303735 0 50%,#e5dfce 0 75%,#303735 0) 0 0/28px 28px", materials: [{ name: "石材", quantity: 3 }] },
-  terracotta: { name: "テラコッタ", background: "linear-gradient(45deg,#a85f42 25%,#874631 25% 50%,#b86b49 50% 75%,#914d36 75%)", materials: [{ name: "レンガ", quantity: 2 }] },
-  flowerGrass: { name: "花の芝生", background: "radial-gradient(circle at 25% 30%,#f4d66e 0 2px,transparent 3px),radial-gradient(circle at 70% 65%,#e9a5c4 0 2px,transparent 3px),radial-gradient(circle at 45% 80%,#d7e7a0 0 2px,transparent 3px),#557a46", materials: [{ name: "薬草", quantity: 1 }] },
-  cobblestone: { name: "丸石の舗道", background: "radial-gradient(ellipse at center,#85897e 0 45%,#4d534c 47% 55%,transparent 57%) 0 0/30px 22px,#555c53", materials: [{ name: "石材", quantity: 2 }] },
-  goldTrim: { name: "金縁タイル", background: "linear-gradient(90deg,#b99b43 0 3px,transparent 3px 43px,#b99b43 43px 46px),linear-gradient(#b99b43 0 3px,#242a27 3px 43px,#b99b43 43px 46px)", materials: [{ name: "石材", quantity: 3 }, { name: "金インゴット", quantity: 1 }] },
-  blueCarpet: { name: "蒼紺の絨毯", background: "repeating-linear-gradient(45deg,#263f68 0 8px,#31527f 8px 16px)", materials: [{ name: "布", quantity: 2 }, { name: "糸", quantity: 1 }] },
-  redCarpet: { name: "深紅の絨毯", background: "repeating-linear-gradient(45deg,#6d2930 0 8px,#8c3740 8px 16px)", materials: [{ name: "布", quantity: 2 }, { name: "糸", quantity: 1 }] },
-  blackTile: { name: "漆黒タイル", background: "linear-gradient(135deg,#171b1d 25%,#272d30 25% 50%,#141719 50% 75%,#303538 75%)", materials: [{ name: "石材", quantity: 4 }] },
-  shallowWater: { name: "浅瀬", background: "repeating-radial-gradient(ellipse at 20% 50%,#94d1cf 0 3px,#4b9498 4px 7px,#397b83 8px 12px)", materials: [{ name: "清水", quantity: 1 }] },
-  hedge: { name: "生垣", background: "radial-gradient(circle at 25% 30%,#7ca65d 0 8px,transparent 9px),radial-gradient(circle at 70% 65%,#4f7e43 0 10px,transparent 11px),#345f38", materials: [{ name: "薬草", quantity: 2 }] },
+  brick: { name: "赤レンガ", image: "8_128px.png", materials: [{ name: "レンガ", quantity: 2 }] },
+  woodPlank: { name: "木板フロア", image: "9_128px.png", materials: [{ name: "木材", quantity: 2 }] },
+  marble: { name: "白大理石", image: "10_128px.png", materials: [{ name: "石材", quantity: 4 }] },
+  slate: { name: "黒い石板", image: "11_128px.png", materials: [{ name: "石材", quantity: 3 }] },
+  sand: { name: "白砂", image: "12_128px.png", materials: [] },
+  gravel: { name: "砂利道", image: "13_128px.png", materials: [{ name: "石材", quantity: 1 }] },
+  checker: { name: "市松タイル", image: "14_128px.png", materials: [{ name: "石材", quantity: 3 }] },
+  terracotta: { name: "テラコッタ", image: "15_128px.png", materials: [{ name: "レンガ", quantity: 2 }] },
+  flowerGrass: { name: "花の芝生", image: "16_128px.png", materials: [{ name: "薬草", quantity: 1 }] },
+  cobblestone: { name: "丸石の舗道", image: "17_128px.png", materials: [{ name: "石材", quantity: 2 }] },
+  goldTrim: { name: "金縁タイル", image: "18_128px.png", materials: [{ name: "石材", quantity: 3 }, { name: "金インゴット", quantity: 1 }] },
+  blueCarpet: { name: "蒼紺の絨毯", image: "19_128px.png", materials: [{ name: "布", quantity: 2 }, { name: "糸", quantity: 1 }] },
+  redCarpet: { name: "深紅の絨毯", image: "20_128px.png", materials: [{ name: "布", quantity: 2 }, { name: "糸", quantity: 1 }] },
+  blackTile: { name: "漆黒タイル", image: "21_128px.png", materials: [{ name: "石材", quantity: 4 }] },
+  shallowWater: { name: "浅瀬", image: "22_128px.png", materials: [{ name: "清水", quantity: 1 }] },
+  hedge: { name: "生垣", image: "23_128px.png", materials: [{ name: "薬草", quantity: 2 }] },
 };
 
 const TILE_KINDS = Object.keys(TILES) as TileKind[];
-const DECORATIVE_BUILDING_IMAGES: Partial<Record<BuildingKind, string>> = {
-  fountain: "1-Photoroom_256px.png", garden: "2-Photoroom_256px.png", gazebo: "3-Photoroom_256px.png", clockTower: "4-Photoroom_256px.png",
-  monument: "5-Photoroom_256px.png", pond: "6-Photoroom_256px.png", marketStall: "7-Photoroom_256px.png", campfire: "8-Photoroom_256px.png",
-  flowerArch: "9-Photoroom_256px.png", streetLamp: "10-Photoroom_256px.png", storageShed: "11-Photoroom_256px.png", courtyard: "12-Photoroom_256px.png",
-};
-const TILE_IMAGE_OVERRIDES: Partial<Record<TileKind, string>> = {
-  brick: "8_128px.png", woodPlank: "9_128px.png", marble: "10_128px.png", slate: "11_128px.png", sand: "12_128px.png", gravel: "13_128px.png", checker: "14_128px.png", terracotta: "15_128px.png",
-  flowerGrass: "16_128px.png", cobblestone: "17_128px.png", goldTrim: "18_128px.png", blueCarpet: "19_128px.png", redCarpet: "20_128px.png", blackTile: "21_128px.png", shallowWater: "22_128px.png", hedge: "23_128px.png",
-};
 
 function createInitialTiles(): TileKind[] {
   return Array.from({ length: MAP_CELL_COUNT }, () => "soil" as const);
@@ -221,8 +221,7 @@ function createInitialTiles(): TileKind[] {
 
 function tileVisualStyle(kind: TileKind): React.CSSProperties {
   const tile = TILES[kind];
-  const image = tile.image ?? TILE_IMAGE_OVERRIDES[kind];
-  return image ? { backgroundImage: `url("/crocsians/base/tile/${image}")` } : { background: tile.background ?? "#657050" };
+  return tile.image ? { backgroundImage: `url("/crocsians/base/tile/${tile.image}")` } : { background: tile.background ?? "#657050" };
 }
 
 function tileRectangleCells(start: number, end: number) {
@@ -242,7 +241,7 @@ function tileRectangleCells(start: number, end: number) {
 }
 
 function buildingImagePath(kind: BuildingKind, level: number): string | null {
-  if (DECORATIVE_BUILDING_IMAGES[kind]) return `/crocsians/base/building/view/${DECORATIVE_BUILDING_IMAGES[kind]}`;
+  if (BUILDINGS[kind].image) return `/crocsians/base/building/view/${BUILDINGS[kind].image}`;
   if (BUILDINGS[kind].decorative) return null;
   const safeLevel = Math.max(1, Math.min(MAX_BUILDING_LEVEL, Math.floor(level)));
   if (kind === "furnace") return "/crocsians/base/building/furnace.png";
@@ -286,6 +285,7 @@ const MAX_MAP_ZOOM = 2.5;
 const FACILITY_SIZE = 2;
 const MAP_LAYOUT_VERSION = 3;
 const MERCHANT_SKILL_RESET_VERSION = 1;
+const PC_UI_LAYOUT_VERSION = 1;
 const POTION_HEAL_AMOUNT = 28;
 const PRIEST_HEAL_INITIAL_RECOVERY = 24;
 const PRIEST_GROUP_HEAL_INITIAL_RECOVERY = 14;
@@ -608,6 +608,17 @@ type ReleaseNote = {
 
 const RELEASE_NOTES: ReleaseNote[] = [
   {
+    version: "ver 0.4.0",
+    items: [
+      { title: "拠点にキャラクター同士の自律交流を追加しました", details: ["ゲームにアカウントが存在するキャラクターが拠点へ集まり、ランダムに交流するようになりました", "ダンス、歌、歌を聴く、演説、演説を聞く、昼寝、筋トレ、会話に専用アニメーションを追加しました", "会話中の二人は隣り合い、発言内容をポーン上の吹き出しへ一行ずつ表示します"] },
+      { title: "友人・ライバル・恋愛関係を追加しました", details: ["交流を重ねることで、友人・ライバル・恋愛の関係がそれぞれ10段階まで進展します", "各段階に専用の日本語会話を用意し、関係の進展に合わせて内容が変化します", "恋愛では女役・男役を交際中固定し、進展途中の破局イベントにも対応しました"] },
+      { title: "キャラクターの言葉と記憶を追加しました", details: ["嬉しい事、悲しい事、美味しいものなど41カテゴリーの言葉を、各キャラクターがカテゴリーごとに3つまで覚えます", "キャラクターから呼びかけられた際、プレイヤーがカテゴリーに沿った言葉を教えられます", "覚えた言葉はDBへ保存され、通常会話や関係イベントで優先的に使われるほか、会話を聞いた別のキャラクターにも伝わります"] },
+      { title: "会話ログ・関係値画面を追加しました", details: ["キャラクター同士の会話だけを専用ログへ保存し、話題と使われた言葉を確認できます", "友好・競争・恋愛の関係値、交流回数、現在の関係を一覧表示します", "キャラクターが覚えている言葉と、未習得時に使うサンプル語をカテゴリー別に確認できます"] },
+      { title: "結婚式イベントを追加しました", details: ["恋愛関係が最終段階へ到達した後、次の進展で結婚式が発生します", "女役側の拠点にキャラクターが集まり、誓いの言葉、指輪交換、参加者の祝福コメントを含む長編イベントを再生します", "結婚状態と結婚日時をDBへ保存し、結婚式の全文も専用会話ログへ記録します"] },
+      { title: "PC版の初期UI配置と拠点ポーン表示を改善しました", details: ["PC版の初期配置を、探索・ログは右側、全体チャットは左側へ変更しました", "既存キャラクターにもDB側から一度だけ新しい配置を適用し、適用後はクライアントで変更した配置を優先します", "Chromeで交流アニメーションが徘徊移動を停止させる問題を修正しました"] },
+    ],
+  },
+  {
     version: "ver 0.3.13",
     items: [
       { title: "拠点建築の配置プレビューを追加しました", details: ["PC版ではサイドメニューから施設を選ぶと、マウス位置に半透明の建築予定地を表示します", "空きマスから開く建設メニューでは、PC・スマホとも施設選択後に配置を確認してから建築できるようにしました", "建築可能な場所は黄緑、建築できない場所は赤色で表示します"] },
@@ -665,9 +676,30 @@ const RELEASE_NOTES: ReleaseNote[] = [
   {
     version: "ver 0.3.6",
     items: [
-      { title: "全体チャットの画像機能を追加しました", details: ["ファイル選択とクリップボード貼り付けから画像を送信できるようにしました", "画像は縦横比を保ったまま最大1024pxへ圧縮し、アップロードから72時間後に削除されます", "チャット内の画像をクリックすると拡大表示できます"] },
-      { title: "PC版のサイドUIを調整できるようにしました", details: ["全体チャットの高さを変更し、探索状況・ログとの表示領域を調整できるようにしました", "探索・ログと全体チャットを、それぞれ画面の左側または右側へ配置できます", "配置設定はキャラクター画面のPC版 UI配置から変更できます"] },
-      { title: "枢機卿の表示を改善しました", details: ["装備中の枢機卿をプレイヤーの装備品欄へ表示するようにしました", "枢機卿の装備変更は、従来どおり教皇庁でのみ行えます", "教皇庁の枢機卿カードを対応するバッジの色に合わせて調整しました"] },
+      {
+        title: "全体チャットの画像機能を追加しました",
+        details: [
+          "ファイル選択とクリップボード貼り付けから画像を送信できるようにしました",
+          "画像は縦横比を保ったまま最大1024pxへ圧縮し、アップロードから72時間後に削除されます",
+          "チャット内の画像をクリックすると拡大表示できます",
+        ],
+      },
+      {
+        title: "PC版のサイドUIを調整できるようにしました",
+        details: [
+          "全体チャットの高さを変更し、探索状況・ログとの表示領域を調整できるようにしました",
+          "探索・ログと全体チャットを、それぞれ画面の左側または右側へ配置できます",
+          "配置設定はキャラクター画面のPC版 UI配置から変更できます",
+        ],
+      },
+      {
+        title: "枢機卿の表示を改善しました",
+        details: [
+          "装備中の枢機卿をプレイヤーの装備品欄へ表示するようにしました",
+          "枢機卿の装備変更は、従来どおり教皇庁でのみ行えます",
+          "教皇庁の枢機卿カードを対応するバッジの色に合わせて調整しました",
+        ],
+      },
     ],
   },
   {
@@ -1041,8 +1073,9 @@ export function CrocsiansGame() {
   const soundVolumeBeforeMuteRef = useRef({ bgm: 0.35, se: 0.5 });
   const [textSize, setTextSize] = useState<TextSize>("small");
   const [expeditionPanelSide, setExpeditionPanelSide] = useState<DesktopPanelSide>("right");
-  const [chatPanelSide, setChatPanelSide] = useState<DesktopPanelSide>("right");
+  const [chatPanelSide, setChatPanelSide] = useState<DesktopPanelSide>("left");
   const [view, setView] = useState<View>("base");
+  const [explorationSessionActive, setExplorationSessionActive] = useState(false);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
   const [resources, setResources] = useState<Resources>(INITIAL_RESOURCES);
   const [buildings, setBuildings] = useState<Record<number, Building>>(() => createInitialBuildings());
@@ -1060,6 +1093,13 @@ export function CrocsiansGame() {
   const [baseSocialLoading, setBaseSocialLoading] = useState(false);
   const [baseSocialData, setBaseSocialData] = useState<BaseSocialResponse | null>(null);
   const [visitedBase, setVisitedBase] = useState<SocialBase | null>(null);
+  const [socialScene, setSocialScene] = useState<{ actor: SocialPerson; partner: SocialPerson; activity: SocialActivity; conversation?: SocialConversation; relationshipEvent?: SocialConversation } | null>(null);
+  const [socialConversationLine, setSocialConversationLine] = useState(0);
+  const [socialHubTab, setSocialHubTab] = useState<"directory" | "relations">("directory");
+  const [teachPrompt, setTeachPrompt] = useState<TeachPrompt | null>(null);
+  const [teachWord, setTeachWord] = useState("");
+  const [teachSubmitting, setTeachSubmitting] = useState(false);
+  const [selectedSocialCharacter, setSelectedSocialCharacter] = useState<SocialPerson | null>(null);
   const [tileMode, setTileMode] = useState<TileKind | null>(null);
   const [tileDemolitionMode, setTileDemolitionMode] = useState(false);
   const [tileDragSelection, setTileDragSelection] = useState<{ start: number; end: number } | null>(null);
@@ -1221,6 +1261,7 @@ export function CrocsiansGame() {
   const localPlayerProfile: ConnectedPlayer = { id: "local", name: characterName, job, level: playerProgress.level, hp, maxHp, statusEffect, icon: characterIcon, atk: totalAttack, def: totalDefense, luck: totalLuck, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedArmor, equippedWeaponHighQuality, equippedArmorHighQuality, autoHealLevel: job === "僧侶" ? skillLevels.autoHeal ?? 0 : 0, autoHealRecovery: job === "僧侶" ? Math.floor(playerProgress.level * (skillLevels.autoHeal ?? 0) * PRIEST_AUTO_HEAL_RECOVERY_MULTIPLIER) : 0, divineDevotionLevel: job === "僧侶" ? skillLevels.divineDevotion ?? 0 : 0, divineDevotionAtkBonus: job === "僧侶" && (skillLevels.divineDevotion ?? 0) > 0 ? Math.max(0, totalAttack - 1) : 0, strongDutyLevel: job === "戦士" ? skillLevels.strongDuty ?? 0 : 0, strongDutyThreatMultiplier: job === "戦士" && (skillLevels.strongDuty ?? 0) > 0 ? WARRIOR_STRONG_DUTY_THREAT_MULTIPLIER : 1, strongDutyDamageReduction: job === "戦士" && (skillLevels.strongDuty ?? 0) > 0 ? WARRIOR_STRONG_DUTY_DAMAGE_REDUCTION : 0, counterAttackRate: job === "戦士" ? (skillLevels.counterAttack ?? 0) * WARRIOR_COUNTER_RATE_PER_LEVEL : 0, evasionRate: job === "盗賊" ? (skillLevels.evasion ?? 0) * THIEF_EVASION_RATE_PER_LEVEL : 0, safeFleeLevel: job === "盗賊" ? skillLevels.safeFlee ?? 0 : 0, rareDropBonus: (skillLevels.dismantler ?? 0) * 0.02 };
   const mapPlayers: ConnectedPlayer[] = connectedPlayersMapKey === activePlayerMapKey && connectedPlayers.length > 0 ? connectedPlayers : activePlayerMapKey ? [localPlayerProfile] : [];
   const inspectedWeaponDefinition = inspectedPlayer?.equippedWeapon ? WEAPONS.find((weapon) => weapon.name === inspectedPlayer.equippedWeapon) : undefined;
+  const inspectedOffhandWeaponDefinition = inspectedPlayer?.equippedOffhandWeapon ? WEAPONS.find((weapon) => weapon.name === inspectedPlayer.equippedOffhandWeapon) : undefined;
   const inspectedArmorDefinition = inspectedPlayer?.equippedArmor ? ARMORS.find((armor) => armor.name === inspectedPlayer.equippedArmor) : undefined;
   const inspectedCardinalDefinition = inspectedPlayer?.equippedCardinal ? CARDINALS[inspectedPlayer.equippedCardinal] : undefined;
   const inspectedSkills = inspectedPlayer ? SKILLS.filter((skill) => (inspectedPlayer.skillLevels?.[skill.id] ?? 0) > 0) : [];
@@ -1527,7 +1568,7 @@ export function CrocsiansGame() {
         const response = await fetch("/api/crocsians/presence", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ clientId, map: presenceMapKey, name: characterName, job, level: playerProgress.level, hp, maxHp, atk: totalAttack, def: totalDefense, luck: totalLuck, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedArmor, equippedWeaponHighQuality, equippedArmorHighQuality }),
+          body: JSON.stringify({ clientId, map: presenceMapKey, name: characterName, job, level: playerProgress.level, hp, maxHp, atk: totalAttack, offhandAtk: job === "職人" && (skillLevels.dualWield ?? 0) > 0 ? offhandAttack : 0, def: totalDefense, luck: totalLuck, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality }),
         });
         if (!response.ok) return;
         const data = await response.json() as { players?: ConnectedPlayer[] };
@@ -1540,7 +1581,7 @@ export function CrocsiansGame() {
     void syncPresence();
     const timer = window.setInterval(syncPresence, 5000);
     return () => { active = false; window.clearInterval(timer); };
-  }, [cardinalLevels, characterIcon, characterName, equippedArmor, equippedArmorHighQuality, equippedCardinal, equippedWeapon, equippedWeaponHighQuality, hp, job, maxHp, playerProgress.level, presenceMapKey, skillLevels, totalAttack, totalDefense, totalLuck]);
+  }, [cardinalLevels, characterIcon, characterName, equippedArmor, equippedArmorHighQuality, equippedCardinal, equippedOffhandWeapon, equippedOffhandWeaponHighQuality, equippedWeapon, equippedWeaponHighQuality, hp, job, maxHp, offhandAttack, playerProgress.level, presenceMapKey, skillLevels, totalAttack, totalDefense, totalLuck]);
 
   useEffect(() => {
     const leavePresence = () => {
@@ -1659,14 +1700,14 @@ export function CrocsiansGame() {
   }, [explorationLogs]);
 
   useEffect(() => {
-    if (view !== "explore") return;
+    if (!explorationSessionActive) return;
     const leaveExplorationSession = () => {
       const clientId = presenceClientIdRef.current;
       if (clientId) navigator.sendBeacon("/api/crocsians/session", JSON.stringify({ map: currentMapKey, clientId, leave: true }));
     };
     window.addEventListener("pagehide", leaveExplorationSession);
     return () => window.removeEventListener("pagehide", leaveExplorationSession);
-  }, [currentMapKey, view]);
+  }, [currentMapKey, explorationSessionActive]);
 
   useEffect(() => {
     let active = true;
@@ -1718,7 +1759,7 @@ export function CrocsiansGame() {
   }, [skillLevels.marketResearch, skillLevels.regularCustomer]);
 
   useEffect(() => {
-    if (view !== "explore") return;
+    if (!explorationSessionActive) return;
     let active = true;
     const map = currentMapKey;
     let clientId = presenceClientIdRef.current;
@@ -1777,6 +1818,8 @@ export function CrocsiansGame() {
         setConnectedPlayers([]);
         setConnectedPlayersMapKey(null);
         setCurrentDungeon(null);
+        setExplorationSessionActive(false);
+        setHp(maxHp);
         setView("town");
         setReturnNotice(snapshot.dungeon ? "ダンジョンアタックが完了し、街へ帰還しました" : "宝箱が5分間開けられなかったため、探索隊全員が街へ帰還しました（ペナルティなし）");
         setSystemMessage(snapshot.dungeon ? "ダンジョンアタックが完了しました" : "宝箱の放置時間が5分を超えたため、街へ帰還しました");
@@ -1878,7 +1921,7 @@ export function CrocsiansGame() {
       window.clearInterval(pollTimer);
       window.clearInterval(heartbeatTimer);
     };
-  }, [cardinalAccuracyBonus, cardinalLevels, cardinalStatusResist, characterIcon, characterName, currentMap.code, currentMapKey, equippedArmor, equippedArmorHighQuality, equippedCardinal, equippedWeapon, equippedWeaponHighQuality, equippedOffhandWeapon, equippedOffhandWeaponHighQuality, equippedWeaponSe, job, maxHp, offhandAttack, playerProgress.level, skillLevels, totalAttack, totalDefense, totalLuck, view]);
+  }, [cardinalAccuracyBonus, cardinalLevels, cardinalStatusResist, characterIcon, characterName, currentMap.code, currentMapKey, equippedArmor, equippedArmorHighQuality, equippedCardinal, equippedWeapon, equippedWeaponHighQuality, equippedOffhandWeapon, equippedOffhandWeaponHighQuality, equippedWeaponSe, explorationSessionActive, job, maxHp, offhandAttack, playerProgress.level, skillLevels, totalAttack, totalDefense, totalLuck]);
 
   useEffect(() => {
     if (view !== "town" || !templeOpen) return;
@@ -1903,7 +1946,7 @@ export function CrocsiansGame() {
   }, [templeOpen, view]);
 
   useEffect(() => {
-    if (view !== "explore" || hp > 0) return;
+    if (!explorationSessionActive || hp > 0) return;
     const timer = window.setTimeout(() => {
       const clientId = presenceClientIdRef.current;
       if (clientId) {
@@ -1918,13 +1961,15 @@ export function CrocsiansGame() {
       setExplorationEvent(null);
       setStatusEffect(null);
       setTempleOpen(false);
+      setExplorationSessionActive(false);
+      setHp(maxHp);
       setResources((current) => ({ ...current, gold: Math.floor(current.gold / 2) }));
       setReturnNotice("HPが0になったため強制帰還しました。所持金が半額になりました");
       setSystemMessage("強制帰還ペナルティにより所持金が半額になりました");
       setView("town");
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [currentMapKey, hp, view]);
+  }, [currentMapKey, explorationSessionActive, hp, maxHp]);
 
   useEffect(() => {
     if (view !== "base" || mapInitialFitDoneRef.current || !mapViewportRef.current) return;
@@ -1971,7 +2016,7 @@ export function CrocsiansGame() {
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       try {
-        const data: CrocsiansSaveData = { playerProgressionVersion: PLAYER_PROGRESSION_VERSION, merchantSkillResetVersion: MERCHANT_SKILL_RESET_VERSION, resources, buildings, baseTiles, mapLayoutVersion: MAP_LAYOUT_VERSION, craftedItems: { ...craftedItems, papalBadge: papalBadgeCount }, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockVersion: MERCHANT_STOCK_VERSION, merchantStockRestockKey, characterName, characterIcon, jobProgress, papalSpBonuses, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, expeditionPanelSide, chatPanelSide, portalRates, portalKeyInventory };
+        const data: CrocsiansSaveData = { playerProgressionVersion: PLAYER_PROGRESSION_VERSION, merchantSkillResetVersion: MERCHANT_SKILL_RESET_VERSION, pcUiLayoutVersion: PC_UI_LAYOUT_VERSION, resources, buildings, baseTiles, mapLayoutVersion: MAP_LAYOUT_VERSION, craftedItems: { ...craftedItems, papalBadge: papalBadgeCount }, job, materialInventory, materialFavorites, weaponInventory, armorInventory, highQualityWeaponInventory, highQualityArmorInventory, merchantStock, merchantStockVersion: MERCHANT_STOCK_VERSION, merchantStockRestockKey, characterName, characterIcon, jobProgress, papalSpBonuses, skillLevels, cardinalLevels, equippedCardinal, equippedWeapon, equippedOffhandWeapon, equippedArmor, equippedWeaponHighQuality, equippedOffhandWeaponHighQuality, equippedArmorHighQuality, bgmVolume, seVolume, textSize, expeditionPanelSide, chatPanelSide, portalRates, portalKeyInventory };
         const response = await fetch("/api/crocsians/save", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify({ data }), signal: controller.signal });
         if (response.status === 401) window.location.assign(`/login?next=${encodeURIComponent("/crocsians")}`);
         else if (!response.ok) setSystemMessage("サーバーへのセーブに失敗しました。通信状態を確認してください");
@@ -3126,11 +3171,16 @@ export function CrocsiansGame() {
   }
 
   function navigate(target: View) {
-    if (view === "explore" && target !== "explore") {
-      setSystemMessage("探索中は離脱ボタンから街へ戻ってください");
+    if (target === "town" && explorationSessionActive) {
+      setSystemMessage("探索中は街へ移動できません。探索画面から離脱・帰還してください");
       return;
     }
     if (target === "explore" && view !== "explore") {
+      if (explorationSessionActive) {
+        setView("explore");
+        setSystemMessage("進行中の探索セッションへ戻りました");
+        return;
+      }
       setView("town");
       setMapPopulations({});
       setTempleOpen(true);
@@ -3202,10 +3252,100 @@ export function CrocsiansGame() {
     }
   }
 
-  async function baseSocialAction(action: "visit" | "like" | "favorite" | "help", ownerId: string, extra: Record<string, unknown> = {}) {
+  async function baseSocialAction(action: "visit" | "like" | "favorite" | "help" | "socialize" | "teachWord", ownerId: string, extra: Record<string, unknown> = {}) {
     const response = await fetch("/api/crocsians/base-social", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action, ownerId, ...extra }) });
     const result = await response.json() as { error?: string };
     if (!response.ok) throw new Error(result.error ?? "拠点交流の操作に失敗しました");
+    return result;
+  }
+
+  useEffect(() => {
+    if (gameStarted && view === "base" && !visitedBase && !baseSocialData && !baseSocialLoading) void loadBaseSocial();
+    // loadBaseSocialはコンポーネント内関数だが、再生成のたびに取得を繰り返さない。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseSocialData, baseSocialLoading, gameStarted, view, visitedBase]);
+
+  useEffect(() => {
+    if (!gameStarted || view !== "base" || visitedBase || !baseSocialData?.directory.length) return;
+    const activities: SocialActivity[] = ["dance", "sing", "listenSong", "speech", "listenSpeech", "nap", "workout", "talk"];
+    let active = true;
+    let timer = 0;
+    const perform = async () => {
+      const viewer: SocialPerson = { ownerId: baseSocialData.viewerId, name: characterName, job, level: playerProgress.level, icon: characterIcon };
+      const residents = [viewer, ...baseSocialData.directory];
+      const firstIndex = Math.floor(Math.random() * residents.length);
+      let secondIndex = Math.floor(Math.random() * (residents.length - 1));
+      if (secondIndex >= firstIndex) secondIndex += 1;
+      const actor = residents[firstIndex];
+      const partner = residents[secondIndex];
+      const activity = activities[Math.floor(Math.random() * activities.length)];
+      setSocialScene({ actor, partner, activity });
+      try {
+        const result = await baseSocialAction("socialize", partner.ownerId, { activity, actorAId: actor.ownerId }) as { relationship?: SocialRelationship; conversation?: SocialConversation; relationshipEvent?: SocialConversation | null };
+        if (!active) return;
+        setSocialScene({ actor, partner, activity, conversation: result.conversation, relationshipEvent: result.relationshipEvent ?? undefined });
+        setBaseSocialData((current) => current ? { ...current, relationships: result.relationship ? [result.relationship, ...current.relationships.filter((row) => row.userId !== partner.ownerId)] : current.relationships, conversationLogs: [...(result.relationshipEvent ? [result.relationshipEvent] : []), ...(result.conversation ? [result.conversation] : []), ...current.conversationLogs].slice(0, 100) } : current);
+      } catch { /* 次回の自律交流で再試行する */ }
+      if (active) timer = window.setTimeout(() => void perform(), 210_000 + Math.random() * 180_000);
+    };
+    timer = window.setTimeout(() => void perform(), 210_000 + Math.random() * 180_000);
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [baseSocialData?.directory, baseSocialData?.viewerId, characterIcon, characterName, gameStarted, job, playerProgress.level, view, visitedBase]);
+
+  useEffect(() => {
+    if (!gameStarted || view !== "base" || visitedBase) return;
+    let active = true;
+    let timer = 0;
+    const requestPrompt = async () => {
+      if (!teachPrompt) {
+        try {
+          const response = await fetch("/api/crocsians/base-social", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "requestTeachPrompt" }) });
+          const result = await response.json() as { teachPrompt?: TeachPrompt | null };
+          if (active && response.ok && result.teachPrompt) { setTeachPrompt(result.teachPrompt); setTeachWord(""); }
+        } catch { /* 次回の専用タイマーで再試行する */ }
+      }
+      if (active) timer = window.setTimeout(() => void requestPrompt(), 210_000 + Math.random() * 180_000);
+    };
+    timer = window.setTimeout(() => void requestPrompt(), 210_000 + Math.random() * 180_000);
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [gameStarted, teachPrompt, view, visitedBase]);
+
+  useEffect(() => {
+    const conversation = socialScene?.relationshipEvent ?? socialScene?.conversation;
+    const resetTimer = window.setTimeout(() => setSocialConversationLine(0), 0);
+    if (!conversation?.message) return () => window.clearTimeout(resetTimer);
+    const lines = conversation.message.split("\n").filter(Boolean);
+    if (lines.length < 2) return () => window.clearTimeout(resetTimer);
+    const timer = window.setInterval(() => setSocialConversationLine((line) => (line + 1) % lines.length), 1_300);
+    return () => { window.clearTimeout(resetTimer); window.clearInterval(timer); };
+  }, [socialScene?.conversation, socialScene?.relationshipEvent]);
+
+  async function submitTaughtWord(event: FormEvent) {
+    event.preventDefault();
+    if (!teachPrompt || !teachWord.trim() || teachSubmitting) return;
+    setTeachSubmitting(true);
+    try {
+      const result = await baseSocialAction("teachWord", teachPrompt.character.ownerId, { category: teachPrompt.category, word: teachWord }) as { message?: string };
+      setSystemMessage(result.message ?? `${teachPrompt.character.name}が新しい言葉を覚えました`);
+      setTeachPrompt(null);
+      setTeachWord("");
+      await loadBaseSocial();
+    } catch (error) {
+      setSystemMessage(error instanceof Error ? error.message : "言葉を教えられませんでした");
+    } finally {
+      setTeachSubmitting(false);
+    }
+  }
+
+  async function toggleFavoriteWord(word: LearnedWord) {
+    try {
+      const response = await fetch("/api/crocsians/base-social", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "favoriteWord", wordId: word.id, favorite: !word.favorite }) });
+      const result = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(result.error ?? "お気に入りを変更できませんでした");
+      setBaseSocialData((current) => current ? { ...current, learnedWords: current.learnedWords.map((entry) => entry.id === word.id ? { ...entry, favorite: !word.favorite } : entry) } : current);
+    } catch (error) {
+      setSystemMessage(error instanceof Error ? error.message : "お気に入りを変更できませんでした");
+    }
   }
 
   async function visitPlayerBase(ownerId: string) {
@@ -3261,6 +3401,7 @@ export function CrocsiansGame() {
     setChurchOpen(false);
     setHolySeeOpen(false);
     setView("explore");
+    setExplorationSessionActive(true);
     setHp(maxHp);
     setEnemies([]);
     setExplorationEvent(null);
@@ -3331,6 +3472,8 @@ export function CrocsiansGame() {
     setTempleOpen(false);
     setStatusEffect(null);
     setCurrentDungeon(null);
+    setExplorationSessionActive(false);
+    setHp(maxHp);
     setView("town");
     setReturnNotice("探索から街へ帰還しました");
     setSystemMessage("探索を離脱し、街へ帰還しました");
@@ -3656,8 +3799,8 @@ export function CrocsiansGame() {
     const data: CrocsiansSaveData = {
       resources: { ...INITIAL_RESOURCES }, buildings: createInitialBuildings(), baseTiles: createInitialTiles(), mapLayoutVersion: MAP_LAYOUT_VERSION, craftedItems: { ...INITIAL_CRAFTED_ITEMS },
       job: newCharacterJob, materialInventory: { ...INITIAL_MATERIAL_INVENTORY }, materialFavorites: [], weaponInventory: {}, armorInventory: {}, highQualityWeaponInventory: {}, highQualityArmorInventory: {},
-      playerProgressionVersion: PLAYER_PROGRESSION_VERSION, merchantSkillResetVersion: MERCHANT_SKILL_RESET_VERSION, merchantStock: { ...INITIAL_MERCHANT_STOCK }, merchantStockVersion: MERCHANT_STOCK_VERSION, merchantStockRestockKey: getMerchantRestockKey(Date.now() + serverTimeOffsetRef.current), characterName: characterNameToSave,
-      characterIcon: newCharacterIcon ? "/api/crocsians/icon" : null, jobProgress: createInitialJobProgress(), papalSpBonuses: { ...INITIAL_PAPAL_SP_BONUSES }, skillLevels: { ...INITIAL_SKILL_LEVELS }, cardinalLevels: {}, equippedCardinal: null, equippedWeapon: null, equippedOffhandWeapon: null, equippedArmor: null, equippedWeaponHighQuality: false, equippedOffhandWeaponHighQuality: false, equippedArmorHighQuality: false, bgmVolume, seVolume, textSize, portalRates: { ...INITIAL_PORTAL_RATES }, portalKeyInventory: { ...INITIAL_PORTAL_KEY_INVENTORY },
+      playerProgressionVersion: PLAYER_PROGRESSION_VERSION, merchantSkillResetVersion: MERCHANT_SKILL_RESET_VERSION, pcUiLayoutVersion: PC_UI_LAYOUT_VERSION, merchantStock: { ...INITIAL_MERCHANT_STOCK }, merchantStockVersion: MERCHANT_STOCK_VERSION, merchantStockRestockKey: getMerchantRestockKey(Date.now() + serverTimeOffsetRef.current), characterName: characterNameToSave,
+      characterIcon: newCharacterIcon ? "/api/crocsians/icon" : null, jobProgress: createInitialJobProgress(), papalSpBonuses: { ...INITIAL_PAPAL_SP_BONUSES }, skillLevels: { ...INITIAL_SKILL_LEVELS }, cardinalLevels: {}, equippedCardinal: null, equippedWeapon: null, equippedOffhandWeapon: null, equippedArmor: null, equippedWeaponHighQuality: false, equippedOffhandWeaponHighQuality: false, equippedArmorHighQuality: false, bgmVolume, seVolume, textSize, expeditionPanelSide: "right", chatPanelSide: "left", portalRates: { ...INITIAL_PORTAL_RATES }, portalKeyInventory: { ...INITIAL_PORTAL_KEY_INVENTORY },
     };
     setSaveReady(false);
     setStartScreenMessage("アカウントへキャラクターを登録しています…");
@@ -3821,6 +3964,12 @@ export function CrocsiansGame() {
     );
   }
 
+  const activeSocialConversation = socialScene?.relationshipEvent ?? socialScene?.conversation;
+  const activeSocialLines = activeSocialConversation?.message.split("\n").filter(Boolean) ?? [];
+  const activeSocialLine = activeSocialLines[socialConversationLine % Math.max(1, activeSocialLines.length)] ?? "";
+  const actorSocialSpeech = socialScene && activeSocialLine.startsWith(`${socialScene.actor.name}「`) ? activeSocialLine.slice(socialScene.actor.name.length) : undefined;
+  const partnerSocialSpeech = socialScene && activeSocialLine.startsWith(`${socialScene.partner.name}「`) ? activeSocialLine.slice(socialScene.partner.name.length) : undefined;
+
   return (
     <main className={`${styles.gameShell} ${textSize === "medium" ? styles.textMedium : textSize === "large" ? styles.textLarge : ""}`} data-crocsians-page>
       <header className={styles.gameHeader}>
@@ -3829,9 +3978,9 @@ export function CrocsiansGame() {
           <div><h1>CROCSIANS</h1></div>
         </div>
         <nav className={styles.viewTabs} aria-label="ゲーム画面">
-          <button className={view === "base" ? styles.activeTab : ""} aria-disabled={view === "explore"} onClick={() => navigate("base")}><span>▦</span> 拠点</button>
-          <button className={view === "town" ? styles.activeTab : ""} aria-disabled={view === "explore"} onClick={() => navigate("town")}><span>♜</span> 街</button>
-          <button className={view === "explore" ? styles.activeTab : ""} onClick={() => navigate("explore")}><span>⌖</span> 探索</button>
+          <button className={view === "base" ? styles.activeTab : ""} onClick={() => navigate("base")}><span>▦</span> 拠点</button>
+          <button className={view === "town" ? styles.activeTab : ""} aria-disabled={explorationSessionActive} title={explorationSessionActive ? "探索を終了するまで街へは戻れません" : undefined} onClick={() => navigate("town")}><span>♜</span> 街</button>
+          <button className={view === "explore" ? styles.activeTab : ""} onClick={() => navigate("explore")}><span>⌖</span> 探索{explorationSessionActive && view !== "explore" ? " ●" : ""}</button>
         </nav>
         <div className={styles.profile}>
           <button className={styles.catalogTrigger} type="button" aria-label="所持品を開く" title="所持品" onClick={() => setMaterialCatalogOpen(true)}><InventoryIcon /></button>
@@ -3867,11 +4016,12 @@ export function CrocsiansGame() {
               <aside>
                 <div className={styles.playerProfileIcon}>{inspectedPlayer.icon ? <NextImage src={inspectedPlayer.icon} alt={`${inspectedPlayer.name}のアイコン`} width={256} height={256} unoptimized /> : <span>{inspectedPlayer.name.charAt(0)}</span>}</div>
                 <strong>{inspectedPlayer.name}</strong><small>{inspectedPlayer.job} · Lv.{inspectedPlayer.level}</small>
-                <dl><div><dt>HP</dt><dd>{inspectedPlayer.hp} / {inspectedPlayer.maxHp ?? "?"}</dd></div><div><dt>ATK</dt><dd>{inspectedPlayer.atk ?? "?"}</dd></div><div><dt>DEF</dt><dd>{inspectedPlayer.def ?? "?"}</dd></div><div><dt>LUC</dt><dd>{inspectedPlayer.luck ?? "?"}</dd></div></dl>
+                <dl><div><dt>HP</dt><dd>{inspectedPlayer.hp} / {inspectedPlayer.maxHp ?? "?"}</dd></div><div><dt>{inspectedPlayer.offhandAtk ? "メインATK" : "ATK"}</dt><dd>{inspectedPlayer.atk ?? "?"}</dd></div>{Boolean(inspectedPlayer.offhandAtk) && <div><dt>サブATK</dt><dd>{inspectedPlayer.offhandAtk}</dd></div>}<div><dt>DEF</dt><dd>{inspectedPlayer.def ?? "?"}</dd></div><div><dt>LUC</dt><dd>{inspectedPlayer.luck ?? "?"}</dd></div></dl>
               </aside>
               <div className={styles.playerProfileDetails}>
                 <section><h3>装備</h3><div className={styles.playerEquipment}>
-                  <article>{inspectedWeaponDefinition ? <NextImage src={`/crocsians/items/weapons/${inspectedWeaponDefinition.id}.png`} alt="" width={96} height={96} unoptimized /> : <span>—</span>}<div><small>WEAPON</small><strong>{inspectedPlayer.equippedWeapon ? `${inspectedPlayer.equippedWeaponHighQuality ? "★ " : ""}${inspectedPlayer.equippedWeapon}` : "装備なし"}</strong>{inspectedWeaponDefinition && <em>ATK {Math.floor(inspectedWeaponDefinition.atk * (inspectedPlayer.equippedWeaponHighQuality ? 1.25 : 1))}</em>}</div></article>
+                  <article>{inspectedWeaponDefinition ? <NextImage src={`/crocsians/items/weapons/${inspectedWeaponDefinition.id}.png`} alt="" width={96} height={96} unoptimized /> : <span>—</span>}<div><small>MAIN WEAPON</small><strong>{inspectedPlayer.equippedWeapon ? `${inspectedPlayer.equippedWeaponHighQuality ? "★ " : ""}${inspectedPlayer.equippedWeapon}` : "装備なし"}</strong>{inspectedWeaponDefinition && <em>ATK {Math.floor(inspectedWeaponDefinition.atk * (inspectedPlayer.equippedWeaponHighQuality ? 1.25 : 1))}</em>}</div></article>
+                  {inspectedPlayer.job === "職人" && (inspectedPlayer.skillLevels?.dualWield ?? 0) > 0 && <article>{inspectedOffhandWeaponDefinition ? <NextImage src={`/crocsians/items/weapons/${inspectedOffhandWeaponDefinition.id}.png`} alt="" width={96} height={96} unoptimized /> : <span>—</span>}<div><small>SUB WEAPON</small><strong>{inspectedPlayer.equippedOffhandWeapon ? `${inspectedPlayer.equippedOffhandWeaponHighQuality ? "★ " : ""}${inspectedPlayer.equippedOffhandWeapon}` : "装備なし"}</strong>{inspectedOffhandWeaponDefinition && <em>ATK {Math.floor(inspectedOffhandWeaponDefinition.atk * (inspectedPlayer.equippedOffhandWeaponHighQuality ? 1.25 : 1))}</em>}</div></article>}
                   <article>{inspectedArmorDefinition ? <NextImage src={`/crocsians/items/armors/${inspectedArmorDefinition.id}.png`} alt="" width={96} height={96} unoptimized /> : <span>—</span>}<div><small>ARMOR</small><strong>{inspectedPlayer.equippedArmor ? `${inspectedPlayer.equippedArmorHighQuality ? "★ " : ""}${inspectedPlayer.equippedArmor}` : "装備なし"}</strong>{inspectedArmorDefinition && <em>DEF {Math.floor(inspectedArmorDefinition.def * (inspectedPlayer.equippedArmorHighQuality ? 1.25 : 1))}</em>}</div></article>
                   <article data-cardinal-color={inspectedCardinalDefinition?.color}>{inspectedCardinalDefinition ? <NextImage src={inspectedCardinalDefinition.image} alt="" width={96} height={96} unoptimized /> : <span>—</span>}<div><small>CARDINAL</small><strong>{inspectedCardinalDefinition ? inspectedCardinalDefinition.name : "装備なし"}</strong>{inspectedCardinalDefinition && <em>Lv.{inspectedPlayer.cardinalLevels?.[inspectedCardinalDefinition.id] ?? 0}</em>}</div></article>
                 </div></section>
@@ -3896,9 +4046,9 @@ export function CrocsiansGame() {
                 <label className={styles.iconUpload}>画像をアップロード<input type="file" accept="image/*" onChange={uploadCharacterIcon} /></label>
                 <small>中央を正方形に切り抜き、256×256pxで保存します（最大10MB）</small>
                 {characterIcon && <button type="button" className={styles.iconReset} onClick={() => void deleteCharacterIcon()}>デフォルトに戻す</button>}
-                {job === "職人" && (skillLevels.dualWield ?? 0) > 0 && <div className={styles.dualAttackStats}><span>順手 <b>{totalAttack}</b></span><span>逆手 <b>{offhandAttack}</b></span></div>}
+                {job === "職人" && (skillLevels.dualWield ?? 0) > 0 && <div className={styles.dualAttackStats}><span>メインATK <b>{totalAttack}</b></span><span>サブATK <b>{offhandAttack}</b></span></div>}
                 <dl><div><dt>HP</dt><dd title={`基礎 ${levelStats.hp} × ${jobModifier.hp} × 枢機卿 ${cardinalHpMultiplier.toFixed(2)}`}>{maxHp}</dd></div><div><dt>ATK</dt><dd title={`(基礎 ${levelStats.atk} × ${jobModifier.atk} + 装備 ${equippedWeaponAttack}${equippedWeaponHighQuality ? "（高品質）" : ""}) × 枢機卿 ${cardinalAtkMultiplier.toFixed(2)}`}>{totalAttack}</dd></div><div><dt>DEF</dt><dd title={`(基礎 ${levelStats.def} × ${jobModifier.def} + 装備 ${equippedArmorDefense}${equippedArmorHighQuality ? "（高品質）" : ""} + スキル ${(skillLevels.defensiveStance ?? 0) * 3}) × 枢機卿 ${cardinalDefMultiplier.toFixed(2)}`}>{totalDefense}</dd></div><div><dt>LUC</dt><dd title={`基礎 ${levelStats.luck} × ${jobModifier.luck} × 枢機卿 ${cardinalLuckMultiplier.toFixed(2)}`}>{totalLuck}</dd></div><div><dt>EXP</dt><dd>{playerProgress.required > 0 ? `${formatNumber(playerProgress.current)} / ${formatNumber(playerProgress.required)}` : "MAX"}</dd></div><div><dt>SP</dt><dd>{skillPoints}</dd></div></dl>
-                <form action="/logout" method="post"><button type="submit" className={styles.gameExitButton} disabled={battleActive}>{battleActive ? "戦闘中はログアウトできません" : "ログアウト"}</button></form>
+                <button type="button" className={styles.gameExitButton} disabled={battleActive} onClick={() => window.location.assign("/")}>{battleActive ? "戦闘中はゲーム終了できません" : "ゲーム終了"}</button>
               </aside>
               <div className={styles.characterEditor}>
                 <section>
@@ -3922,8 +4072,8 @@ export function CrocsiansGame() {
                 <section>
                   <h3>装備変更</h3>
                   <div className={styles.equipmentGrid}>
-                    {job === "職人" && (skillLevels.dualWield ?? 0) > 0 && <label><span>逆手武器</span>{equippedOffhandWeaponDefinition && <ItemTexture kind="weapons" id={equippedOffhandWeaponDefinition.id} name={equippedOffhandWeaponDefinition.name} />}<select value={equippedOffhandWeapon ? `${equippedOffhandWeaponHighQuality ? "high" : "normal"}:${equippedOffhandWeapon}` : ""} onChange={(event) => { const [quality, ...nameParts] = event.target.value.split(":"); setEquippedOffhandWeapon(nameParts.join(":") || null); setEquippedOffhandWeaponHighQuality(quality === "high"); }}><option value="">装備なし</option>{WEAPONS.filter((weapon) => (weaponInventory[weapon.name] ?? 0) > (equippedWeapon === weapon.name && !equippedWeaponHighQuality ? 1 : 0)).map((weapon) => <option key={`offhand-normal-${weapon.id}`} value={`normal:${weapon.name}`}>{weapon.name}（ATK {weapon.atk}）</option>)}{WEAPONS.filter((weapon) => (highQualityWeaponInventory[weapon.name] ?? 0) > (equippedWeapon === weapon.name && equippedWeaponHighQuality ? 1 : 0)).map((weapon) => <option key={`offhand-high-${weapon.id}`} value={`high:${weapon.name}`}>★ {weapon.name}【高品質】（ATK {Math.floor(weapon.atk * 1.25)}）</option>)}</select></label>}
-                    <label><span>武器</span>{equippedWeaponDefinition && <ItemTexture kind="weapons" id={equippedWeaponDefinition.id} name={equippedWeaponDefinition.name} />}<select value={equippedWeapon ? `${equippedWeaponHighQuality ? "high" : "normal"}:${equippedWeapon}` : ""} onChange={(event) => { const [quality, ...nameParts] = event.target.value.split(":"); setEquippedWeapon(nameParts.join(":") || null); setEquippedWeaponHighQuality(quality === "high"); }}><option value="">装備なし</option>{WEAPONS.filter((weapon) => (weaponInventory[weapon.name] ?? 0) > 0).map((weapon) => <option key={`normal-${weapon.id}`} value={`normal:${weapon.name}`}>{weapon.name}（ATK {weapon.atk}）</option>)}{WEAPONS.filter((weapon) => (highQualityWeaponInventory[weapon.name] ?? 0) > 0).map((weapon) => <option key={`high-${weapon.id}`} value={`high:${weapon.name}`}>★ {weapon.name}【高品質】（ATK {Math.floor(weapon.atk * 1.25)}）</option>)}</select></label>
+                    {job === "職人" && (skillLevels.dualWield ?? 0) > 0 && <label><span>サブ武器</span>{equippedOffhandWeaponDefinition && <ItemTexture kind="weapons" id={equippedOffhandWeaponDefinition.id} name={equippedOffhandWeaponDefinition.name} />}<select value={equippedOffhandWeapon ? `${equippedOffhandWeaponHighQuality ? "high" : "normal"}:${equippedOffhandWeapon}` : ""} onChange={(event) => { const [quality, ...nameParts] = event.target.value.split(":"); setEquippedOffhandWeapon(nameParts.join(":") || null); setEquippedOffhandWeaponHighQuality(quality === "high"); }}><option value="">装備なし</option>{WEAPONS.filter((weapon) => (weaponInventory[weapon.name] ?? 0) > (equippedWeapon === weapon.name && !equippedWeaponHighQuality ? 1 : 0)).map((weapon) => <option key={`offhand-normal-${weapon.id}`} value={`normal:${weapon.name}`}>{weapon.name}（ATK {weapon.atk}）</option>)}{WEAPONS.filter((weapon) => (highQualityWeaponInventory[weapon.name] ?? 0) > (equippedWeapon === weapon.name && equippedWeaponHighQuality ? 1 : 0)).map((weapon) => <option key={`offhand-high-${weapon.id}`} value={`high:${weapon.name}`}>★ {weapon.name}【高品質】（ATK {Math.floor(weapon.atk * 1.25)}）</option>)}</select></label>}
+                    <label><span>{job === "職人" && (skillLevels.dualWield ?? 0) > 0 ? "メイン武器" : "武器"}</span>{equippedWeaponDefinition && <ItemTexture kind="weapons" id={equippedWeaponDefinition.id} name={equippedWeaponDefinition.name} />}<select value={equippedWeapon ? `${equippedWeaponHighQuality ? "high" : "normal"}:${equippedWeapon}` : ""} onChange={(event) => { const [quality, ...nameParts] = event.target.value.split(":"); setEquippedWeapon(nameParts.join(":") || null); setEquippedWeaponHighQuality(quality === "high"); }}><option value="">装備なし</option>{WEAPONS.filter((weapon) => (weaponInventory[weapon.name] ?? 0) > 0).map((weapon) => <option key={`normal-${weapon.id}`} value={`normal:${weapon.name}`}>{weapon.name}（ATK {weapon.atk}）</option>)}{WEAPONS.filter((weapon) => (highQualityWeaponInventory[weapon.name] ?? 0) > 0).map((weapon) => <option key={`high-${weapon.id}`} value={`high:${weapon.name}`}>★ {weapon.name}【高品質】（ATK {Math.floor(weapon.atk * 1.25)}）</option>)}</select></label>
                     <label><span>防具</span>{equippedArmorDefinition && <ItemTexture kind="armors" id={equippedArmorDefinition.id} name={equippedArmorDefinition.name} />}<select value={equippedArmor ? `${equippedArmorHighQuality ? "high" : "normal"}:${equippedArmor}` : ""} onChange={(event) => { const [quality, ...nameParts] = event.target.value.split(":"); setEquippedArmor(nameParts.join(":") || null); setEquippedArmorHighQuality(quality === "high"); }}><option value="">装備なし</option>{ARMORS.filter((armor) => (armorInventory[armor.name] ?? 0) > 0).map((armor) => <option key={`normal-${armor.id}`} value={`normal:${armor.name}`}>{armor.name}（DEF {armor.def}）</option>)}{ARMORS.filter((armor) => (highQualityArmorInventory[armor.name] ?? 0) > 0).map((armor) => <option key={`high-${armor.id}`} value={`high:${armor.name}`}>★ {armor.name}【高品質】（DEF {Math.floor(armor.def * 1.25)}）</option>)}</select></label>
                     <article className={styles.cardinalEquipmentSummary} data-cardinal-color={equippedCardinalDefinition && equippedCardinalLevel > 0 ? equippedCardinalDefinition.color : undefined}>{equippedCardinalDefinition && equippedCardinalLevel > 0 ? <NextImage src={equippedCardinalDefinition.image} alt="" width={72} height={72} unoptimized /> : <span>—</span>}<div><small>枢機卿</small><strong>{equippedCardinalDefinition && equippedCardinalLevel > 0 ? equippedCardinalDefinition.name : "装備なし"}</strong>{equippedCardinalDefinition && equippedCardinalLevel > 0 && <em>Lv.{equippedCardinalLevel}</em>}<small>変更は教皇庁で行えます</small></div></article>
                   </div>
@@ -4207,7 +4357,7 @@ export function CrocsiansGame() {
           <div className={styles.stageTitle}>
             <div><p>{view === "base" ? visitedBase ? "VISITING FRONTIER" : "MY FRONTIER" : view === "town" ? "COMMON DISTRICT" : `EXPEDITION · ${currentMap.code}`}</p><h2>{view === "base" ? visitedBase ? `${visitedBase.name}の拠点` : `${characterName}の拠点` : view === "town" ? "イーストヘイヴン" : currentMap.name}</h2></div>
             <div className={styles.stageMeta}>
-              {view === "base" && <div className={styles.mapTools}><button className={styles.socialHubButton} type="button" onClick={() => { setBaseSocialOpen(true); void loadBaseSocial(); }}>拠点交流</button><span>表示 <b>{Math.round(zoom * 100)}%</b></span><span>建物 <b>{Object.keys(visitedBase?.buildings ?? buildings).length}/{MAP_CELL_COUNT / (FACILITY_SIZE * FACILITY_SIZE)}</b></span><button title="縮小" onClick={() => changeMapZoom(zoom - .1)}>−</button><button title="拡大" onClick={() => changeMapZoom(zoom + .1)}>＋</button></div>}
+              {view === "base" && <div className={styles.mapTools}><button className={styles.socialHubButton} type="button" onClick={() => { setBaseSocialOpen(true); void loadBaseSocial(); }}>拠点交流</button><button className={styles.socialHubButton} type="button" onClick={() => setSelectedSocialCharacter({ ownerId: baseSocialData?.viewerId ?? "local", name: characterName, job, level: playerProgress.level, icon: characterIcon })}>自分の言葉</button><span>表示 <b>{Math.round(zoom * 100)}%</b></span><span>建物 <b>{Object.keys(visitedBase?.buildings ?? buildings).length}/{MAP_CELL_COUNT / (FACILITY_SIZE * FACILITY_SIZE)}</b></span><button title="縮小" onClick={() => changeMapZoom(zoom - .1)}>−</button><button title="拡大" onClick={() => changeMapZoom(zoom + .1)}>＋</button></div>}
               {view === "explore" && <div className={styles.exploreMeta}><span>推奨 Lv.{currentMap.level}</span><span>接続プレイヤー {mapPlayers.length}人</span><span>イベント {eventCount}</span><button disabled={battleActive} onClick={leaveExploration}>{battleActive ? "交戦中" : "離脱"}</button></div>}
             </div>
           </div>
@@ -4231,9 +4381,9 @@ export function CrocsiansGame() {
                   {activeBuildingPreview && <div className={`${styles.buildingPlacementPreview} ${activeBuildingPreviewPlaceable ? styles.buildingPlacementValid : styles.buildingPlacementInvalid}`} style={{ gridColumn: `${activeBuildingPreview.cell % MAP_SIZE + 1} / span ${FACILITY_SIZE}`, gridRow: `${Math.floor(activeBuildingPreview.cell / MAP_SIZE) + 1} / span ${FACILITY_SIZE}` }} aria-hidden="true"><BuildingArtwork kind={activeBuildingPreview.kind} level={1} size={192} /><span>{activeBuildingPreviewPlaceable ? "建築予定地" : "建築不可"}</span></div>}
                   {basePanelTab === "tile" && baseTiles.map((tile, cell) => <button key={`tile-${cell}`} data-se="none" type="button" className={`${styles.tileCell} ${selectedCell === cell || selectedTileCells.has(cell) ? styles.selectedTileCell : ""}`} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1 }} aria-label={`${TILES[tile].name}の床 ${cell % MAP_SIZE + 1},${Math.floor(cell / MAP_SIZE) + 1}`} />)}
                 </div>
-                <div className={styles.baseWalkers}><BaseWalker person={{ ownerId: baseSocialData?.viewerId ?? "local", name: characterName, job, level: playerProgress.level, icon: characterIcon }} index={0} />{baseSocialData && baseSocialData.base.ownerId === baseSocialData.viewerId && baseSocialData.base.visitors.slice(0, 5).map((person, index) => <BaseWalker key={person.ownerId} person={person} index={index + 1} visitor />)}</div>
+                <div className={styles.baseWalkers}><BaseWalker person={socialScene?.actor ?? { ownerId: baseSocialData?.viewerId ?? "local", name: characterName, job, level: playerProgress.level, icon: characterIcon }} index={0} visitor={Boolean(socialScene && socialScene.actor.ownerId !== baseSocialData?.viewerId)} onSelect={socialScene && socialScene.actor.ownerId !== baseSocialData?.viewerId ? () => setSelectedSocialCharacter(socialScene.actor) : undefined} pairSide={socialScene ? "left" : undefined} speech={actorSocialSpeech} activity={socialScene?.relationshipEvent?.eventType === "wedding" ? "wedding" : socialScene?.relationshipEvent?.relationshipKind === "romance" ? "romanceTalk" : socialScene?.relationshipEvent?.relationshipKind === "rivalry" ? "rivalTalk" : socialScene?.relationshipEvent?.relationshipKind === "friendship" ? "friendTalk" : socialScene?.activity} />{socialScene && <BaseWalker key={socialScene.partner.ownerId} person={socialScene.partner} index={1} visitor={socialScene.partner.ownerId !== baseSocialData?.viewerId} onSelect={socialScene.partner.ownerId !== baseSocialData?.viewerId ? () => setSelectedSocialCharacter(socialScene.partner) : undefined} pairSide="right" speech={partnerSocialSpeech} activity={socialScene.relationshipEvent?.eventType === "wedding" ? "wedding" : socialScene.relationshipEvent?.relationshipKind === "romance" ? "romanceTalk" : socialScene.relationshipEvent?.relationshipKind === "rivalry" ? "rivalTalk" : socialScene.relationshipEvent?.relationshipKind === "friendship" ? "friendTalk" : socialScene.activity === "sing" ? "listenSong" : socialScene.activity === "speech" ? "listenSpeech" : socialScene.activity} />}{baseSocialData && baseSocialData.base.ownerId === baseSocialData.viewerId && baseSocialData.base.visitors.filter((person) => person.ownerId !== socialScene?.partner.ownerId && person.ownerId !== socialScene?.actor.ownerId).slice(0, socialScene?.relationshipEvent?.eventType === "wedding" ? 12 : 4).map((person, index) => <BaseWalker key={person.ownerId} person={person} index={index + 2} visitor onSelect={() => setSelectedSocialCharacter(person)} activity={socialScene?.relationshipEvent?.eventType === "wedding" ? "wedding" : undefined} />)}</div>
               </div>
-              <div className={styles.mapLegend}><button type="button" className={styles.collectAllButton} disabled={collectableBuildingCount === 0} onClick={collectAllResources}>一括回収 {collectableBuildingCount}</button><span><i className={styles.legendReady} />回収可能 {completed}</span>{tileDragSelection && <span>選択範囲 {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).width} × {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).height}</span>}<span>{MAP_SIZE} × {MAP_SIZE} · 施設 2 × 2</span></div>
+              <div className={styles.mapLegend}><button type="button" className={styles.collectAllButton} disabled={collectableBuildingCount === 0} onClick={collectAllResources}>一括回収 {collectableBuildingCount}</button><button type="button" className={styles.socialRecordsButton} onClick={() => { setSocialHubTab("relations"); void loadBaseSocial(); }}>会話ログ・関係値</button>{socialScene && (() => { const relation = baseSocialData?.relationships.find((row) => row.userId === socialScene.partner.ownerId); const status = relation?.romanceActive ? `恋人 ${relation.romanceStage}/10` : relation && relation.rivalryStage > relation.friendshipStage ? `ライバル ${relation.rivalryStage}/10` : relation?.friendshipStage ? `友人 ${relation.friendshipStage}/10` : "交流中"; return <span className={styles.socialSceneStatus}>♟ {socialScene.relationshipEvent?.message ?? socialScene.conversation?.message ?? `${socialScene.partner.name}と${SOCIAL_ACTIVITY_LABELS[socialScene.activity]}`} · {status}</span>; })()}<span><i className={styles.legendReady} />回収可能 {completed}</span>{tileDragSelection && <span>選択範囲 {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).width} × {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).height}</span>}<span>{MAP_SIZE} × {MAP_SIZE} · 施設 2 × 2</span></div>
               {isMobileLayout && <nav className={styles.mobileBaseEditBar} aria-label="拠点編集モード">
                 <button type="button" className={mobileBaseEditMode === "navigate" ? styles.mobileBaseEditActive : ""} onClick={() => { setMobileBaseEditMode("navigate"); setBasePanelTab("building"); setBuildMode(null); setTileMode(null); setTileDemolitionMode(false); setTileDragSelection(null); }}><b>✥</b><span>移動</span></button>
                 <button type="button" className={mobileBaseEditMode === "building" ? styles.mobileBaseEditActive : ""} onClick={() => { setMobileBaseEditMode("building"); setBasePanelTab("building"); setBuildMode(null); setTileMode(null); setTileDemolitionMode(false); setSystemMessage("空きマスをタップして施設を選択してください"); }}><b>⌂</b><span>施設</span></button>
@@ -4336,6 +4486,14 @@ export function CrocsiansGame() {
       </div>
 
       {baseSocialOpen && <div className={styles.catalogBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setBaseSocialOpen(false); }}><section className={styles.baseSocialHub} role="dialog" aria-modal="true" aria-labelledby="base-social-title"><header><div><p>FRONTIER COMMUNITY</p><h2 id="base-social-title">みんなの拠点</h2></div><span>{baseSocialLoading ? "更新中…" : `${baseSocialData?.directory.length ?? 0}拠点`}</span><button type="button" aria-label="拠点交流を閉じる" onClick={() => setBaseSocialOpen(false)}>×</button></header><div className={styles.baseSocialToolbar}><button type="button" onClick={() => void copyBaseShareLink(baseSocialData?.viewerId ?? "")}>自分の拠点リンクを共有</button><span>お気に入り登録した拠点を先頭に表示しています</span></div><div className={styles.baseSocialContent}><section><h3>訪問できる拠点</h3><div className={styles.baseDirectory}>{baseSocialData?.directory.map((base) => <article key={base.ownerId} className={base.favorited ? styles.baseDirectoryFavorite : ""}><span>{base.icon ? <NextImage src={base.icon} alt="" width={128} height={128} unoptimized /> : base.name.charAt(0)}</span><div><strong>{base.name}</strong><small>{base.job} Lv.{base.level}</small><em>♡ {base.likes}{base.favorited ? " · ★ お気に入り" : ""}</em></div><button type="button" onClick={() => void visitPlayerBase(base.ownerId)}>訪問</button></article>)}{!baseSocialLoading && !baseSocialData?.directory.length && <p className={styles.catalogEmpty}>訪問できる拠点がまだありません。</p>}</div></section><aside><h3>最近の足跡</h3><div className={styles.baseFootprints}>{baseSocialData && baseSocialData.base.ownerId === baseSocialData.viewerId && baseSocialData.base.visitors.length > 0 ? baseSocialData.base.visitors.map((visitor) => <div key={visitor.ownerId}><span>{visitor.icon ? <NextImage src={visitor.icon} alt="" width={96} height={96} unoptimized /> : visitor.name.charAt(0)}</span><p><strong>{visitor.name}</strong><small>{visitor.visitedAt ? new Date(visitor.visitedAt).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "訪問"}</small></p></div>) : <p className={styles.catalogEmpty}>まだ足跡はありません。</p>}</div></aside></div></section></div>}
+
+      {socialHubTab === "relations" && <div className={styles.catalogBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSocialHubTab("directory"); }}><section className={styles.socialRecordsHub} role="dialog" aria-modal="true" aria-labelledby="social-records-title"><header><div><p>CHARACTER MEMORIES</p><h2 id="social-records-title">会話ログ・関係値</h2></div><span>覚えた言葉 {baseSocialData?.learnedWords.length ?? 0}個</span><button type="button" aria-label="閉じる" onClick={() => setSocialHubTab("directory")}>×</button></header><div className={styles.socialRecordsContent}><section><h3>キャラクター同士の会話ログ</h3><div className={styles.conversationLogList}>{baseSocialData?.conversationLogs.map((log) => <article key={log.id}><time>{new Date(log.createdAt).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</time><strong>{SOCIAL_WORD_CATEGORY_MAP[log.category]?.label ?? log.category}</strong><p>{log.message}</p><small>話題の言葉「{log.word}」</small></article>)}{!baseSocialData?.conversationLogs.length && <p className={styles.catalogEmpty}>キャラクター同士が話すと、ここに記録されます。</p>}</div></section><aside><h3>関係値</h3><div className={styles.relationshipList}>{baseSocialData?.relationships.map((relation) => { const person = baseSocialData.directory.find((entry) => entry.ownerId === relation.userId); const status = relation.romance >= 30 ? "恋人" : relation.rivalry >= 30 && relation.rivalry > relation.friendship ? "ライバル" : relation.friendship >= 20 ? "友達" : "知り合い"; return <article key={relation.userId}><div><strong>{person?.name ?? "冒険者"}</strong><em>{status}</em></div><span>友好 {relation.friendship}</span><span>競争 {relation.rivalry}</span><span>恋愛 {relation.romance}</span><small>交流 {relation.interactionCount}回</small></article>; })}{!baseSocialData?.relationships.length && <p className={styles.catalogEmpty}>まだ関係はありません。</p>}</div><h3>覚えている言葉</h3><div className={styles.learnedWordList}>{Object.entries(SOCIAL_WORD_CATEGORY_MAP).map(([id, definition]) => { const words = baseSocialData?.learnedWords.filter((entry) => entry.category === id) ?? []; return <details key={id}><summary>{definition.label}<small>{words.length}/3</small></summary><p>{words.length ? words.map((entry) => entry.word).join("・") : `未習得（会話では「${definition.samples.join("・")}」から選択）`}</p></details>; })}</div></aside></div></section></div>}
+
+      {teachPrompt && <div className={styles.catalogBackdrop} role="presentation"><form className={styles.teachWordDialog} onSubmit={submitTaughtWord}><header><span>{teachPrompt.character.icon ? <NextImage src={teachPrompt.character.icon} alt="" width={128} height={128} unoptimized /> : teachPrompt.character.name.charAt(0)}</span><div><small>{teachPrompt.character.name}があなたを呼んでいます</small><h2>「{teachPrompt.question}」</h2></div></header><label><span>{teachPrompt.categoryLabel}に当てはまる言葉</span><input autoFocus value={teachWord} maxLength={40} placeholder="言葉をひとつ教える" onChange={(event) => setTeachWord(event.target.value)} /></label><p>教えた言葉はこのキャラクターの記憶に残り、今後の会話で使われます。各カテゴリー3つまで覚えられます。</p><div><button type="button" onClick={() => { setTeachPrompt(null); setTeachWord(""); }}>今はやめておく</button><button type="submit" disabled={!teachWord.trim() || teachSubmitting}>{teachSubmitting ? "覚えています…" : "この言葉を教える"}</button></div></form></div>}
+
+      {socialScene?.relationshipEvent?.eventType === "wedding" && <div className={styles.catalogBackdrop} role="presentation"><section className={styles.weddingEventDialog} role="dialog" aria-modal="true"><header><p>WEDDING CELEBRATION</p><h2>{socialScene.partner.name}との結婚式</h2></header><div>{socialScene.relationshipEvent.message.split("\n").map((line, index) => <p key={`${index}-${line}`}>{line}</p>)}</div><button type="button" onClick={() => setSocialScene((current) => current ? { ...current, relationshipEvent: undefined } : current)}>祝福を胸に刻む</button></section></div>}
+
+      {selectedSocialCharacter && <div className={styles.catalogBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelectedSocialCharacter(null); }}><section className={styles.characterConversationDialog} role="dialog" aria-modal="true"><header><span>{selectedSocialCharacter.icon ? <NextImage src={selectedSocialCharacter.icon} alt="" width={128} height={128} unoptimized /> : selectedSocialCharacter.name.charAt(0)}</span><div><small>CHARACTER CONVERSATIONS</small><h2>{selectedSocialCharacter.name}の会話ログ</h2></div><button type="button" onClick={() => setSelectedSocialCharacter(null)}>×</button></header><div className={styles.characterConversationBody}>{baseSocialData?.conversationLogs.filter((log) => log.speakerId === selectedSocialCharacter.ownerId || log.listenerId === selectedSocialCharacter.ownerId).map((log) => <article key={log.id}><time>{new Date(log.createdAt).toLocaleString("ja-JP")}</time><strong>{SOCIAL_WORD_CATEGORY_MAP[log.category]?.label ?? log.category}</strong><p>{log.message}</p><small>話題の言葉「{log.word}」</small></article>)}{!baseSocialData?.conversationLogs.some((log) => log.speakerId === selectedSocialCharacter.ownerId || log.listenerId === selectedSocialCharacter.ownerId) && <p className={styles.catalogEmpty}>このキャラクターの会話ログはまだありません。</p>}{selectedSocialCharacter.ownerId === baseSocialData?.viewerId && <section className={styles.favoriteWordManager}><h3>覚えている言葉</h3>{baseSocialData.learnedWords.map((word) => <button type="button" key={word.id} className={word.favorite ? styles.favoriteWordActive : ""} onClick={() => void toggleFavoriteWord(word)}><span>{word.favorite ? "★" : "☆"} {word.word}</span><small>{SOCIAL_WORD_CATEGORY_MAP[word.category]?.label}</small></button>)}{!baseSocialData.learnedWords.length && <p>まだ言葉を覚えていません。</p>}</section>}</div></section></div>}
 
       {mobileBuildCell !== null && (() => {
         const facilityKinds = (Object.keys(BUILDINGS) as BuildingKind[]).filter((kind) => constructionCategory === "production" ? !CRAFTING_KINDS.has(kind) && !DECORATIVE_KINDS.has(kind) : constructionCategory === "workshop" ? CRAFTING_KINDS.has(kind) : DECORATIVE_KINDS.has(kind));
