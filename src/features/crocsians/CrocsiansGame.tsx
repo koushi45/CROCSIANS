@@ -19,6 +19,7 @@ type ItemRarity = "N" | "R" | "SR" | "SSR";
 type TempleTab = "exploration" | "dungeon" | "party";
 type BasePanelTab = "building" | "tile";
 type ConstructionCategory = "production" | "workshop" | "decoration" | "tile";
+type MobileBaseEditMode = "navigate" | "building" | "tile" | "demolish";
 type TileKind = "stone" | "water" | "grassland" | "stoneTile" | "carpet" | "soil" | "mosaic" | "brick" | "woodPlank" | "marble" | "slate" | "sand" | "gravel" | "checker" | "terracotta" | "flowerGrass" | "cobblestone" | "goldTrim" | "blueCarpet" | "redCarpet" | "blackTile" | "shallowWater" | "hedge";
 type StartScreenMode = "menu" | "create" | "delete";
 type JobName = "戦士" | "商人" | "職人" | "盗賊" | "僧侶";
@@ -607,6 +608,14 @@ type ReleaseNote = {
 
 const RELEASE_NOTES: ReleaseNote[] = [
   {
+    version: "ver 0.3.13",
+    items: [
+      { title: "拠点建築の配置プレビューを追加しました", details: ["PC版ではサイドメニューから施設を選ぶと、マウス位置に半透明の建築予定地を表示します", "空きマスから開く建設メニューでは、PC・スマホとも施設選択後に配置を確認してから建築できるようにしました", "建築可能な場所は黄緑、建築できない場所は赤色で表示します"] },
+      { title: "PC版の床・タイル範囲解体に対応しました", details: ["床メニューの「床・タイルを範囲解体」を選び、ドラッグした矩形範囲をまとめて土へ戻せます", "解体対象の範囲は赤色でプレビューされ、素材は返却されません"] },
+      { title: "スマホ版の拠点編集操作を刷新しました", details: ["拠点マップを画面いっぱいに表示し、スクロールバーを隠したフリック移動に対応しました", "移動・施設・床・解体を下部の片手操作バーから切り替えられます", "床は選択後に指でなぞった矩形範囲へ一括施工でき、解体も同様に範囲指定できます", "施設タップ時の回収・製造・精錬・強化・解体は、専用の下部モーダルから行えます"] },
+    ],
+  },
+  {
     version: "ver 0.3.12",
     items: [
       { title: "教皇のバッジとジョブSPボーナスを追加しました", details: ["レベル100到達後は、累計経験値を500,000獲得するごとに「教皇のバッジ」を1個獲得できます", "教皇庁の専用タブでバッジを使い、好きなジョブのSPを1獲得できます", "SPボーナスは各ジョブにつき最大5回まで受け取れます"] },
@@ -1042,12 +1051,17 @@ export function CrocsiansGame() {
   const [buildMode, setBuildMode] = useState<BuildingKind | null>(null);
   const [mobileBuildCell, setMobileBuildCell] = useState<number | null>(null);
   const [mobileFacilityOpen, setMobileFacilityOpen] = useState(false);
+  const [mobileBaseEditMode, setMobileBaseEditMode] = useState<MobileBaseEditMode>("navigate");
+  const [mobileTilePickerOpen, setMobileTilePickerOpen] = useState(false);
   const [constructionCategory, setConstructionCategory] = useState<ConstructionCategory>("production");
+  const [buildingPreviewCell, setBuildingPreviewCell] = useState<number | null>(null);
+  const [pendingBuildingPreview, setPendingBuildingPreview] = useState<{ cell: number; kind: BuildingKind } | null>(null);
   const [baseSocialOpen, setBaseSocialOpen] = useState(false);
   const [baseSocialLoading, setBaseSocialLoading] = useState(false);
   const [baseSocialData, setBaseSocialData] = useState<BaseSocialResponse | null>(null);
   const [visitedBase, setVisitedBase] = useState<SocialBase | null>(null);
   const [tileMode, setTileMode] = useState<TileKind | null>(null);
+  const [tileDemolitionMode, setTileDemolitionMode] = useState(false);
   const [tileDragSelection, setTileDragSelection] = useState<{ start: number; end: number } | null>(null);
   const [selectedCell, setSelectedCell] = useState(0);
   const [zoom, setZoom] = useState(0.5);
@@ -2003,6 +2017,8 @@ export function CrocsiansGame() {
   }, [portalKeyNotice]);
 
   const selectedBuilding = buildings[selectedCell];
+  const activeBuildingPreview = pendingBuildingPreview ?? (buildMode !== null && buildingPreviewCell !== null ? { cell: buildingPreviewCell, kind: buildMode } : null);
+  const activeBuildingPreviewPlaceable = activeBuildingPreview ? canPlaceFacility(buildings, activeBuildingPreview.cell) : false;
   const selectedTileCells = useMemo(() => new Set(tileDragSelection ? tileRectangleCells(tileDragSelection.start, tileDragSelection.end).cells : []), [tileDragSelection]);
   const completed = useMemo(() => Object.values(buildings).filter((building) => building.ready && !NON_PRODUCTION_KINDS.has(building.kind)).length, [buildings]);
   const collectableBuildingCount = useMemo(() => Object.values(buildings).filter((building) => building.stockCount > 0 && !NON_PRODUCTION_KINDS.has(building.kind)).length, [buildings]);
@@ -2117,6 +2133,22 @@ export function CrocsiansGame() {
   function placeTileArea(start: number, end: number) {
     const area = tileRectangleCells(start, end);
     setSelectedCell(end);
+    if (tileDemolitionMode) {
+      const changingCells = area.cells.filter((cell) => baseTiles[cell] !== "soil");
+      if (changingCells.length === 0) {
+        setSystemMessage("選択範囲に解体できる床がありません");
+        playSe("click");
+        return;
+      }
+      setBaseTiles((current) => {
+        const next = [...current];
+        changingCells.forEach((cell) => { next[cell] = "soil"; });
+        return next;
+      });
+      setSystemMessage(`${area.width}×${area.height}の範囲から床を${changingCells.length}マス解体しました`);
+      playSe("building");
+      return;
+    }
     if (!tileMode) {
       playSe("click");
       return;
@@ -2231,7 +2263,7 @@ export function CrocsiansGame() {
   }
 
   function beginTileDrag(event: React.PointerEvent<HTMLDivElement>) {
-    if (basePanelTab !== "tile" || (event.pointerType === "mouse" && event.button !== 0)) return;
+    if (basePanelTab !== "tile" || (!tileMode && !tileDemolitionMode) || (event.pointerType === "mouse" && event.button !== 0)) return;
     event.preventDefault();
     const cell = tileCellFromPointer(event);
     tileDragStartRef.current = cell;
@@ -2283,8 +2315,12 @@ export function CrocsiansGame() {
     setSelectedCell(cell);
     if (!requestedKind) {
       if (!buildings[cell]) {
-        setConstructionCategory("production");
-        setMobileBuildCell(cell);
+        if (!isMobileLayout || mobileBaseEditMode === "building") {
+          setConstructionCategory("production");
+          setMobileBuildCell(cell);
+        } else if (mobileBaseEditMode === "navigate") {
+          setSystemMessage("施設・床・解体を下の操作バーから選択できます");
+        }
       }
       playSe("click");
       return;
@@ -4179,7 +4215,7 @@ export function CrocsiansGame() {
           {view === "base" && (visitedBase ? renderVisitedBaseMap() : (
             <div ref={isMobileLayout ? undefined : mapViewportRef} className={styles.mapViewport} onTouchStart={beginMapTouch} onTouchMove={moveMapTouch} onTouchEnd={finishMapTouch} onTouchCancel={finishMapTouch}>
               <div ref={isMobileLayout ? mapViewportRef : undefined} className={styles.mapCanvas} style={{ width: MAP_PIXEL_SIZE * zoom, height: MAP_PIXEL_SIZE * zoom }}>
-                <div className={`${styles.mapGrid} ${basePanelTab === "tile" ? styles.tileEditing : ""}`} style={{ zoom, gridTemplateColumns: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridTemplateRows: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridAutoColumns: `${MAP_CELL_SIZE}px`, gridAutoRows: `${MAP_CELL_SIZE}px` } as React.CSSProperties} onPointerDown={beginTileDrag} onPointerMove={moveTileDrag} onPointerUp={finishTileDrag} onPointerCancel={cancelTileDrag} onContextMenu={(event) => { if (basePanelTab === "tile") event.preventDefault(); }}>
+                <div className={`${styles.mapGrid} ${basePanelTab === "tile" ? styles.tileEditing : ""} ${tileDemolitionMode ? styles.tileDemolitionEditing : ""}`} style={{ zoom, gridTemplateColumns: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridTemplateRows: `repeat(${MAP_SIZE}, ${MAP_CELL_SIZE}px)`, gridAutoColumns: `${MAP_CELL_SIZE}px`, gridAutoRows: `${MAP_CELL_SIZE}px` } as React.CSSProperties} onPointerDown={beginTileDrag} onPointerMove={moveTileDrag} onPointerUp={finishTileDrag} onPointerCancel={cancelTileDrag} onPointerLeave={() => setBuildingPreviewCell(null)} onContextMenu={(event) => { if (basePanelTab === "tile") event.preventDefault(); }}>
                   {baseTiles.map((tile, cell) => <span key={`floor-${cell}`} className={styles.floorTile} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1, ...tileVisualStyle(tile) }} />)}
                   {Array.from({ length: MAP_CELL_COUNT }, (_, cell) => {
                     const occupiedAnchor = buildingAnchorAtCell(buildings, cell);
@@ -4188,15 +4224,23 @@ export function CrocsiansGame() {
                     const placeable = basePanelTab === "building" && buildMode ? canPlaceFacility(buildings, cell) : false;
                     const column = cell % MAP_SIZE + 1;
                     const row = Math.floor(cell / MAP_SIZE) + 1;
-                    return <button key={cell} data-se="none" style={{ gridColumn: `${column} / span ${building ? FACILITY_SIZE : 1}`, gridRow: `${row} / span ${building ? FACILITY_SIZE : 1}` }} aria-label={building ? `${BUILDINGS[building.kind].name}（2×2）` : `空きマス ${column},${row}`} className={`${styles.mapCell} ${building ? styles.facilityCell : ""} ${basePanelTab === "building" && selectedCell === cell ? styles.selectedCell : ""} ${placeable ? styles.buildable : ""}`} onClick={() => { if (building && isMobileLayout) { setSelectedCell(cell); setMobileFacilityOpen(true); playSe("click"); } else if (building && building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind)) { setSelectedCell(cell); collect(cell); } else placeBuilding(cell); }}>
+                    return <button key={cell} data-se="none" style={{ gridColumn: `${column} / span ${building ? FACILITY_SIZE : 1}`, gridRow: `${row} / span ${building ? FACILITY_SIZE : 1}` }} aria-label={building ? `${BUILDINGS[building.kind].name}（2×2）` : `空きマス ${column},${row}`} className={`${styles.mapCell} ${building ? styles.facilityCell : ""} ${basePanelTab === "building" && selectedCell === cell ? styles.selectedCell : ""} ${placeable ? styles.buildable : ""}`} onPointerEnter={() => { if (!building && buildMode) setBuildingPreviewCell(cell); }} onClick={() => { if (building && isMobileLayout) { setSelectedCell(cell); setMobileFacilityOpen(true); playSe("click"); } else if (building && building.stockCount > 0 && !CRAFTING_KINDS.has(building.kind)) { setSelectedCell(cell); collect(cell); } else placeBuilding(cell); }}>
                       {building ? <><span className={styles.buildingIcon}><BuildingArtwork kind={building.kind} level={building.level} /></span><small>Lv.{building.level}</small>{!DECORATIVE_KINDS.has(building.kind) && (building.ready && (building.kind === "furnace" || !CRAFTING_KINDS.has(building.kind)) ? <i className={styles.ready}>!</i> : !CRAFTING_KINDS.has(building.kind) ? <i className={styles.progress} style={{ "--progress": `${stockProgress(building)}%` } as React.CSSProperties} /> : null)}</> : null}
                     </button>;
                   })}
+                  {activeBuildingPreview && <div className={`${styles.buildingPlacementPreview} ${activeBuildingPreviewPlaceable ? styles.buildingPlacementValid : styles.buildingPlacementInvalid}`} style={{ gridColumn: `${activeBuildingPreview.cell % MAP_SIZE + 1} / span ${FACILITY_SIZE}`, gridRow: `${Math.floor(activeBuildingPreview.cell / MAP_SIZE) + 1} / span ${FACILITY_SIZE}` }} aria-hidden="true"><BuildingArtwork kind={activeBuildingPreview.kind} level={1} size={192} /><span>{activeBuildingPreviewPlaceable ? "建築予定地" : "建築不可"}</span></div>}
                   {basePanelTab === "tile" && baseTiles.map((tile, cell) => <button key={`tile-${cell}`} data-se="none" type="button" className={`${styles.tileCell} ${selectedCell === cell || selectedTileCells.has(cell) ? styles.selectedTileCell : ""}`} style={{ gridColumn: cell % MAP_SIZE + 1, gridRow: Math.floor(cell / MAP_SIZE) + 1 }} aria-label={`${TILES[tile].name}の床 ${cell % MAP_SIZE + 1},${Math.floor(cell / MAP_SIZE) + 1}`} />)}
                 </div>
                 <div className={styles.baseWalkers}><BaseWalker person={{ ownerId: baseSocialData?.viewerId ?? "local", name: characterName, job, level: playerProgress.level, icon: characterIcon }} index={0} />{baseSocialData && baseSocialData.base.ownerId === baseSocialData.viewerId && baseSocialData.base.visitors.slice(0, 5).map((person, index) => <BaseWalker key={person.ownerId} person={person} index={index + 1} visitor />)}</div>
               </div>
               <div className={styles.mapLegend}><button type="button" className={styles.collectAllButton} disabled={collectableBuildingCount === 0} onClick={collectAllResources}>一括回収 {collectableBuildingCount}</button><span><i className={styles.legendReady} />回収可能 {completed}</span>{tileDragSelection && <span>選択範囲 {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).width} × {tileRectangleCells(tileDragSelection.start, tileDragSelection.end).height}</span>}<span>{MAP_SIZE} × {MAP_SIZE} · 施設 2 × 2</span></div>
+              {isMobileLayout && <nav className={styles.mobileBaseEditBar} aria-label="拠点編集モード">
+                <button type="button" className={mobileBaseEditMode === "navigate" ? styles.mobileBaseEditActive : ""} onClick={() => { setMobileBaseEditMode("navigate"); setBasePanelTab("building"); setBuildMode(null); setTileMode(null); setTileDemolitionMode(false); setTileDragSelection(null); }}><b>✥</b><span>移動</span></button>
+                <button type="button" className={mobileBaseEditMode === "building" ? styles.mobileBaseEditActive : ""} onClick={() => { setMobileBaseEditMode("building"); setBasePanelTab("building"); setBuildMode(null); setTileMode(null); setTileDemolitionMode(false); setSystemMessage("空きマスをタップして施設を選択してください"); }}><b>⌂</b><span>施設</span></button>
+                <button type="button" className={mobileBaseEditMode === "tile" ? styles.mobileBaseEditActive : ""} onClick={() => { setMobileBaseEditMode("tile"); setBasePanelTab("tile"); setBuildMode(null); setTileDemolitionMode(false); setMobileTilePickerOpen(true); }}><b>▦</b><span>{tileMode ? TILES[tileMode].name : "床"}</span></button>
+                <button type="button" className={mobileBaseEditMode === "demolish" ? styles.mobileBaseEditDangerActive : ""} onClick={() => { setMobileBaseEditMode("demolish"); setBasePanelTab("tile"); setBuildMode(null); setTileMode(null); setTileDemolitionMode(true); setSystemMessage("指でなぞった範囲の床・タイルを解体します"); }}><b>×</b><span>解体</span></button>
+              </nav>}
+              {pendingBuildingPreview && <div className={styles.buildingPreviewConfirm} role="dialog" aria-label="建築位置の確認"><div><small>BUILD PREVIEW</small><strong>{BUILDINGS[pendingBuildingPreview.kind].name}</strong><span>{pendingBuildingPreview.cell % MAP_SIZE + 1}, {Math.floor(pendingBuildingPreview.cell / MAP_SIZE) + 1} を起点に2×2</span></div><button type="button" onClick={() => setPendingBuildingPreview(null)}>取消</button><button type="button" disabled={!activeBuildingPreviewPlaceable} onClick={() => { placeBuilding(pendingBuildingPreview.cell, pendingBuildingPreview.kind); setPendingBuildingPreview(null); }}>{activeBuildingPreviewPlaceable ? "この位置に建築" : "この位置には建築できません"}</button></div>}
             </div>
           ))}
 
@@ -4265,10 +4309,10 @@ export function CrocsiansGame() {
           {view === "base" ? visitedBase ? renderVisitedBasePanel() : (
             <>
               <section className={styles.panelSection}>
-                <div className={styles.basePanelTabs}><button className={basePanelTab === "building" ? styles.basePanelTabActive : ""} onClick={() => { setBasePanelTab("building"); setTileMode(null); }}>BUILDING</button><button className={basePanelTab === "tile" ? styles.basePanelTabActive : ""} onClick={() => { setBasePanelTab("tile"); setBuildMode(null); }}>TILE</button></div>
+                <div className={styles.basePanelTabs}><button className={basePanelTab === "building" ? styles.basePanelTabActive : ""} onClick={() => { setBasePanelTab("building"); setTileMode(null); setTileDemolitionMode(false); }}>BUILDING</button><button className={basePanelTab === "tile" ? styles.basePanelTabActive : ""} onClick={() => { setBasePanelTab("tile"); setBuildMode(null); setBuildingPreviewCell(null); }}>TILE</button></div>
                 {basePanelTab === "building" ? <><div className={styles.sectionHeading}><div><p>BUILD</p><h3>施設を建てる</h3></div>{buildMode && <button onClick={() => setBuildMode(null)}>取消</button>}</div>
                 <div className={styles.buildingList}>{(Object.keys(BUILDINGS) as BuildingKind[]).map((kind) => { const item = BUILDINGS[kind]; const cost = buildingCost(kind); const count = buildingCounts[kind] ?? 0; const limit = BUILDING_LIMITS[kind]; const costLabel = [...cost.materials.map((material) => `${material.name}${material.quantity}`), ...(cost.gold > 0 ? [`G${cost.gold}`] : [])].join(" · "); return <button key={kind} className={buildMode === kind ? styles.buildSelected : ""} disabled={!canBuild(kind)} onClick={() => setBuildMode(kind)}><span className={styles.buildBadge}><BuildingArtwork kind={kind} level={1} size={128} /></span><div><strong>{item.name} <em>{count}/{limit}</em></strong><small>{count >= limit ? "建築上限" : item.decorative ? `景観 · ${costLabel}` : costLabel}</small></div></button>; })}</div></> : <><div className={styles.sectionHeading}><div><p>FLOOR</p><h3>床を張る</h3></div>{tileMode && <button onClick={() => setTileMode(null)}>取消</button>}</div>
-                <div className={styles.tileList}>{TILE_KINDS.map((kind) => { const item = TILES[kind]; return <button key={kind} className={tileMode === kind ? styles.buildSelected : ""} disabled={!canAffordTile(kind)} onClick={() => setTileMode(kind)}><span style={tileVisualStyle(kind)} /><div><strong>{item.name}</strong><small>{item.materials.length > 0 ? item.materials.map((material) => `${material.name}×${material.quantity}`).join(" · ") : "素材不要"}</small></div></button>; })}</div></>}
+                <div className={styles.tileList}>{TILE_KINDS.map((kind) => { const item = TILES[kind]; return <button key={kind} className={tileMode === kind && !tileDemolitionMode ? styles.buildSelected : ""} disabled={!canAffordTile(kind)} onClick={() => { setTileMode(kind); setTileDemolitionMode(false); }}><span style={tileVisualStyle(kind)} /><div><strong>{item.name}</strong><small>{item.materials.length > 0 ? item.materials.map((material) => `${material.name}×${material.quantity}`).join(" · ") : "素材不要"}</small></div></button>; })}</div><button type="button" className={`${styles.tileAreaDemolish} ${tileDemolitionMode ? styles.tileAreaDemolishActive : ""}`} onClick={() => { setTileDemolitionMode((current) => !current); setTileMode(null); }}>{tileDemolitionMode ? "範囲解体を終了" : "床・タイルを範囲解体"}</button></>}
               </section>
               <section className={styles.panelSection}>
                 {basePanelTab === "tile" ? <><div className={styles.sectionHeading}><div><p>FLOOR DETAIL</p><h3>{TILES[baseTiles[selectedCell]].name}</h3></div></div><div className={styles.tileDetail}><span style={tileVisualStyle(baseTiles[selectedCell])} /><div><strong>選択マス {selectedCell % MAP_SIZE + 1}, {Math.floor(selectedCell / MAP_SIZE) + 1}</strong><small>床を解体すると土へ戻ります。素材は返却されません。</small></div><button data-se="none" disabled={baseTiles[selectedCell] === "soil"} onClick={demolishSelectedTile}>{baseTiles[selectedCell] === "soil" ? "土の床です" : "床を解体する"}</button></div></> : <><div className={styles.sectionHeading}><div><p>DETAIL</p><h3>{selectedBuilding ? BUILDINGS[selectedBuilding.kind].name : "空きマス"}</h3></div>{selectedBuilding && <b>Lv.{selectedBuilding.level}</b>}</div>
@@ -4300,12 +4344,14 @@ export function CrocsiansGame() {
         return <div className={styles.mobileBuildBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setMobileBuildCell(null); }}>
           <section className={styles.mobileBuildSheet} role="dialog" aria-modal="true" aria-labelledby="mobile-build-title">
             <header><div><small>BUILD ON SELECTED LAND</small><h2 id="mobile-build-title">建設メニュー</h2><p>マス {mobileBuildCell % MAP_SIZE + 1}, {Math.floor(mobileBuildCell / MAP_SIZE) + 1} {isTileCategory ? "に床を1マス施工します" : "を起点に施設を2×2で建設します"}</p></div><button type="button" aria-label="建設メニューを閉じる" onClick={() => setMobileBuildCell(null)}>×</button></header>
-            <nav className={styles.constructionCategories} aria-label="建設カテゴリ">{(["production", "workshop", "decoration", "tile"] as ConstructionCategory[]).map((category) => <button key={category} type="button" className={constructionCategory === category ? styles.constructionCategoryActive : ""} onClick={() => setConstructionCategory(category)}>{categoryLabel[category]}</button>)}</nav>
-            <div className={styles.mobileBuildChoices}>{isTileCategory ? TILE_KINDS.map((kind) => { const definition = TILES[kind]; const affordable = canAffordTile(kind); return <button type="button" key={kind} disabled={!affordable} onClick={() => { placeTileFromConstructionMenu(mobileBuildCell, kind); setMobileBuildCell(null); }}><i className={styles.constructionTilePreview} style={tileVisualStyle(kind)} aria-hidden="true" /><span><strong>{definition.name}</strong><small>{!affordable ? "素材不足" : definition.materials.length ? definition.materials.map((material) => `${material.name}×${material.quantity}`).join("・") : "素材不要"}</small></span></button>; }) : facilityKinds.map((kind) => { const definition = BUILDINGS[kind]; const cost = buildingCost(kind); const count = buildingCounts[kind] ?? 0; const atLimit = count >= BUILDING_LIMITS[kind]; const affordable = canAfford(kind); return <button type="button" key={kind} disabled={atLimit || !affordable} onClick={() => { placeBuilding(mobileBuildCell, kind); setMobileBuildCell(null); }}><BuildingArtwork kind={kind} level={1} size={128} /><span><strong>{definition.name}</strong><small>{atLimit ? `建築上限 ${count}/${BUILDING_LIMITS[kind]}` : !affordable ? "素材不足" : [...cost.materials.map((material) => `${material.name}×${material.quantity}`), ...(cost.gold > 0 ? [`${cost.gold}G`] : [])].join("・")}</small></span></button>; })}</div>
+            <nav className={styles.constructionCategories} aria-label="建設カテゴリ">{(isMobileLayout ? ["production", "workshop", "decoration"] as ConstructionCategory[] : ["production", "workshop", "decoration", "tile"] as ConstructionCategory[]).map((category) => <button key={category} type="button" className={constructionCategory === category ? styles.constructionCategoryActive : ""} onClick={() => setConstructionCategory(category)}>{categoryLabel[category]}</button>)}</nav>
+            <div className={styles.mobileBuildChoices}>{isTileCategory ? TILE_KINDS.map((kind) => { const definition = TILES[kind]; const affordable = canAffordTile(kind); return <button type="button" key={kind} disabled={!affordable} onClick={() => { placeTileFromConstructionMenu(mobileBuildCell, kind); setMobileBuildCell(null); }}><i className={styles.constructionTilePreview} style={tileVisualStyle(kind)} aria-hidden="true" /><span><strong>{definition.name}</strong><small>{!affordable ? "素材不足" : definition.materials.length ? definition.materials.map((material) => `${material.name}×${material.quantity}`).join("・") : "素材不要"}</small></span></button>; }) : facilityKinds.map((kind) => { const definition = BUILDINGS[kind]; const cost = buildingCost(kind); const count = buildingCounts[kind] ?? 0; const atLimit = count >= BUILDING_LIMITS[kind]; const affordable = canAfford(kind); return <button type="button" key={kind} disabled={atLimit || !affordable} onClick={() => { setPendingBuildingPreview({ cell: mobileBuildCell, kind }); setMobileBuildCell(null); }}><BuildingArtwork kind={kind} level={1} size={128} /><span><strong>{definition.name}</strong><small>{atLimit ? `建築上限 ${count}/${BUILDING_LIMITS[kind]}` : !affordable ? "素材不足" : [...cost.materials.map((material) => `${material.name}×${material.quantity}`), ...(cost.gold > 0 ? [`${cost.gold}G`] : [])].join("・")}</small></span></button>; })}</div>
             <button type="button" className={styles.mobileBuildCancel} onClick={() => setMobileBuildCell(null)}>キャンセル</button>
           </section>
         </div>;
       })()}
+
+      {mobileTilePickerOpen && <div className={styles.mobileBuildBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setMobileTilePickerOpen(false); }}><section className={`${styles.mobileBuildSheet} ${styles.mobileTilePickerSheet}`} role="dialog" aria-modal="true" aria-labelledby="mobile-tile-picker-title"><header><div><small>AREA FLOOR TOOL</small><h2 id="mobile-tile-picker-title">施工する床を選択</h2><p>床を選んだ後、マップを指でなぞると矩形範囲へまとめて施工できます</p></div><button type="button" aria-label="床選択を閉じる" onClick={() => setMobileTilePickerOpen(false)}>×</button></header><div className={styles.mobileTilePickerGrid}>{TILE_KINDS.map((kind) => { const definition = TILES[kind]; const affordable = canAffordTile(kind); return <button type="button" key={kind} className={tileMode === kind ? styles.mobileTilePickerSelected : ""} disabled={!affordable} onClick={() => { setTileMode(kind); setTileDemolitionMode(false); setMobileBaseEditMode("tile"); setBasePanelTab("tile"); setMobileTilePickerOpen(false); setSystemMessage(`${definition.name}を施工する範囲を指でなぞってください`); }}><i style={tileVisualStyle(kind)} aria-hidden="true" /><span><strong>{definition.name}</strong><small>{definition.materials.length ? definition.materials.map((material) => `${material.name}×${material.quantity}`).join("・") : "素材不要"}</small></span></button>; })}</div><button type="button" className={styles.mobileBuildCancel} onClick={() => { setMobileTilePickerOpen(false); setMobileBaseEditMode("navigate"); setBasePanelTab("building"); setTileMode(null); }}>キャンセル</button></section></div>}
 
       <button className={styles.mobileChatTrigger} type="button" aria-label={unreadChatCount > 0 ? `全体チャットを開く、未読${unreadChatCount}件` : "全体チャットを開く"} aria-expanded={mobileChatOpen} onClick={() => { lastReadChatMessageIdRef.current = latestChatMessageId ?? null; setUnreadChatCount(0); setMobileChatOpen(true); }}><span aria-hidden="true">◆</span>{unreadChatCount > 0 && <b>{unreadChatCount}</b>}</button>
       {mobileChatOpen && <div className={styles.mobileChatBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setMobileChatOpen(false); }}>
