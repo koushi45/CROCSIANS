@@ -244,6 +244,11 @@ export async function POST(request: Request) {
       let eventRow = null;
       if (Math.random() < .55) {
         let progressionKind = relationshipKind;
+        // 友人として信頼を重ねた二人も、その友情を保ったまま恋愛へ発展できる。
+        if (progressionKind === "friendship" && relationshipRow.friendshipStage >= 3 && !relationshipRow.romanceActive && !relationshipRow.married) {
+          const romanceFromFriendshipRate = Math.min(.47, .12 + relationshipRow.friendshipStage * .035);
+          if (Math.random() < romanceFromFriendshipRate) progressionKind = "romance";
+        }
         if (progressionKind === "romance") {
           const otherPartner = await tx.crocsiansSocialRelationship.findFirst({ where: { id: { not: relationshipRow.id }, OR: [{ fromUserId: { in: pair } }, { toUserId: { in: pair } }], AND: [{ OR: [{ romanceActive: true }, { married: true }] }] }, select: { id: true } });
           if (otherPartner) progressionKind = "friendship";
