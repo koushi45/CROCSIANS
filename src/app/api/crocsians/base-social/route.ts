@@ -84,8 +84,8 @@ export async function GET(request: Request) {
   const [interactions, socialRows, learnedWords, conversationRows] = await Promise.all([
     ownerIds.length ? prisma.crocsiansBaseInteraction.findMany({ where: { ownerId: { in: ownerIds } }, select: { ownerId: true, visitorId: true, liked: true, favorited: true } }) : [],
     prisma.crocsiansSocialRelationship.findMany({ orderBy: { updatedAt: "desc" }, take: 200 }),
-    prisma.crocsiansCharacterWord.findMany({ where: { userId: user.id }, orderBy: { learnedAt: "desc" } }),
-    prisma.crocsiansConversationLog.findMany({ orderBy: { createdAt: "desc" }, take: 100 }),
+    prisma.crocsiansCharacterWord.findMany({ orderBy: { learnedAt: "desc" } }),
+    prisma.crocsiansConversationLog.findMany({ orderBy: { createdAt: "desc" } }),
   ]);
   const personById = new Map(saves.map((save) => [save.userId, characterSummary(save.userId, save.data, save.user.crocsiansCharacterIcon?.updatedAt)]));
   const directory = saves.map((save) => {
@@ -125,6 +125,8 @@ export async function GET(request: Request) {
     ...characterSummary(entry.visitorId, entry.visitor.crocsiansSave?.data, entry.visitor.crocsiansCharacterIcon?.updatedAt),
     visitedAt: entry.lastVisitedAt?.toISOString() ?? null,
   }));
+  const dailyWordTeach = await prisma.crocsiansDailyWordTeach.findUnique({ where: { userId_dateKey: { userId: user.id, dateKey: jstDateKey() } } });
+  const selfTeachExamples = Object.fromEntries(SOCIAL_WORD_CATEGORIES.map(([category]) => [category, (categoryConversationCatalog[category] as string[])[0]]));
 
   return Response.json({
     viewerId: user.id,
@@ -149,8 +151,10 @@ export async function GET(request: Request) {
       married: row.married,
       marriedAt: row.marriedAt?.toISOString() ?? null,
     })),
-    learnedWords: learnedWords.map((entry) => ({ id: entry.id, category: entry.category, word: entry.word, favorite: entry.favorite, learnedFromUserId: entry.learnedFromUserId, learnedAt: entry.learnedAt.toISOString() })),
+    learnedWords: learnedWords.map((entry) => ({ id: entry.id, userId: entry.userId, category: entry.category, word: entry.word, favorite: entry.favorite, learnedFromUserId: entry.learnedFromUserId, learnedAt: entry.learnedAt.toISOString() })),
     conversationLogs: conversationRows.map((entry) => ({ id: entry.id, speaker: personById.get(entry.speakerId)?.name ?? "冒険者", listener: personById.get(entry.listenerId)?.name ?? "冒険者", speakerId: entry.speakerId, listenerId: entry.listenerId, category: entry.category, word: entry.word, message: entry.message, eventType: entry.eventType, relationshipKind: entry.relationshipKind, relationshipStage: entry.relationshipStage, createdAt: entry.createdAt.toISOString() })),
+    selfWordTeachRemaining: Math.max(0, 3 - (dailyWordTeach?.count ?? 0)),
+    selfTeachExamples,
     base: {
       ...characterSummary(selectedSave.userId, selectedSave.data, selectedSave.user.crocsiansCharacterIcon?.updatedAt),
       ...publicLayout(selectedSave.data),
@@ -185,7 +189,28 @@ export async function POST(request: Request) {
     const candidate = await prisma.crocsiansSave.findUnique({ where: { userId: user.id }, select: { userId: true, data: true, user: { select: { crocsiansCharacterIcon: { select: { updatedAt: true } } } } } });
     if (!candidate) return Response.json({ teachPrompt: null });
     const [category, categoryLabel] = SOCIAL_WORD_CATEGORIES[Math.floor(Math.random() * SOCIAL_WORD_CATEGORIES.length)];
-    return Response.json({ teachPrompt: { character: characterSummary(candidate.userId, candidate.data, candidate.user.crocsiansCharacterIcon?.updatedAt), category, categoryLabel, question: `${categoryLabel}の言葉について教えて！` } });
+    const character = characterSummary(candidate.userId, candidate.data, candidate.user.crocsiansCharacterIcon?.updatedAt);
+    const example = renderConversationLines([(categoryConversationCatalog[category] as string[])[0]], { A: character.name, B: "B", word: "{word}" })[0];
+    return Response.json({ teachPrompt: { character, category, categoryLabel, question: `${categoryLabel}の言葉について教えて！`, example } });
+  }
+  if (action === "selfTeachWord") {
+    const category = typeof body?.category === "string" ? body.category as SocialWordCategoryId : "";
+    const word = typeof body?.word === "string" ? body.word.trim().replace(/\s+/g, " ").slice(0, 40) : "";
+    if (!category || !(category in SOCIAL_WORD_CATEGORY_MAP) || !word) return Response.json({ error: "カテゴリーと言葉を入力してください。" }, { status: 400 });
+    const dateKey = jstDateKey();
+    const result = await prisma.$transaction(async (tx) => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`self-word:${user.id}:${dateKey}`}))`;
+      const usage = await tx.crocsiansDailyWordTeach.findUnique({ where: { userId_dateKey: { userId: user.id, dateKey } } });
+      if ((usage?.count ?? 0) >= 3) return null;
+      const learned = await rememberWord(tx, user.id, category, word, user.id);
+      if (!learned) return false;
+      await tx.crocsiansDailyWordTeach.upsert({ where: { userId_dateKey: { userId: user.id, dateKey } }, create: { userId: user.id, dateKey, count: 1 }, update: { count: { increment: 1 } } });
+      return learned;
+    });
+    if (result === null) return Response.json({ error: "本日覚えられる回数（3回）を使い切りました。" }, { status: 409 });
+    if (result === false) return Response.json({ error: "お気に入りの言葉を3つ覚えているため、新しい言葉を覚えられません。" }, { status: 409 });
+    const usage = await prisma.crocsiansDailyWordTeach.findUnique({ where: { userId_dateKey: { userId: user.id, dateKey } } });
+    return Response.json({ ok: true, message: `「${word}」を覚えました。`, remaining: Math.max(0, 3 - (usage?.count ?? 0)) });
   }
   const ownerId = typeof body?.ownerId === "string" ? body.ownerId : "";
   if (!ownerId || (ownerId === user.id && action !== "teachWord")) return Response.json({ error: "対象の拠点を指定してください。" }, { status: 400 });
